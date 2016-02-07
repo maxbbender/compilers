@@ -1,0 +1,11 @@
+package lexer;
+
+import java.io.*;
+
+public class LexerMain {
+
+	public static void main(String[] args) {
+		
+	}
+	
+}

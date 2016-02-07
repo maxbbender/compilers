@@ -1,0 +1,30 @@
+package lexer;
+
+import java.io.*;
+
+public class LexerMain {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public String[] readFile() throws IOException {
+		String[] explodedString = null;
+		String file = "C:\\Users\\MUAH\\Documents\\compilers\\code.txt";
+		BufferedReader in = null;
+		
+		try {
+			in = new BufferedReader(new FileReader(file));
+			String text = null;
+			
+			while ((text = in.readLine()) != null) {
+				explodedString = text.split("\\s+");
+				
+			}
+		} finally {
+			in.close();
+		}
+	}
+
+}

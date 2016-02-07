@@ -1,0 +1,18 @@
+package lexer;
+
+import java.io.*;
+
+public class LexerMain {
+
+	public static void main(String[] args) {
+		
+	}
+	
+	public static String[] readFile(String file_url) throws IOException {
+		FileInputStream fis = new FileInputStream(file_url);
+		InputStream is = new FileInputStream(fis);
+		
+		
+	}
+	
+}

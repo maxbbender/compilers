@@ -1,0 +1,10 @@
+package lexer;
+
+public class LexerMain {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String[] splitString = args.split("\\s+");
+	}
+
+}

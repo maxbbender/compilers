@@ -1,0 +1,20 @@
+package lexer;
+
+import java.io.*;
+
+public class LexerMain {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public String[] readFile() throws IOException {
+		String[] explodedString = null;
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream("C:\\Users\\MUAH\\Documents\\compilers\\code.txt");
+		}
+	}
+
+}
