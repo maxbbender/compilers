@@ -1,0 +1,11 @@
+package lexer;
+
+public class RegexHelper {
+	public RegexHelper() {
+		
+	}
+	
+	public static void checkRegex() {
+		
+	}
+}

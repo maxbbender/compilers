@@ -1,0 +1,14 @@
+package lexer;
+
+import java.util.regex.Pattern;
+
+public class RegexHelper {
+	public RegexHelper() {
+		Pattern ifPatternSingle = Pattern.compile("(^if$)");
+		Pattern 
+	}
+	
+	public static void checkRegex() {
+		
+	}
+}
