@@ -14,12 +14,14 @@ public class LexerMain {
 			String[] splitString = fileProcess("lib/code.txt"); 
 			
 			for (String string : splitString) {
-				if ()
+				//if ()
 			}
 			
 		} catch (IOException e) { 
 			System.out.println("Error on the fileProcess" + e);
 		}
+		
+		RegexHelper help = new RegexHelper("hi");
 		
 		
 	}
@@ -47,7 +49,7 @@ public class LexerMain {
 	
 	
 	
-	public static boolean checkForKeywords() {
-		Pattern keywords = Pattern.compile(")
+	public static void checkForKeywords() {
+		//Pattern keywords = Pattern.compile(")
 	}
 }
