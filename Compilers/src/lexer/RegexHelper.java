@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 public class RegexHelper {
 	/* MISC */
 	private static int numberOfMatches;
+	private static boolean hasEndOfFile;
+	private static boolean hasErrors;
 	/* TOKENS */
 	private static ArrayList<Token> tokens;
 	
@@ -48,6 +50,8 @@ public class RegexHelper {
 	public RegexHelper() {
 		fullRegex = new StringBuilder();    // Initialize the fullRegex StringBuilder
 		keywordRegex = new StringBuilder(); // Initialize the keywordRegex StringBuilder
+		hasEndOfFile = false;
+		hasErrors = false;
 		tokens = new ArrayList<Token>();
 		numberOfMatches = buildRegex(); // Build the full regex statements from the defined ones above
 		//parseInput(checkString); //Parse the input.
@@ -60,8 +64,8 @@ public class RegexHelper {
 		boolean found = false; 
 		
 		if (checkForErrors(input)) {
-			System.out.println("Number of Matches: " + numberOfMatches);
-			System.out.println(fullRegex.toString());
+			//System.out.println("Number of Matches: " + numberOfMatches);
+			//System.out.println(fullRegex.toString());
 			
 			/* Create Java Pattern and Matchers */
 			Pattern pattern = Pattern.compile(fullRegex.toString());
@@ -77,7 +81,22 @@ public class RegexHelper {
 				counter = 1;
 				found = false; 
 			}
-		}		
+		} else {
+			hasErrors = true;
+		}
+	}
+	
+	public static void checkEndOfFile(String input) {
+		Pattern p = Pattern.compile("(^.*\\$$)");
+		Matcher m = p.matcher(input);
+		
+		if (m.matches()) {
+			hasEndOfFile = true;
+		} else {
+			hasEndOfFile = false; 
+			hasErrors = true;
+			System.out.println("No end of file");
+		}
 	}
 	
 	private int buildRegex() {
@@ -110,7 +129,7 @@ public class RegexHelper {
 		return numberOfMatches;
 	}
 	
-	public static boolean checkForErrors(String input) {
+	private static boolean checkForErrors(String input) {
 		if (!checkUnknowns(input)) {
 			if (!checkQuotes(input)) {
 				/*if(!checkID(removeStrings(input))) {
@@ -128,8 +147,8 @@ public class RegexHelper {
 		
 	}
 	
-	public static boolean checkUnknowns(String input) {
-		Pattern p = Pattern.compile(fullRegex.toString() + "(\\s)");
+	private static boolean checkUnknowns(String input) {
+		Pattern p = Pattern.compile(fullRegex.toString() + "(\\s)|(\\$)");
 		Matcher m = p.matcher(input);
 		String removedString = m.replaceAll(""); //At this point all known characters have been found
 		
@@ -141,7 +160,7 @@ public class RegexHelper {
 		}
 	}
 	
-	public static boolean checkQuotes(String input) {
+	private static boolean checkQuotes(String input) {
 		Pattern p = Pattern.compile("\"");
 		Matcher m = p.matcher(input);
 		int counter = 0;
@@ -156,13 +175,13 @@ public class RegexHelper {
 		}
 	}
 	
-	public static String removeStrings(String input) {
+	private static String removeStrings(String input) {
 		Pattern p = Pattern.compile(strings);
 		Matcher m = p.matcher(input);
 		return m.replaceAll("");
 	}
 	
-	public static boolean checkID(String input) {
+	private static boolean checkID(String input) {
 		Pattern p = Pattern.compile("([a-z]{2,})");
 		Matcher m = p.matcher(input);
 		while (m.find()) {
@@ -174,7 +193,7 @@ public class RegexHelper {
 		return false; // There were no bad ID's (GOOD)
 	}
 	
-	public static boolean checkKeywords(String input) {
+	private static boolean checkKeywords(String input) {
 		Pattern p = Pattern.compile(keywordRegex.toString());
 		Matcher m = p.matcher(input);
 		if (m.matches()){
@@ -332,5 +351,34 @@ public class RegexHelper {
 
 	public static String[] getLiteralarray() {
 		return literalArray;
+	}
+	
+	public static int getNumberOfMatches() {
+		return numberOfMatches;
+	}
+
+
+	public static void setNumberOfMatches(int numberOfMatches) {
+		RegexHelper.numberOfMatches = numberOfMatches;
+	}
+
+
+	public static boolean isHasEndOfFile() {
+		return hasEndOfFile;
+	}
+
+
+	public static void setHasEndOfFile(boolean hasEndOfFile) {
+		RegexHelper.hasEndOfFile = hasEndOfFile;
+	}
+
+
+	public static boolean hasErrors() {
+		return hasErrors;
+	}
+
+
+	public static void setHasErrors(boolean hasErrors) {
+		RegexHelper.hasErrors = hasErrors;
 	}
 }

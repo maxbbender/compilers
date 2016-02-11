@@ -37,16 +37,19 @@ public class LexerMain {
 	public static void fileProcess(String fileName) throws IOException {
 		int lineNum = 1;
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
-		
+		String prevLine = null;
 		try {
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 			
 			while (line != null ) {
+				prevLine = line;
 				myRegex.parseInput(line, lineNum);
 				line = br.readLine();
 				lineNum++;
 			}
+			myRegex.checkEndOfFile(prevLine);
+			
 		} finally {
 			br.close();
 		}

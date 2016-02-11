@@ -13,12 +13,13 @@ public class Main {
 		// TODO Auto-generated method stub
 		LexerMain lexer = new LexerMain(args[0]);
 		
-		System.out.println("-------------------");
-		System.out.println("-------LEXER-------");
-		System.out.println("-------------------");
-		
-		for  (Iterator<Token> it = lexer.getMyRegex().getTokens().iterator(); it.hasNext();) {
-			System.out.println(it.next().getFullToken());
+		if (!lexer.getMyRegex().hasErrors()) {
+			System.out.println("-------------------");
+			System.out.println("-------LEXER-------");
+			System.out.println("-------------------");
+			for  (Iterator<Token> it = lexer.getMyRegex().getTokens().iterator(); it.hasNext();) {
+				System.out.println(it.next().getFullToken());
+			}
 		}
 	}
 
