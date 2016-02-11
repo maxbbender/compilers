@@ -11,45 +11,27 @@ public class LexerMain {
 
 	public static void main(String[] args) {
 		try {
-			String[] splitString = fileProcess("lib/code.txt"); 
-			
-			for (String string : splitString) {
-				//if ()
-			}
-			
+			String fileContents = fileProcess("lib/code.txt"); 
+			RegexHelper help = new RegexHelper(fileContents);
 		} catch (IOException e) { 
 			System.out.println("Error on the fileProcess" + e);
 		}
-		
-		RegexHelper help = new RegexHelper("hi");
-		
-		
 	}
 	
-	public static String[] fileProcess(String fileName) throws IOException {
+	public static String fileProcess(String fileName) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		
 		try {
-			String[] splitString;
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 			
 			while (line != null ) {
 				sb.append(line);
-				sb.append(" ");
 				line = br.readLine();
 			}
-			return sb.toString().split(" +");
+			return sb.toString();
 		} finally {
 			br.close();
 		}
-	}
-	
-	
-	
-	
-	
-	public static void checkForKeywords() {
-		//Pattern keywords = Pattern.compile(")
 	}
 }

@@ -1,1 +1,1 @@
-if (i = s) { } 
+if(x==y)b 1 c{while(a != d){print \"Doody\"}}

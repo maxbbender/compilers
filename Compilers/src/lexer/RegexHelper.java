@@ -40,12 +40,10 @@ public class RegexHelper {
 	/* TOKEN ARRAY */
 	
 	public RegexHelper(String checkString) {
-		fullRegex = new StringBuilder();
-		keywordRegex = new StringBuilder();
+		fullRegex = new StringBuilder();    // Initialize the fullRegex StringBuilder
+		keywordRegex = new StringBuilder(); // Initialize the keywordRegex StringBuilder
 		int numberOfMatches = buildRegex();
-		
-		
-		parseInput("if(x==y)b 1 abc c{while(a != d){print \"Doody\"}}", numberOfMatches);
+		parseInput(checkString, numberOfMatches);
 	}
 	
 	
