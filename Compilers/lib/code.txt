@@ -1,1 +1,3 @@
-if(x==y)b 1 c{while(a != d){print "Doody"}}
+if(x==y)
+b 1 c{
+while(a != xwhilex d){print "Doody"}}

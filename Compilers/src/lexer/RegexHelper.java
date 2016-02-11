@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegexHelper {
+	/* MISC */
+	private static int numberOfMatches;
 	/* TOKENS */
 	private static ArrayList<Token> tokens;
 	
@@ -39,20 +41,20 @@ public class RegexHelper {
 	/* PARAM ARRAYS */
 	private final static String[] parenBracketArray = {openBracket, closeBracket, openParen, closeParen};
 	private final static String[] keywordArray = {ifKeyword, whileKeyword, printKeyword, intKeyword, stringKeyword, booleanKeyword, booleanTrue, booleanFalse};
-	private final static String[] literalArray = {equality, notEquality, assignment, id, strings, plus, digit, space};
+	private final static String[] literalArray = {equality, notEquality, assignment, id, strings, plus, digit};
 	
 	/* TOKEN ARRAY */
 	
-	public RegexHelper(String checkString) {
+	public RegexHelper() {
 		fullRegex = new StringBuilder();    // Initialize the fullRegex StringBuilder
 		keywordRegex = new StringBuilder(); // Initialize the keywordRegex StringBuilder
 		tokens = new ArrayList<Token>();
-		int numberOfMatches = buildRegex(); // Build the full regex statements from the defined ones above
-		parseInput(checkString, numberOfMatches); //Parse the input.
+		numberOfMatches = buildRegex(); // Build the full regex statements from the defined ones above
+		//parseInput(checkString); //Parse the input.
 	}
 	
 	
-	public static void parseInput(String input, int numberOfMatches) {
+	public static void parseInput(String input, int lineNum) {
 		Token newToken;
 		int counter = 1;
 		boolean found = false; 
@@ -67,17 +69,13 @@ public class RegexHelper {
 			while (matcher.find()) { //Find next match
 				while (counter <= numberOfMatches && !found) { //Make sure we check all the possible matches
 					if (matcher.group(counter) != null) { //If the group doesn't match our regex then don't add it
-						tokens.add(newToken = new Token(counter, matcher.group(counter))); //Add a matching regex to the token stream
+						tokens.add(newToken = new Token(counter, matcher.group(counter), lineNum)); //Add a matching regex to the token stream
 						found = true; 
 					}
 					counter++; //Increment counter to check next group against string
-				}
+				} 
 				counter = 1;
 				found = false; 
-			}
-			
-			for  (Iterator<Token> it = tokens.iterator(); it.hasNext();) {
-				System.out.println(it.next().getFullToken());
 			}
 		}		
 	}
@@ -115,11 +113,12 @@ public class RegexHelper {
 	public static boolean checkForErrors(String input) {
 		if (!checkUnknowns(input)) {
 			if (!checkQuotes(input)) {
-				if(!checkID(removeStrings(input))) {
+				/*if(!checkID(removeStrings(input))) {
 					return true; // There are no errors
 				} else {
 					return false; // Errors on ID's
-				}
+				}*/
+				return true;
 			} else {
 				return false; // Errors on Quotes
 			}
@@ -130,7 +129,7 @@ public class RegexHelper {
 	}
 	
 	public static boolean checkUnknowns(String input) {
-		Pattern p = Pattern.compile(fullRegex.toString());
+		Pattern p = Pattern.compile(fullRegex.toString() + "(\\s)");
 		Matcher m = p.matcher(input);
 		String removedString = m.replaceAll(""); //At this point all known characters have been found
 		

@@ -3,16 +3,19 @@ package lexer;
 public class Token {
 	private String tokenType;
 	private String tokenValue;
+	private int tokenLineNum;
 	private static final String[] keywordStrings = {"print","while","if"};
 	private static final String[] typeString = {"int","string","boolean"};
 	
 	public Token() {
 		tokenType = null;
 		tokenValue = null;
+		tokenLineNum = -1;
 	}
 	
-	public Token(int matchGroup, String newTokenValue) {
+	public Token(int matchGroup, String newTokenValue, int newTokenLineNum) {
 		tokenValue = newTokenValue; //Assign the Token Value to Object
+		tokenLineNum = newTokenLineNum;
 		genTokenType(matchGroup); //Generates the Token Type
 	}
 	
@@ -68,8 +71,16 @@ public class Token {
 		}
 	}
 
+	public int getTokenLineNum() {
+		return tokenLineNum;
+	}
+
+	public void setTokenLineNum(int tokenLineNum) {
+		this.tokenLineNum = tokenLineNum;
+	}
+
 	public String getFullToken() {
-		return tokenType + ": " + tokenValue;
+		return tokenLineNum + ": " + tokenType + ": " + tokenValue;
 	}
 	public String getTokenType() {
 		return tokenType;
