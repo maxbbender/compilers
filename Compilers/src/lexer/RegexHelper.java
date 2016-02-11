@@ -39,11 +39,12 @@ public class RegexHelper {
 	private final static String openBracket = "(\\{)";
 	private final static String closeBracket = "(\\})";
 	private final static String plus = "(\\+)";
+	private final static String endOfFile = "(\\$)";
 	
 	/* PARAM ARRAYS */
 	private final static String[] parenBracketArray = {openBracket, closeBracket, openParen, closeParen};
 	private final static String[] keywordArray = {ifKeyword, whileKeyword, printKeyword, intKeyword, stringKeyword, booleanKeyword, booleanTrue, booleanFalse};
-	private final static String[] literalArray = {equality, notEquality, assignment, id, strings, plus, digit};
+	private final static String[] literalArray = {equality, notEquality, assignment, id, strings, plus, digit, endOfFile};
 	
 	/* TOKEN ARRAY */
 	
@@ -148,7 +149,7 @@ public class RegexHelper {
 	}
 	
 	private static boolean checkUnknowns(String input) {
-		Pattern p = Pattern.compile(fullRegex.toString() + "(\\s)|(\\$)");
+		Pattern p = Pattern.compile(fullRegex.toString() + "(\\s)");
 		Matcher m = p.matcher(input);
 		String removedString = m.replaceAll(""); //At this point all known characters have been found
 		

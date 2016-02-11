@@ -66,7 +66,7 @@ public class Token {
 			tokenType = "digit";
 			break;
 		case 20:
-			tokenType = "space";
+			tokenType = "endOfFile";
 			break;
 		}
 	}
