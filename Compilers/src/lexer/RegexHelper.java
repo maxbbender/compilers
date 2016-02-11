@@ -6,6 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegexHelper {
+	/* TOKENS */
+	private static ArrayList<Token> tokens;
+	
+	/* REGEX */
 	private static StringBuilder fullRegex;
 	private static StringBuilder keywordRegex;
 	
@@ -42,14 +46,14 @@ public class RegexHelper {
 	public RegexHelper(String checkString) {
 		fullRegex = new StringBuilder();    // Initialize the fullRegex StringBuilder
 		keywordRegex = new StringBuilder(); // Initialize the keywordRegex StringBuilder
-		int numberOfMatches = buildRegex();
-		parseInput(checkString, numberOfMatches);
+		tokens = new ArrayList<Token>();
+		int numberOfMatches = buildRegex(); // Build the full regex statements from the defined ones above
+		parseInput(checkString, numberOfMatches); //Parse the input.
 	}
 	
 	
 	public static void parseInput(String input, int numberOfMatches) {
 		Token newToken;
-		ArrayList<Token> tokens = new ArrayList<Token>();
 		int counter = 1;
 		boolean found = false; 
 		
@@ -179,5 +183,155 @@ public class RegexHelper {
 		} else {
 			return false; // There are not keywords
 		}
+	}
+
+
+	public static ArrayList<Token> getTokens() {
+		return tokens;
+	}
+
+
+	public static void setTokens(ArrayList<Token> tokens) {
+		RegexHelper.tokens = tokens;
+	}
+
+
+	public static StringBuilder getFullRegex() {
+		return fullRegex;
+	}
+
+
+	public static void setFullRegex(StringBuilder fullRegex) {
+		RegexHelper.fullRegex = fullRegex;
+	}
+
+
+	public static StringBuilder getKeywordRegex() {
+		return keywordRegex;
+	}
+
+
+	public static void setKeywordRegex(StringBuilder keywordRegex) {
+		RegexHelper.keywordRegex = keywordRegex;
+	}
+
+
+	public static String getId() {
+		return id;
+	}
+
+
+	public static String getAlpha() {
+		return alpha;
+	}
+
+
+	public static String getDigit() {
+		return digit;
+	}
+
+
+	public static String getStrings() {
+		return strings;
+	}
+
+
+	public static String getEquality() {
+		return equality;
+	}
+
+
+	public static String getNotequality() {
+		return notEquality;
+	}
+
+
+	public static String getSpace() {
+		return space;
+	}
+
+
+	public static String getAssignment() {
+		return assignment;
+	}
+
+
+	public static String getIfkeyword() {
+		return ifKeyword;
+	}
+
+
+	public static String getWhilekeyword() {
+		return whileKeyword;
+	}
+
+
+	public static String getPrintkeyword() {
+		return printKeyword;
+	}
+
+
+	public static String getIntkeyword() {
+		return intKeyword;
+	}
+
+
+	public static String getStringkeyword() {
+		return stringKeyword;
+	}
+
+
+	public static String getBooleankeyword() {
+		return booleanKeyword;
+	}
+
+
+	public static String getBooleantrue() {
+		return booleanTrue;
+	}
+
+
+	public static String getBooleanfalse() {
+		return booleanFalse;
+	}
+
+
+	public static String getOpenparen() {
+		return openParen;
+	}
+
+
+	public static String getCloseparen() {
+		return closeParen;
+	}
+
+
+	public static String getOpenbracket() {
+		return openBracket;
+	}
+
+
+	public static String getClosebracket() {
+		return closeBracket;
+	}
+
+
+	public static String getPlus() {
+		return plus;
+	}
+
+
+	public static String[] getParenbracketarray() {
+		return parenBracketArray;
+	}
+
+
+	public static String[] getKeywordarray() {
+		return keywordArray;
+	}
+
+
+	public static String[] getLiteralarray() {
+		return literalArray;
 	}
 }
