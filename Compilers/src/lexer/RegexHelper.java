@@ -16,7 +16,7 @@ public class RegexHelper {
 	private final static String strings = "(\"[^\"]*\")";
 	private final static String equality = "(==)";
 	private final static String notEquality = "(!=)";
-	private final static String space = "(\\S)";
+	private final static String space = "(\\s)";
 	private final static String assignment = "(=)";
 	private final static String ifKeyword = "(if)";
 	private final static String whileKeyword = "(while)";
@@ -34,7 +34,7 @@ public class RegexHelper {
 	
 	/* PARAM ARRAYS */
 	private final static String[] parenBracketArray = {openBracket, closeBracket, openParen, closeParen};
-	private final static String[] keywordArray = {ifKeyword, whileKeyword, printKeyword, intKeyword, booleanKeyword, booleanTrue, booleanFalse};
+	private final static String[] keywordArray = {ifKeyword, whileKeyword, printKeyword, intKeyword, stringKeyword, booleanKeyword, booleanTrue, booleanFalse};
 	private final static String[] literalArray = {equality, notEquality, assignment, id, strings, plus, digit, space};
 	
 	/* TOKEN ARRAY */
@@ -45,7 +45,7 @@ public class RegexHelper {
 		int numberOfMatches = buildRegex();
 		
 		
-		parseInput("if(x==y)b 1 + c{while(a != d){print \"Doody\"}}", numberOfMatches);
+		parseInput("if(x==y)b 1 abc c{while(a != d){print \"Doody\"}}", numberOfMatches);
 	}
 	
 	
@@ -53,6 +53,7 @@ public class RegexHelper {
 		Token newToken;
 		ArrayList<Token> tokens = new ArrayList<Token>();
 		int counter = 1;
+		boolean found = false; 
 		
 		if (checkForErrors(input)) {
 			System.out.println("Number of Matches: " + numberOfMatches);
@@ -62,28 +63,23 @@ public class RegexHelper {
 			Pattern pattern = Pattern.compile(fullRegex.toString());
 			Matcher matcher = pattern.matcher(input);
 			while (matcher.find()) { //Find next match
-				while (counter <= numberOfMatches) { //Make sure we check all the possible matches
+				while (counter <= numberOfMatches && !found) { //Make sure we check all the possible matches
 					if (matcher.group(counter) != null) { //If the group doesn't match our regex then don't add it
 						tokens.add(newToken = new Token(counter, matcher.group(counter))); //Add a matching regex to the token stream
+						found = true; 
 					}
 					counter++; //Increment counter to check next group against string
 				}
 				counter = 1;
+				found = false; 
 			}
 			
 			for  (Iterator<Token> it = tokens.iterator(); it.hasNext();) {
 				System.out.println(it.next().getFullToken());
 			}
-			
-			
-			String removedString = matcher.replaceAll("");
-			System.out.println(input);
-			System.out.println(removedString);
-		}
-		
-		
-				
+		}		
 	}
+	
 	private int buildRegex() {
 		int numberOfMatches = 0;
 		
@@ -115,17 +111,32 @@ public class RegexHelper {
 	}
 	
 	public static boolean checkForErrors(String input) {
-		if (!checkQuotes(input)) {
-			if(!checkID(removeStrings(input))) {
-				System.out.println("No Errors");
-				return true; // There are no errors
+		if (!checkUnknowns(input)) {
+			if (!checkQuotes(input)) {
+				if(!checkID(removeStrings(input))) {
+					return true; // There are no errors
+				} else {
+					return false; // Errors on ID's
+				}
 			} else {
-				System.out.println("ID Errors");
-				return false; // Errors
+				return false; // Errors on Quotes
 			}
 		} else {
-			System.out.println("Quotes Errors");
-			return false; // Errors
+			return false; // Errors on Unknowns.
+		}
+		
+	}
+	
+	public static boolean checkUnknowns(String input) {
+		Pattern p = Pattern.compile(fullRegex.toString());
+		Matcher m = p.matcher(input);
+		String removedString = m.replaceAll(""); //At this point all known characters have been found
+		
+		if (removedString.length() > 0) {
+			System.out.println("Error(UndefinedChars): " + removedString);
+			return true; // There are unknowns
+		} else {
+			return false; // There are not unknowns
 		}
 	}
 	
@@ -139,6 +150,7 @@ public class RegexHelper {
 		if ( (counter & 1) == 0) {
 			return false; //There are an even number of quotes (GOOD)
 		} else {
+			System.out.println("Error(Quotes): There are an odd number of quotes");
 			return true; //There are an odd number of quotes (BAD)
 		}
 	}
@@ -154,6 +166,7 @@ public class RegexHelper {
 		Matcher m = p.matcher(input);
 		while (m.find()) {
 			if (!checkKeywords(m.group(1))) {
+				System.out.println("Error(ID): " + m.group(1) + " is an unknown/invalid ID");
 				return true; // Either ID is more than 1 character or there is an undefined keyword (BAD)
 			}
 		}
