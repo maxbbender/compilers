@@ -1,0 +1,16 @@
+package parser.objects;
+
+import java.util.ArrayList;
+import lexer.Token;
+public class BooleanExpr {
+	private static int postIndex;
+	public BooleanExpr() {
+		
+	}
+	
+	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		if(tokens.get(currIndex).getTokenType() == "openParen") {
+			
+		}
+	}
+}

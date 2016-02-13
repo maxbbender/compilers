@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import lexer.Token;
 
 public class Block {
+	private static int postIndex;
 	private static StatementList statementList;
 	public Block() {
 		statementList = new StatementList();
@@ -14,10 +15,35 @@ public class Block {
 		if (tokens.get(currIndex).getTokenType() == "openBracket") {
 			currIndex++;
 			if (statementList.validateStatementList(tokens, currIndex)) {
-				
+				if (tokens.get(statementList.getPostIndex()).getTokenType() == "closeBracket") {
+					postIndex = statementList.getPostIndex() + 1;
+					return true;
+				} else {
+					return false; // ERROR ON CLOSE BRACKET
+				}
+			} else {
+				return false;
+				// ERROR ON STATEMENT LIST
 			}
 		} else {
+			return false;
 			//ERROR on OPENBRACKET
 		}
+	}
+
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		Block.postIndex = postIndex;
+	}
+
+	public static StatementList getStatementList() {
+		return statementList;
+	}
+
+	public static void setStatementList(StatementList statementList) {
+		Block.statementList = statementList;
 	}
 }

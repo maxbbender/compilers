@@ -31,7 +31,7 @@ public class IntExpr {
 				return false; //ERROR ON INTOP
 			}
 		} else {
-			return false; //ERROR ON DIGIT
+			return true; //TRUE ON DIGIT
 		}
 	}
 	

@@ -1,0 +1,22 @@
+package parser.objects;
+
+import java.util.ArrayList;
+
+import lexer.Token;
+
+public class PrintStatement {
+	private Expr expr;
+	
+	public PrintStatement() {
+		expr = new Expr();
+	}
+
+	public static boolean validatePrintStatement(ArrayList<Token> tokens, int currIndex) {
+		if (tokens.get(currIndex).getTokenType() == "printKeyword") {
+			currIndex++;
+			if (tokens.get(currIndex).getTokenType() == "openParen") {
+				currIndex++;
+			}
+		}
+	}
+}

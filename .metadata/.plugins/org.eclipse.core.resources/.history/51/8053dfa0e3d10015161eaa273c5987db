@@ -1,0 +1,12 @@
+package parser.objects;
+
+public class BooleanExpr {
+	private static int postIndex;
+	public BooleanExpr() {
+		
+	}
+	
+	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		
+	}
+}

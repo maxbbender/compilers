@@ -1,0 +1,15 @@
+package parser.objects;
+
+import java.util.regex.Pattern;
+
+public class Space {
+	private static int postIndex;
+	public Space() {
+		
+	}
+	
+	public static boolean validate(String[] input, int currIndex) {
+		Pattern p = Pattern.compile("(\\s)");
+				
+	}
+}

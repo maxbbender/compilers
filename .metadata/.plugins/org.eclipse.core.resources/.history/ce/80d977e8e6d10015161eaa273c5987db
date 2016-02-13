@@ -1,0 +1,30 @@
+package parser.objects;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import lexer.Token;
+public class StringExpr {
+	private static int postIndex;
+	private static CharList charList;
+	
+	public StringExpr() {
+		charList = new CharList();
+	}
+	
+	public static boolean validateStringExpr(ArrayList<Token> tokens, int currIndex) {
+		Pattern p = Pattern.compile("\"([a-z\\s]*)\"");
+		Matcher m = p.matcher(tokens.get(currIndex).getTokenValue());
+		
+		if (m.find()) {
+			if (charList.validate(m.group(1), -1)){
+				postIndex = currIndex + 1;
+				return true;
+			} else {
+				return false; //ERROR ON CHARLIST
+			}
+		} else {
+			return false; //ERROR ON FINDING REGEX 
+		}
+	}
+}

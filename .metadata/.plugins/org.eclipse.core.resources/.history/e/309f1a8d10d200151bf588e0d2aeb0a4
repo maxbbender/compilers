@@ -1,0 +1,29 @@
+package parser.objects;
+
+import java.util.ArrayList;
+
+import lexer.Token;
+
+public class VarDecl {
+	private static int postIndex;
+	private static Type type;
+	private static Id id;
+	
+	public VarDecl() {
+		type = new Type();
+		id = new Id();
+	}
+	
+	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		if (type.validate(tokens, currIndex)) {
+			if (id.validate(tokens, type.getPostIndex())) {
+				postIndex = id.getPostIndex();
+				return true;
+			} else {
+				return false; // ERROR ON ID
+			}
+		} else {
+			return false; // ERROR ON TYPE
+		}
+	}
+}

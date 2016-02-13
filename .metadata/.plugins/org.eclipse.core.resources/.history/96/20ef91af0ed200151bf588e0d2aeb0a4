@@ -1,0 +1,12 @@
+package parser.objects;
+
+public class AssignmentStatement {
+	private static int postIndex;
+	private static Id id;
+	private static Expr expr;
+	public AssignmentStatement() {
+		id = new Id();
+	}
+	
+	pub
+}

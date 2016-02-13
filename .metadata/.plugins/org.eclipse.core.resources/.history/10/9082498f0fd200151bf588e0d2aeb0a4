@@ -1,0 +1,33 @@
+package parser.objects;
+
+import java.util.ArrayList;
+
+import lexer.Token;
+
+public class AssignmentStatement {
+	private static int postIndex;
+	private static Id id;
+	private static Expr expr;
+	public AssignmentStatement() {
+		id = new Id();
+		expr = new Expr();
+	}
+	
+	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		if (id.validate(tokens, currIndex)) {
+			if (tokens.get(id.getPostIndex()).getTokenType() == "assignment") {
+				if (expr.validateExpr(tokens, id.getPostIndex() + 1)) {
+					postIndex = expr.getPostIndex();
+					return true;
+				} else {
+					return false; //ERROR on EXPR
+				}
+				
+			} else {
+				return false; //ERROR ON assignment
+			}
+		} else {
+			return false; //ERROR ON ID
+		}
+	}
+}

@@ -1,0 +1,8 @@
+package parser.objects;
+
+public class StringExpr {
+	private static int postIndex;
+	public StringExpr() {
+		
+	}
+}

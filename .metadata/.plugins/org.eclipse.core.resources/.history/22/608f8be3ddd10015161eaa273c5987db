@@ -1,0 +1,12 @@
+package parser.objects;
+
+public class CharList {
+	private static int postIndex;
+	private static Char charVar;
+	private static CharList charList;
+	private static Space space;
+	public CharList() {
+		charVar = new Char();
+		
+	}
+}

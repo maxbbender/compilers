@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import lexer.Token;
 
 public class Statement {
+	private static int postIndex;
 	private static PrintStatement printStatement;
 	private static AssignmentStatement assignmentStatement;
 	private static VarDecl varDecl;
@@ -21,6 +22,82 @@ public class Statement {
 	}
 	
 	public static boolean validateStatement(ArrayList<Token> tokens, int currIndex){ 
-		
+		if (printStatement.validatePrintStatement(tokens, currIndex)) {
+			postIndex = printStatement.getPostIndex();
+			return true;
+		} else if (assignmentStatement.validate(tokens, currIndex)) {
+			postIndex = assignmentStatement.getPostIndex();
+			return true;
+		} else if (varDecl.validate(tokens, currIndex)) {
+			postIndex = varDecl.getPostIndex();
+			return true;
+		} else if (whileStatement.validate(tokens, currIndex)) {
+			postIndex = whileStatement.getPostIndex();
+			return true;
+		} else if (ifStatement.validate(tokens, currIndex)) {
+			postIndex = ifStatement.getPostIndex();
+			return true;
+		} else if (block.validateBlock(tokens, currIndex)) {
+			postIndex = block.getPostIndex();
+			return true;
+		} else {
+			return false; // ERROR ON STATEMENT
+		}
+	}
+
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		Statement.postIndex = postIndex;
+	}
+
+	public static PrintStatement getPrintStatement() {
+		return printStatement;
+	}
+
+	public static void setPrintStatement(PrintStatement printStatement) {
+		Statement.printStatement = printStatement;
+	}
+
+	public static AssignmentStatement getAssignmentStatement() {
+		return assignmentStatement;
+	}
+
+	public static void setAssignmentStatement(AssignmentStatement assignmentStatement) {
+		Statement.assignmentStatement = assignmentStatement;
+	}
+
+	public static VarDecl getVarDecl() {
+		return varDecl;
+	}
+
+	public static void setVarDecl(VarDecl varDecl) {
+		Statement.varDecl = varDecl;
+	}
+
+	public static WhileStatement getWhileStatement() {
+		return whileStatement;
+	}
+
+	public static void setWhileStatement(WhileStatement whileStatement) {
+		Statement.whileStatement = whileStatement;
+	}
+
+	public static IfStatement getIfStatement() {
+		return ifStatement;
+	}
+
+	public static void setIfStatement(IfStatement ifStatement) {
+		Statement.ifStatement = ifStatement;
+	}
+
+	public static Block getBlock() {
+		return block;
+	}
+
+	public static void setBlock(Block block) {
+		Statement.block = block;
 	}
 }

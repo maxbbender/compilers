@@ -1,0 +1,14 @@
+package parser.objects;
+
+public class StringExpr {
+	private static int postIndex;
+	private static CharList charList;
+	
+	public StringExpr() {
+		charList = new CharList();
+	}
+	
+	public static boolean validateStringExpr(ArrayList<Token> tokens, int currIndex) {
+		
+	}
+}

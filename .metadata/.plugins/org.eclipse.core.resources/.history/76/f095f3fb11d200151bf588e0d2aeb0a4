@@ -1,0 +1,12 @@
+package parser.objects;
+
+public class IfStatement {
+	private static int postIndex;
+	private static BooleanExpr booleanExpr;
+	private static Block block;
+	
+	public IfStatement() {
+		booleanExpr = new BooleanExpr();
+		block = new Block();
+	}
+}

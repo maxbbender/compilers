@@ -1,0 +1,14 @@
+package parser.objects;
+
+public class VarDecl {
+	private static int postIndex;
+	private static Type type;
+	private static Id id;
+	
+	public VarDecl() {
+		type = new Type();
+		id = new Id();
+	}
+	
+	public static 
+}

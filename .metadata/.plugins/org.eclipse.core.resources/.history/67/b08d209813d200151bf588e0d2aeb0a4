@@ -1,0 +1,40 @@
+package parser.objects;
+
+import java.util.ArrayList;
+
+import lexer.Token;
+
+public class Block {
+	private static int postIndex;
+	private static StatementList statementList;
+	public Block() {
+		statementList = new StatementList();
+	}
+	
+	public static boolean validateBlock(ArrayList<Token> tokens, int currIndex) {
+		if (tokens.get(currIndex).getTokenType() == "openBracket") {
+			currIndex++;
+			if (statementList.validateStatementList(tokens, currIndex)) {
+				
+			}
+		} else {
+			//ERROR on OPENBRACKET
+		}
+	}
+
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		Block.postIndex = postIndex;
+	}
+
+	public static StatementList getStatementList() {
+		return statementList;
+	}
+
+	public static void setStatementList(StatementList statementList) {
+		Block.statementList = statementList;
+	}
+}
