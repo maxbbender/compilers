@@ -2,38 +2,47 @@ package parser.objects;
 /* ( Expr boolop Expr ) */
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
+
 import lexer.Token;
 public class BooleanExpr {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
 	private static Expr expr; 
 	private static Boolop boolop;
 	public BooleanExpr() {
-		expr = new Expr();
-		boolop = new Boolop();
+		
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		expr = new Expr();
+		boolop = new Boolop();
 		if(tokens.get(currIndex).getTokenType() == "openParen") {
 			currIndex++; // Plus because of open paren token
 			if (expr.validateExpr(tokens, currIndex)){
-				if (boolop.validate(tokens, Expr.getPostIndex())) {
+				if (boolop.validate(tokens, expr.getPostIndex())) {
 					if (expr.validateExpr(tokens, boolop.getPostIndex())){
 						if (tokens.get(expr.getPostIndex()).getTokenType() == "closeParen"){
 							postIndex = expr.getPostIndex() + 1;
 							return true; // TRUE ON BOOLEAN EXPR
 						} else {
+							//log.severe("ERROR LINE " + tokens.get(expr.getPostIndex()).getTokenLineNum() + ": Invalid Close Paren near " + tokens.get(expr.getPostIndex()).getTokenValue());
 							return false; // FALSE ON CLOSE PAREN
 						}
 					} else {
+						//log.severe("ERROR LINE " + tokens.get(boolop.getPostIndex()).getTokenLineNum() + ": Invalid Second Expression near " + tokens.get(boolop.getPostIndex()).getTokenValue());
 						return false; //FALSE ON SECOND EXPRESSION VALIDATION
 					}
 				} else {
+					//log.severe("ERROR LINE " + tokens.get(expr.getPostIndex()).getTokenLineNum() + ": Invalid Boolop near " + tokens.get(expr.getPostIndex()).getTokenValue());
 					return false; //FALSE ON BOOLOP VALIDATION
 				}
 			} else {
+				//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid First Expression near " + tokens.get(currIndex).getTokenValue());
 				return false; // FALSE ON FIRST EXPRESSION
 			}
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Open Paren near " + tokens.get(currIndex).getTokenValue());
 			return false; // FALSE ON OPEN PAREN
 		}
 	}

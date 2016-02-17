@@ -1,17 +1,20 @@
 package parser.objects;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lexer.Token;
 public class StringExpr {
 	private static int postIndex;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	public StringExpr() {
-		charList = new CharList();
+		
 	}
 	
 	public static boolean validateStringExpr(ArrayList<Token> tokens, int currIndex) {
+		charList = new CharList();
 		Pattern p = Pattern.compile("\"([a-z\\s]*)\"");
 		Matcher m = p.matcher(tokens.get(currIndex).getTokenValue());
 		
@@ -20,9 +23,11 @@ public class StringExpr {
 				postIndex = currIndex + 1;
 				return true;
 			} else {
+				//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid charList near " + tokens.get(currIndex).getTokenValue());
 				return false; //ERROR ON CHARLIST
 			}
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Regex Error near " + tokens.get(currIndex).getTokenValue());
 			return false; //ERROR ON FINDING REGEX 
 		}
 	}

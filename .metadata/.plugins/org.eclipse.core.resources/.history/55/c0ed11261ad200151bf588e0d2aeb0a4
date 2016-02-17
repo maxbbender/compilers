@@ -1,0 +1,60 @@
+package parser.objects;
+
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
+import lexer.Token;
+
+public class PrintStatement {
+	private static int postIndex;
+	private static Expr expr;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
+	public PrintStatement() {
+		expr = new Expr();
+	}
+
+	public static boolean validatePrintStatement(ArrayList<Token> tokens, int currIndex) {
+		if (tokens.get(currIndex).getTokenType() == "printKeyword") {
+			currIndex++;
+			if (tokens.get(currIndex).getTokenType() == "openParen") {
+				currIndex++;
+				if (expr.validateExpr(tokens, currIndex)) {
+					currIndex = expr.getPostIndex();
+					if (tokens.get(currIndex).getTokenType() == "closeParen") {
+						postIndex = expr.getPostIndex() + 1;
+						return true;
+					} else {
+						log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
+						return false; //ERROR ON CLOSEPAREN
+					}
+				} else {
+					log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
+					return false; //ERROR ON EXPR
+				}
+			} else {
+				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
+				return false; //ERROR ON OPENPAREN
+			}
+		} else {
+			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
+			return false; //ERROR ON PRINT KEYWORD
+		}
+	}
+
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		PrintStatement.postIndex = postIndex;
+	}
+
+	public static Expr getExpr() {
+		return expr;
+	}
+
+	public static void setExpr(Expr expr) {
+		PrintStatement.expr = expr;
+	}
+}

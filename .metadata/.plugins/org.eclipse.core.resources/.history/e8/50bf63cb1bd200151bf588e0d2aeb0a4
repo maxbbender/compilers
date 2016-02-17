@@ -1,0 +1,14 @@
+package parser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import lexer.Token;
+
+
+public class ParserMain {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	public ParserMain(ArrayList<Token> tokens) {
+		
+	}
+}

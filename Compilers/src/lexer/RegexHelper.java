@@ -83,7 +83,7 @@ public class RegexHelper {
 				found = false; 
 			}
 		} else {
-			hasErrors = true;
+			hasErrors = true; 
 		}
 	}
 	

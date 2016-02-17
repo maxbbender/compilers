@@ -8,12 +8,13 @@ public class CharList {
 	private static CharList charList;
 	private static Space space;
 	public CharList() {
-		charVar = new Char();
-		charList = new CharList();
-		space = new Space();
+		
 	}
 	
 	public static boolean validate(String input, int currIndex) {
+		charVar = new Char();
+		charList = new CharList();
+		space = new Space();
 		if (currIndex == -1) {
 			currIndex = 0;
 		}

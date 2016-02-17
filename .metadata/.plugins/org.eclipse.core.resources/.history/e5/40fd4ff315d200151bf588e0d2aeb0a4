@@ -1,0 +1,11 @@
+package parser;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+public class ParserMain {
+	public ParserMain(ArrayList<Token> tokens) {
+		
+	}
+}

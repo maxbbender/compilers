@@ -1,0 +1,53 @@
+package parser.objects;
+
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
+import lexer.Token;
+
+public class Block {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static int postIndex;
+	private static StatementList statementList;
+	public Block() {
+		statementList = new StatementList();
+	}
+	
+	public static boolean validateBlock(ArrayList<Token> tokens, int currIndex) {
+		if (tokens.get(currIndex).getTokenType() == "openBracket") {
+			currIndex++;
+			if (statementList.validateStatementList(tokens, currIndex)) {
+				if (tokens.get(statementList.getPostIndex()).getTokenType() == "closeBracket") {
+					postIndex = statementList.getPostIndex() + 1;
+					return true;
+				} else {
+					log.severe("ERROR LINE " + tokens.get(statementList.getPostIndex()).getTokenLineNum() + ": Invalid Close Bracket " + tokens.get(statementList.getPostIndex()).getTokenValue());
+					return false; // ERROR ON CLOSE BRACKET
+				}
+			} else {
+				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Statement List " + tokens.get(statementList.getPostIndex()).getTokenValue());
+				return false;
+				// ERROR ON STATEMENT LIST
+			}
+		} else {
+			return false;
+			//ERROR on OPENBRACKET
+		}
+	}
+
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		Block.postIndex = postIndex;
+	}
+
+	public static StatementList getStatementList() {
+		return statementList;
+	}
+
+	public static void setStatementList(StatementList statementList) {
+		Block.statementList = statementList;
+	}
+}

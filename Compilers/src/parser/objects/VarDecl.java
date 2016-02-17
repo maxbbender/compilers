@@ -1,28 +1,34 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import lexer.Token;
 
 public class VarDecl {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
 	private static Type type;
 	private static Id id;
 	
 	public VarDecl() {
-		type = new Type();
-		id = new Id();
+		
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		type = new Type();
+		id = new Id();
 		if (type.validate(tokens, currIndex)) {
-			if (id.validate(tokens, type.getPostIndex())) {
+			currIndex = type.getPostIndex();
+			if (id.validate(tokens, currIndex)) {
 				postIndex = id.getPostIndex();
 				return true;
 			} else {
+				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Id near " + tokens.get(currIndex).getTokenValue());
 				return false; // ERROR ON ID
 			}
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Type near " + tokens.get(currIndex).getTokenValue());
 			return false; // ERROR ON TYPE
 		}
 	}

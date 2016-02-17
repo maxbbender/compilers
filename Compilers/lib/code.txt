@@ -1,3 +1,13 @@
-if(x==y)
-b 1 c{
-while(a != xwhilex d){print "Doody"}}   $
+{
+print ( x )
+x = 5
+int a
+string b
+xintx
+boolean c
+while ( c != x )  {
+if ( c == x ) {
+}
+}
+}
+$

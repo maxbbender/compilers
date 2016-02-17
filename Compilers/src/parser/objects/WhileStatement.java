@@ -1,32 +1,40 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import lexer.Token;
 
 public class WhileStatement {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
 	private static BooleanExpr booleanExpr;
 	private static Block block;
 	
 	public WhileStatement() {
-		booleanExpr = new BooleanExpr();
-		block = new Block();
+		
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		booleanExpr = new BooleanExpr();
+		block = new Block();
 		if (tokens.get(currIndex).getTokenType() == "whileKeyword") {
-			if (booleanExpr.validate(tokens, currIndex + 1)) {
-				if (block.validateBlock(tokens, booleanExpr.getPostIndex())) {
+			currIndex++;
+			if (booleanExpr.validate(tokens, currIndex)) {
+				currIndex = booleanExpr.getPostIndex();
+				if (block.validateBlock(tokens, currIndex)) {
 					postIndex = block.getPostIndex();
 					return true;
 				} else {
+					log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Block near " + tokens.get(currIndex).getTokenValue());
 					return false; // ERROR Block
 				}
 			} else {
+				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Boolean Expression near " + tokens.get(currIndex).getTokenValue());
 				return false; //ERROR BOOLEAN EXPR
 			}
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid While Keyword near " + tokens.get(currIndex).getTokenValue());
 			return false; //ERROR WHILE KEYWORD
 		}
 	}

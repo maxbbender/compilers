@@ -1,6 +1,7 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import lexer.Token;
 
@@ -10,15 +11,17 @@ public class Expr {
 	private static BooleanExpr booleanExpr;
 	private static Id id;
 	private static int postIndex;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	public Expr() {
+		
+	}
+	
+	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
 		intExpr = new IntExpr();
 		stringExpr = new StringExpr();
 		booleanExpr = new BooleanExpr();
 		id = new Id();
-	}
-	
-	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
 		if (intExpr.validateIntExpr(tokens, currIndex)) {
 			postIndex = intExpr.getPostIndex();
 			return true;
@@ -32,6 +35,7 @@ public class Expr {
 			postIndex = id.getPostIndex();
 			return true;
 		} else {
+			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Expression near " + tokens.get(currIndex).getTokenValue());
 			return false; //ERROR ON EXPR
 		}
 		

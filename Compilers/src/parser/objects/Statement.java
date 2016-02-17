@@ -1,10 +1,12 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import lexer.Token;
 
 public class Statement {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
 	private static PrintStatement printStatement;
 	private static AssignmentStatement assignmentStatement;
@@ -13,15 +15,16 @@ public class Statement {
 	private static IfStatement ifStatement;
 	private static Block block;
 	public Statement() {
+		
+	}
+	
+	public static boolean validateStatement(ArrayList<Token> tokens, int currIndex){
 		printStatement = new PrintStatement();
 		assignmentStatement = new AssignmentStatement();
 		varDecl = new VarDecl();
 		whileStatement = new WhileStatement();
 		ifStatement = new IfStatement();
 		block = new Block();
-	}
-	
-	public static boolean validateStatement(ArrayList<Token> tokens, int currIndex){ 
 		if (printStatement.validatePrintStatement(tokens, currIndex)) {
 			postIndex = printStatement.getPostIndex();
 			return true;
@@ -41,6 +44,7 @@ public class Statement {
 			postIndex = block.getPostIndex();
 			return true;
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Statement near " + tokens.get(currIndex).getTokenValue());
 			return false; // ERROR ON STATEMENT
 		}
 	}

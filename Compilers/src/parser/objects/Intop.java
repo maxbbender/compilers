@@ -1,9 +1,11 @@
 package parser.objects;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import lexer.Token;
 public class Intop {
 	private static int postIndex;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public Intop() {
 		
 	}
@@ -13,6 +15,7 @@ public class Intop {
 			postIndex = currIndex + 1;
 			return true;
 		} else {
+			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
 			return false; 
 		}
 	}

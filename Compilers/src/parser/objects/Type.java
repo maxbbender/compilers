@@ -1,12 +1,13 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import lexer.Token;
 
 public class Type {
 	private static int postIndex;
-	
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public Type() {
 		
 	}
@@ -16,6 +17,7 @@ public class Type {
 			postIndex = currIndex++;
 			return true;
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid type near " + tokens.get(currIndex).getTokenValue());
 			return false; //ERROR ON TYPE
 		}
 	}

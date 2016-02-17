@@ -1,33 +1,39 @@
 package parser.objects;
 
 import java.util.ArrayList;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lexer.Token;
 
 public class AssignmentStatement {
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
 	private static Id id;
 	private static Expr expr;
 	
 	public AssignmentStatement() {
-		id = new Id();
-		expr = new Expr();
+		
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		id = new Id();
+		expr = new Expr();
 		if (id.validate(tokens, currIndex)) {
 			if (tokens.get(id.getPostIndex()).getTokenType() == "assignment") {
 				if (expr.validateExpr(tokens, id.getPostIndex() + 1)) {
 					postIndex = expr.getPostIndex();
 					return true;
 				} else {
+					log.severe("ERROR LINE " + tokens.get(id.getPostIndex()).getTokenLineNum() + ": Invalid Expression near " + tokens.get(id.getPostIndex() + 1).getTokenValue());
 					return false; //ERROR on EXPR
 				}
 				
 			} else {
+				log.severe("ERROR LINE " + tokens.get(id.getPostIndex()).getTokenLineNum() + ": Invalid Assignment Statement near " + tokens.get(id.getPostIndex()).getTokenValue());
 				return false; //ERROR ON assignment
 			}
 		} else {
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid ID " + tokens.get(currIndex).getTokenValue());
 			return false; //ERROR ON ID
 		}
 	}

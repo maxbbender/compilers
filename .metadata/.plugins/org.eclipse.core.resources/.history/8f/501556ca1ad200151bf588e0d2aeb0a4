@@ -1,0 +1,53 @@
+package parser.objects;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import lexer.Token;
+public class StringExpr {
+	private static int postIndex;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
+	public StringExpr() {
+		charList = new CharList();
+	}
+	
+	public static boolean validateStringExpr(ArrayList<Token> tokens, int currIndex) {
+		Pattern p = Pattern.compile("\"([a-z\\s]*)\"");
+		Matcher m = p.matcher(tokens.get(currIndex).getTokenValue());
+		
+		if (m.find()) {
+			if (charList.validate(m.group(1), -1)){
+				postIndex = currIndex + 1;
+				return true;
+			} else {
+				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Statement near " + tokens.get(currIndex).getTokenValue());
+				return false; //ERROR ON CHARLIST
+			}
+		} else {
+			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Statement near " + tokens.get(currIndex).getTokenValue());
+			return false; //ERROR ON FINDING REGEX 
+		}
+	}
+	
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		StringExpr.postIndex = postIndex;
+	}
+
+	public static CharList getCharList() {
+		return charList;
+	}
+
+	public static void setCharList(CharList charList) {
+		StringExpr.charList = charList;
+	}
+
+	private static CharList charList;
+	
+	
+}
