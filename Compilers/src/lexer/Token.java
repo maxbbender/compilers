@@ -32,6 +32,7 @@ public class Token {
 			break;
 		case 4: case 5: case 6: 
 			tokenType = "type";
+			break;
 		case 7: case 8:
 			tokenType = "boolVal";
 			break;

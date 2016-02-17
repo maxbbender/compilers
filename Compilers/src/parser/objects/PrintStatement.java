@@ -24,6 +24,7 @@ public class PrintStatement {
 					currIndex = expr.getPostIndex();
 					if (tokens.get(currIndex).getTokenType() == "closeParen") {
 						postIndex = expr.getPostIndex() + 1;
+						log.info("PRINT STATEMENT");
 						return true;
 					} else {
 						log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Close Paren near " + tokens.get(currIndex).getTokenValue());

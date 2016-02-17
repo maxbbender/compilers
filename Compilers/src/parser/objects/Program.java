@@ -16,6 +16,7 @@ public class Program {
 		if (block.validateBlock(tokens, 0)) {
 			currIndex = block.getPostIndex();
 			if (tokens.get(currIndex).getTokenType() == "endOfFile") {
+				log.info("PROGRAM");
 				return true;
 			} else {
 				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid EndOfFile near " + tokens.get(currIndex).getTokenValue());

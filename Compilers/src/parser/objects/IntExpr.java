@@ -26,12 +26,14 @@ public class IntExpr {
 				currIndex = intop.getPostIndex();
 				if (expr.validateExpr(tokens, currIndex)) {
 					postIndex = expr.getPostIndex();
+					log.info("INTEXPR");
 					return true; 
 				} else {
 					//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Expression near " + tokens.get(currIndex).getTokenValue());
 					return false; //ERROR ON EXPR
 				}
 			} else {
+				postIndex = digit.getPostIndex();
 				return true; //TRUE ON DIGIT
 			}
 		} else {

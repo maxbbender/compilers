@@ -15,6 +15,7 @@ public class BoolVal {
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
 		if (tokens.get(currIndex).getTokenType() == "boolVal") {
+			log.info("BOOLVAL");
 			postIndex = currIndex + 1;
 			return true;
 		} else {

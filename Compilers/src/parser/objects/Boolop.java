@@ -14,6 +14,7 @@ public class Boolop {
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
 		if (tokens.get(currIndex).getTokenType() == "boolop") {
 			postIndex = currIndex + 1;
+			log.info("BOOLOP");
 			return true; // True on Boolop
 		} else {
 			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Boolop near " + tokens.get(currIndex).getTokenValue());

@@ -14,7 +14,7 @@ public class Type {
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
 		if (tokens.get(currIndex).getTokenType() == "type") {
-			postIndex = currIndex++;
+			postIndex = currIndex + 1;
 			return true;
 		} else {
 			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid type near " + tokens.get(currIndex).getTokenValue());

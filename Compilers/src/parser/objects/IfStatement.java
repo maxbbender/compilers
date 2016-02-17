@@ -22,6 +22,7 @@ public class IfStatement {
 			if (booleanExpr.validate(tokens, currIndex + 1)) {
 				if (block.validateBlock(tokens, booleanExpr.getPostIndex())) {
 					postIndex = block.getPostIndex();
+					log.info("IF STATEMENT");
 					return true;
 				} else {
 					log.severe("ERROR LINE " + tokens.get(booleanExpr.getPostIndex()).getTokenLineNum() + ": Invalid Block near " + tokens.get(booleanExpr.getPostIndex()).getTokenValue());

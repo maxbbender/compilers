@@ -24,14 +24,18 @@ public class Expr {
 		id = new Id();
 		if (intExpr.validateIntExpr(tokens, currIndex)) {
 			postIndex = intExpr.getPostIndex();
+			log.info("INT EXPR");
 			return true;
 		} else if (stringExpr.validateStringExpr(tokens, currIndex)) {
 			postIndex = stringExpr.getPostIndex();
+			log.info("STRING EXPR");
 			return true;
 		} else if (booleanExpr.validate(tokens, currIndex)) {
+			log.info("BOOLEAN EXPR");
 			postIndex = booleanExpr.getPostIndex();
 			return true;
 		} else if (id.validate(tokens, currIndex)) {
+			log.info("ID");
 			postIndex = id.getPostIndex();
 			return true;
 		} else {

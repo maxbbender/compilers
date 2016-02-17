@@ -1,12 +1,14 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class CharList {
 	private static int postIndex;
 	private static Char charVar;
 	private static CharList charList;
 	private static Space space;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public CharList() {
 		
 	}
@@ -22,6 +24,7 @@ public class CharList {
 		String[] result = input.split("");
 
 		if(validate(result, currIndex)) {
+			log.info("CHARLIST");
 			return true;
 		} else {
 			return false;

@@ -3,7 +3,6 @@ print ( x )
 x = 5
 int a
 string b
-xintx
 boolean c
 while ( c != x )  {
 if ( c == x ) {

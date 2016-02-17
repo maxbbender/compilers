@@ -13,9 +13,10 @@ public class Intop {
 	public static boolean validateIntop(ArrayList<Token> tokens, int currIndex){
 		if (tokens.get(currIndex).getTokenType() == "intop") {
 			postIndex = currIndex + 1;
+			log.info("INTOP");
 			return true;
 		} else {
-			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
+			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Intop near " + tokens.get(currIndex).getTokenValue());
 			return false; 
 		}
 	}

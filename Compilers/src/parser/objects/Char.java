@@ -1,13 +1,16 @@
 package parser.objects;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lexer.Token;
+import java.util.logging.Logger;
 
 public class Char {
 	private static int postIndex;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public Char() {
 		
 	}
@@ -16,6 +19,7 @@ public class Char {
 		Pattern p = Pattern.compile("([a-z])");
 		Matcher m = p.matcher(input[currIndex]);
 		if (m.matches()) {
+			log.info("CHAR");
 			postIndex = currIndex + 1;
 			return true; //It is a valid Char
 		} else {

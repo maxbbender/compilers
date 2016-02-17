@@ -15,6 +15,7 @@ public class Digit {
 	public static boolean validateDigit(ArrayList<Token> tokens, int currIndex) {
 		if (tokens.get(currIndex).getTokenType() == "digit") {
 			postIndex = currIndex + 1;
+			log.info("DIGIT");
 			return true; 
 		} else {
 			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Digit near " + tokens.get(currIndex).getTokenValue());

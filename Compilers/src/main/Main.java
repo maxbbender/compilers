@@ -19,13 +19,19 @@ public class Main {
 			System.out.println("-------------------");
 			System.out.println("-------LEXER-------");
 			System.out.println("-------------------");
+			//System.out.println(lexer.getMyRegex().getFullRegex().toString());
 			for  (Iterator<Token> it = lexer.getMyRegex().getTokens().iterator(); it.hasNext();) {
 				System.out.println(it.next().getFullToken());
 			}
 			
 			
+			
 			/* Parser */
-			//parser = new ParserMain(lexer.getMyRegex().getTokens());
+			System.out.println("--------------------");
+			System.out.println("-------PARSER-------");
+			System.out.println("--------------------");
+			parser = new ParserMain(lexer.getMyRegex().getTokens());
+			
 		}
 		
 		

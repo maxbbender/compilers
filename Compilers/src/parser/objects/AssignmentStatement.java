@@ -21,6 +21,7 @@ public class AssignmentStatement {
 		if (id.validate(tokens, currIndex)) {
 			if (tokens.get(id.getPostIndex()).getTokenType() == "assignment") {
 				if (expr.validateExpr(tokens, id.getPostIndex() + 1)) {
+					log.info("ASSIGNMENT STATEMENT");
 					postIndex = expr.getPostIndex();
 					return true;
 				} else {

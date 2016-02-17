@@ -20,6 +20,7 @@ public class Block {
 			if (statementList.validateStatementList(tokens, currIndex)) {
 				if (tokens.get(statementList.getPostIndex()).getTokenType() == "closeBracket") {
 					postIndex = statementList.getPostIndex() + 1;
+					log.info("BLOCK");
 					return true;
 				} else {
 					log.severe("ERROR LINE " + tokens.get(statementList.getPostIndex()).getTokenLineNum() + ": Invalid Close Bracket near " + tokens.get(statementList.getPostIndex()).getTokenValue());

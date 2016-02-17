@@ -23,6 +23,7 @@ public class BooleanExpr {
 				if (boolop.validate(tokens, expr.getPostIndex())) {
 					if (expr.validateExpr(tokens, boolop.getPostIndex())){
 						if (tokens.get(expr.getPostIndex()).getTokenType() == "closeParen"){
+							log.info("BOOLEAN EXPR");
 							postIndex = expr.getPostIndex() + 1;
 							return true; // TRUE ON BOOLEAN EXPR
 						} else {
