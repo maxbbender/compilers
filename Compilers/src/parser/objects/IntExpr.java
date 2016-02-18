@@ -3,6 +3,8 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserTerminalList;
+
 import lexer.Token;
 
 public class IntExpr {
@@ -11,20 +13,24 @@ public class IntExpr {
 	private static Digit digit;
 	private static Intop intop;
 	private static Expr expr; 
+	private static ParserTerminalList list = new ParserTerminalList();
 	
-	public IntExpr() {
-		
+	public IntExpr(ParserTerminalList newList) {
+		list = newList;
 	}
 	
 	public static boolean validateIntExpr(ArrayList<Token> tokens, int currIndex) {
-		digit = new Digit();
-		intop = new Intop();
-		expr = new Expr();
+		digit = new Digit(list);
+		
+		
 		if (digit.validateDigit(tokens, currIndex)) {
+			intop = new Intop(digit.getList());
 			currIndex = digit.getPostIndex();
 			if (intop.validateIntop(tokens, currIndex)) {
+				expr = new Expr(intop.getList());
 				currIndex = intop.getPostIndex();
 				if (expr.validateExpr(tokens, currIndex)) {
+					list = expr.getList();
 					postIndex = expr.getPostIndex();
 					log.info("INTEXPR");
 					return true; 

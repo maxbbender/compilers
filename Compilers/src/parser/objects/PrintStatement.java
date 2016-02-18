@@ -3,19 +3,22 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserTerminalList;
+
 import lexer.Token;
 
 public class PrintStatement {
 	private static int postIndex;
 	private static Expr expr;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static ParserTerminalList list = new ParserTerminalList();
 	
-	public PrintStatement() {
-		
+	public PrintStatement(ParserTerminalList newList) {
+		list = newList;
 	}
 
 	public static boolean validatePrintStatement(ArrayList<Token> tokens, int currIndex) {
-		expr = new Expr();
+		expr = new Expr(list);
 		if (tokens.get(currIndex).getTokenType() == "printKeyword") {
 			currIndex++;
 			if (tokens.get(currIndex).getTokenType() == "openParen") {

@@ -1,11 +1,11 @@
 package main;
 import java.util.Iterator;
-
 import lexer.LexerMain;
 import lexer.Token;
 import parser.ParserMain;
-
+import parser.ParserTerminalList;
 import java.util.logging.Logger;
+
 public class Main {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	/**

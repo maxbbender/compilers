@@ -3,6 +3,8 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserTerminalList;
+
 import lexer.Token;
 
 public class Statement {
@@ -14,17 +16,18 @@ public class Statement {
 	private static WhileStatement whileStatement;
 	private static IfStatement ifStatement;
 	private static Block block;
-	public Statement() {
-		
+	private static ParserTerminalList list = new ParserTerminalList();
+	public Statement(ParserTerminalList newList) {
+		list = newList;
 	}
 	
 	public static boolean validateStatement(ArrayList<Token> tokens, int currIndex){
-		printStatement = new PrintStatement();
-		assignmentStatement = new AssignmentStatement();
-		varDecl = new VarDecl();
-		whileStatement = new WhileStatement();
-		ifStatement = new IfStatement();
-		block = new Block();
+		printStatement = new PrintStatement(list);
+		assignmentStatement = new AssignmentStatement(list);
+		varDecl = new VarDecl(list);
+		whileStatement = new WhileStatement(list);
+		ifStatement = new IfStatement(list);
+		block = new Block(list);
 		if (printStatement.validatePrintStatement(tokens, currIndex)) {
 			postIndex = printStatement.getPostIndex();
 			log.info("PRINT STATEMENT");

@@ -3,6 +3,8 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserTerminalList;
+
 import lexer.Token;
 
 public class Expr {
@@ -12,16 +14,17 @@ public class Expr {
 	private static Id id;
 	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static ParserTerminalList list = new ParserTerminalList();
 	
-	public Expr() {
-		
+	public Expr(ParserTerminalList newList) {
+		list = newList;
 	}
 	
 	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
-		intExpr = new IntExpr();
-		stringExpr = new StringExpr();
-		booleanExpr = new BooleanExpr();
-		id = new Id();
+		intExpr = new IntExpr(list);
+		stringExpr = new StringExpr(list);
+		booleanExpr = new BooleanExpr(list);
+		id = new Id(list);
 		if (intExpr.validateIntExpr(tokens, currIndex)) {
 			postIndex = intExpr.getPostIndex();
 			log.info("INT EXPR");
@@ -82,6 +85,18 @@ public class Expr {
 
 	public static void setPostIndex(int postIndex) {
 		Expr.postIndex = postIndex;
+	}
+
+	public static ParserTerminalList getList() {
+		return list;
+	}
+
+	public static void setList(ParserTerminalList list) {
+		Expr.list = list;
+	}
+
+	public static Logger getLog() {
+		return log;
 	}
 
 	

@@ -2,16 +2,20 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserTerminalList;
+
 import lexer.Token;
 public class Program {
 	private static Block block;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	public Program() {
-		
+	private static ParserTerminalList list = new ParserTerminalList();
+	public Program(ParserTerminalList newList) {
+		list = newList;
 	}
 	
 	public static boolean validateProgram(ArrayList<Token> tokens) {
-		block = new Block();
+		list.addNode("PROGRAM", "program", 1);
+		block = new Block(list);
 		int currIndex = -1;
 		if (block.validateBlock(tokens, 0)) {
 			currIndex = block.getPostIndex();
