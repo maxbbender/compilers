@@ -1,0 +1,25 @@
+{
+print ( x )
+x = 5
+int a
+string b
+boolean c
+while ( c != x )  {
+if ( c == x ) {
+}
+}
+}
+$
+
+{
+print ( x )
+x = 5
+int a
+string b
+boolean c
+while ( ca != x )  {
+if ( c == x ) {
+}
+}
+}
+$

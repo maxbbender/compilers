@@ -1,0 +1,13 @@
+{
+print ( x )
+print ("he   lo")
+x = 5
+int a
+string b
+boolean c
+while ( c != x )  {
+if ( c == x ) {
+}
+}
+}
+$
