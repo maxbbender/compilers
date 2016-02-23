@@ -15,7 +15,7 @@ public class StringExpr {
 	
 	public static boolean validateStringExpr(ArrayList<Token> tokens, int currIndex) {
 		charList = new CharList();
-		Pattern p = Pattern.compile("\"([a-z\\s]*)\"");
+		Pattern p = Pattern.compile("\"([^\"\\d]*)\"");
 		Matcher m = p.matcher(tokens.get(currIndex).getTokenValue());
 		
 		if (m.find()) {
@@ -23,7 +23,7 @@ public class StringExpr {
 				postIndex = currIndex + 1;
 				return true;
 			} else {
-				//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid charList near " + tokens.get(currIndex).getTokenValue());
+				log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid StringExpr near " + tokens.get(currIndex).getTokenValue());
 				return false; //ERROR ON CHARLIST
 			}
 		} else {
