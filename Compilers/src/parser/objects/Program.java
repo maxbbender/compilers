@@ -5,17 +5,18 @@ import java.util.logging.Logger;
 import lexer.Token;
 public class Program {
 	private static Block block;
+	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public Program() {
 		
 	}
 	
-	public static boolean validateProgram(ArrayList<Token> tokens) {
+	public static boolean validateProgram(ArrayList<Token> tokens, int currIndex) {
 		block = new Block();
-		int currIndex = -1;
-		if (block.validateBlock(tokens, 0)) {
+		if (block.validateBlock(tokens, currIndex)) {
 			currIndex = block.getPostIndex();
 			if (tokens.get(currIndex).getTokenType() == "endOfFile") {
+				postIndex = block.getPostIndex() + 1;
 				log.info("PROGRAM");
 				return true;
 			} else {
@@ -26,6 +27,18 @@ public class Program {
 			log.severe("ERROR LINE " + tokens.get(0).getTokenLineNum() + ": Invalid Block near " + tokens.get(0).getTokenValue());
 			return false; // ERROR Block
 		}
+	}
+
+	public static int getPostIndex() {
+		return postIndex;
+	}
+
+	public static void setPostIndex(int postIndex) {
+		Program.postIndex = postIndex;
+	}
+
+	public static Logger getLog() {
+		return log;
 	}
 
 	public static Block getBlock() {

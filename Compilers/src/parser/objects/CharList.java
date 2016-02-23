@@ -32,9 +32,13 @@ public class CharList {
 	}
 	
 	public static boolean validate(String[] input, int currIndex) {
-		if (charVar.validate(input, currIndex)) {
-			if (charList.validate(input, charVar.getPostIndex())) {
-				return true; //TRUE ON CHAR|CHARLIST
+		if (currIndex < input.length) {
+			if (charVar.validate(input, currIndex)) {
+				if (charList.validate(input, charVar.getPostIndex())) {
+					return true; //TRUE ON CHAR|CHARLIST
+				} else {
+					return false; // FALSE ON INVALID CHARLIST
+				}
 			} else if (space.validate(input, currIndex)) {
 				if (charList.validate(input, space.getPostIndex())) {
 					return true; //TRUE ON SPACE
@@ -42,10 +46,11 @@ public class CharList {
 					return false; // FALSE ON SPACE|CHARLIST
 				}
 			} else {
-				return false; // FALSE ON INVALID CHARLIST
+				return false; // INVALIDE CHARLIST
 			}
 		} else {
-			return false; // INVALIDE CHARLIST
+			return true;
 		}
+		
 	}
 }
