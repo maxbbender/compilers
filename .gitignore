@@ -38,5 +38,6 @@ Thumbs.db
 
 # METADATA #
 ################
-metadata/
-recommenders/
+.metadata/*
+.metadata/.*
+.recommenders/*
