@@ -3,6 +3,7 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserMain;
 import parser.ParserTerminalList;
 
 import lexer.Token;
@@ -11,15 +12,16 @@ public class Block {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
 	private static StatementList statementList;
-	private static ParserTerminalList list = new ParserTerminalList();
-	public Block(ParserTerminalList newList) {
-		list = newList;
+	public Block() {
 	}
 	
 	public static boolean validateBlock(ArrayList<Token> tokens, int currIndex) {
-		list.addNode("BLOCK", "block", 1);
-		statementList = new StatementList(list);
+		ParserMain.list.addNode("BLOCK", "block");
+		ParserMain.list.inc();
+		statementList = new StatementList();
 		if (tokens.get(currIndex).getTokenType() == "openBracket") {
+			ParserMain.list.addNode("STATEMENT_LIST", "statementList");
+			ParserMain.list.inc();
 			currIndex++;
 			if (statementList.validateStatementList(tokens, currIndex)) {
 				if (tokens.get(statementList.getPostIndex()).getTokenType() == "closeBracket") {

@@ -3,6 +3,7 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserMain;
 import parser.ParserTerminalList;
 
 import lexer.Token;
@@ -18,6 +19,8 @@ public class PrintStatement {
 	}
 
 	public static boolean validatePrintStatement(ArrayList<Token> tokens, int currIndex) {
+		ParserMain.list.addNode("STATEMENT_PRINT", "print");
+		ParserMain.list.inc();
 		expr = new Expr(list);
 		if (tokens.get(currIndex).getTokenType() == "printKeyword") {
 			currIndex++;

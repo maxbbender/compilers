@@ -4,20 +4,19 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import parser.ParserMain;
 import parser.ParserTerminalList;
 
 import lexer.Token;
 public class Digit {
 	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	private static ParserTerminalList list = new ParserTerminalList();
-	public Digit(ParserTerminalList newList) {
-		list = newList;
+	public Digit() {
 	}
 	
 	public static boolean validateDigit(ArrayList<Token> tokens, int currIndex) {
 		if (tokens.get(currIndex).getTokenType() == "digit") {
-			list.addNode("DIGIT", tokens.get(currIndex).getTokenValue(), 1);
+			ParserMain.list.addTempNode("DIGIT", tokens.get(currIndex).getTokenValue());
 			postIndex = currIndex + 1;
 			log.info("DIGIT");
 			return true; 

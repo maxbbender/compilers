@@ -3,8 +3,9 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserMain;
 import parser.ParserTerminalList;
-
+import parser.TerminalNode;
 import lexer.Token;
 
 public class Expr {
@@ -14,22 +15,24 @@ public class Expr {
 	private static Id id;
 	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	private static ParserTerminalList list = new ParserTerminalList();
 	
-	public Expr(ParserTerminalList newList) {
-		list = newList;
+	public Expr() {;
 	}
 	
 	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
-		intExpr = new IntExpr(list);
-		stringExpr = new StringExpr(list);
-		booleanExpr = new BooleanExpr(list);
-		id = new Id(list);
+		ParserMain.list.addNode("EXPRESSION", "EXPR");
+		ParserMain.list.inc();
+		//int baseIndex = ParserMain.list.getSize();
+		intExpr = new IntExpr();
+		stringExpr = new StringExpr();
+		booleanExpr = new BooleanExpr();
+		id = new Id();
 		if (intExpr.validateIntExpr(tokens, currIndex)) {
 			postIndex = intExpr.getPostIndex();
 			log.info("INT EXPR");
 			return true;
 		} else if (stringExpr.validateStringExpr(tokens, currIndex)) {
+			ParserMain.list.removeRange(baseIndex, high);
 			postIndex = stringExpr.getPostIndex();
 			log.info("STRING EXPR");
 			return true;

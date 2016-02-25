@@ -10,7 +10,7 @@ import parser.ParserTerminalList;
 public class ParserMain {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static Program program;
-	private static ParserTerminalList list = new ParserTerminalList();
+	public static ParserTerminalList list = new ParserTerminalList();
 	public ParserMain(ArrayList<Token> tokens) {
 		program = new Program(list);
 		if (program.validateProgram(tokens)) {
