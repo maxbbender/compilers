@@ -1,6 +1,6 @@
 {
-print ( x )
-print ("e E lo")
+print ("")
+print ("h eeEee lo")
 x = 5
 int a
 string b
