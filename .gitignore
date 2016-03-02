@@ -41,3 +41,8 @@ Thumbs.db
 .metadata/*
 .metadata/.*
 .recommenders/*
+Compilers/.settings/*
+Compilers/bin/*
+Compilers/.classpath
+Compilers/.project
+
