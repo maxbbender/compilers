@@ -16,13 +16,14 @@ public class Expr {
 	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	public Expr() {;
+	public Expr() {
 	}
 	
 	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
+		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("EXPRESSION", "EXPR");
 		ParserMain.list.inc();
-		//int baseIndex = ParserMain.list.getSize();
+		int baseIndex = ParserMain.list.getSize();
 		intExpr = new IntExpr();
 		stringExpr = new StringExpr();
 		booleanExpr = new BooleanExpr();
@@ -30,19 +31,34 @@ public class Expr {
 		if (intExpr.validateIntExpr(tokens, currIndex)) {
 			postIndex = intExpr.getPostIndex();
 			log.info("INT EXPR");
+			ParserMain.list.setInc(level);
 			return true;
-		} else if (stringExpr.validateStringExpr(tokens, currIndex)) {
-			ParserMain.list.removeRange(baseIndex, high);
+		} else {
+			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
+		}
+		
+		if (stringExpr.validateStringExpr(tokens, currIndex)) {
 			postIndex = stringExpr.getPostIndex();
 			log.info("STRING EXPR");
+			ParserMain.list.setInc(level);
 			return true;
-		} else if (booleanExpr.validate(tokens, currIndex)) {
+		} else {
+			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
+		}
+		
+		if (booleanExpr.validate(tokens, currIndex)) {
 			log.info("BOOLEAN EXPR");
 			postIndex = booleanExpr.getPostIndex();
+			ParserMain.list.setInc(level);
 			return true;
-		} else if (id.validate(tokens, currIndex)) {
+		} else {
+			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
+		}
+		
+		if (id.validate(tokens, currIndex)) {
 			log.info("ID");
 			postIndex = id.getPostIndex();
+			ParserMain.list.setInc(level);
 			return true;
 		} else {
 			log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Expression near " + tokens.get(currIndex).getTokenValue());
@@ -88,14 +104,6 @@ public class Expr {
 
 	public static void setPostIndex(int postIndex) {
 		Expr.postIndex = postIndex;
-	}
-
-	public static ParserTerminalList getList() {
-		return list;
-	}
-
-	public static void setList(ParserTerminalList list) {
-		Expr.list = list;
 	}
 
 	public static Logger getLog() {

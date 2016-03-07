@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import lexer.Token;
+import parser.ParserMain;
 
 public class VarDecl {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -16,6 +17,9 @@ public class VarDecl {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
+		ParserMain.list.addNode("VARDECL", "varDecl");
+		ParserMain.list.inc();
 		type = new Type();
 		id = new Id();
 		if (type.validate(tokens, currIndex)) {

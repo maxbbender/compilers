@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import lexer.Token;
+import parser.ParserMain;
 
 public class Type {
 	private static int postIndex;
@@ -13,6 +14,7 @@ public class Type {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		ParserMain.list.addNode("TYPE", tokens.get(currIndex).getTokenValue());
 		if (tokens.get(currIndex).getTokenType() == "type") {
 			postIndex = currIndex + 1;
 			return true;

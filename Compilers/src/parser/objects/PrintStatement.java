@@ -12,16 +12,16 @@ public class PrintStatement {
 	private static int postIndex;
 	private static Expr expr;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	private static ParserTerminalList list = new ParserTerminalList();
 	
-	public PrintStatement(ParserTerminalList newList) {
-		list = newList;
+	public PrintStatement() {
+		
 	}
 
 	public static boolean validatePrintStatement(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("STATEMENT_PRINT", "print");
 		ParserMain.list.inc();
-		expr = new Expr(list);
+		expr = new Expr();
 		if (tokens.get(currIndex).getTokenType() == "printKeyword") {
 			currIndex++;
 			if (tokens.get(currIndex).getTokenType() == "openParen") {
@@ -29,6 +29,7 @@ public class PrintStatement {
 				if (expr.validateExpr(tokens, currIndex)) {
 					currIndex = expr.getPostIndex();
 					if (tokens.get(currIndex).getTokenType() == "closeParen") {
+						ParserMain.list.setInc(level);
 						postIndex = expr.getPostIndex() + 1;
 						log.info("PRINT STATEMENT");
 						return true;

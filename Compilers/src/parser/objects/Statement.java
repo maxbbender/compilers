@@ -21,6 +21,8 @@ public class Statement {
 	}
 	
 	public static boolean validateStatement(ArrayList<Token> tokens, int currIndex){
+		int level = ParserMain.list.getInc();
+		int baseIndex = ParserMain.list.getSize();
 		ParserMain.list.addNode("STATEMENT", "statement");
 		ParserMain.list.inc();
 		printStatement = new PrintStatement();
@@ -30,23 +32,54 @@ public class Statement {
 		ifStatement = new IfStatement();
 		block = new Block();
 		if (printStatement.validatePrintStatement(tokens, currIndex)) {
+			ParserMain.list.setInc(level);
 			postIndex = printStatement.getPostIndex();
 			log.info("PRINT STATEMENT");
 			return true;
-		} else if (assignmentStatement.validate(tokens, currIndex)) {
+		} else {
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
+		} 
+		
+		if (assignmentStatement.validate(tokens, currIndex)) {
+			ParserMain.list.setInc(level);
 			postIndex = assignmentStatement.getPostIndex();
 			log.info("ASSIGNMENT STATEMENT");
 			return true;
-		} else if (varDecl.validate(tokens, currIndex)) {
+		} else {
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
+		}
+		
+		if (varDecl.validate(tokens, currIndex)) {
+			ParserMain.list.setInc(level);
 			postIndex = varDecl.getPostIndex();
 			return true;
-		} else if (whileStatement.validate(tokens, currIndex)) {
+		} else {
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
+		}
+		
+		if (whileStatement.validate(tokens, currIndex)) {
+			ParserMain.list.setInc(level);
 			postIndex = whileStatement.getPostIndex();
 			return true;
-		} else if (ifStatement.validate(tokens, currIndex)) {
+		} else {
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
+		}
+		
+		if (ifStatement.validate(tokens, currIndex)) {
+			ParserMain.list.setInc(level);
 			postIndex = ifStatement.getPostIndex();
 			return true;
-		} else if (block.validateBlock(tokens, currIndex)) {
+		} else {
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
+		}
+		
+		if (block.validateBlock(tokens, currIndex)) {
+			ParserMain.list.setInc(level);
 			postIndex = block.getPostIndex();
 			return true;
 		} else {

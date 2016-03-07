@@ -19,21 +19,21 @@ public class IntExpr {
 	}
 	
 	public static boolean validateIntExpr(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
 		digit = new Digit();
 		expr = new Expr();
 		ParserMain.list.addTempNode("IntExpression", "intExpr");
 		ParserMain.list.inc();
 		
 		if (digit.validateDigit(tokens, currIndex)) {
-			intop = new Intop(digit.getList());
+			intop = new Intop();
 			currIndex = digit.getPostIndex();
 			if (intop.validateIntop(tokens, currIndex)) {
-				
 				currIndex = intop.getPostIndex();
 				if (expr.validateExpr(tokens, currIndex)) {
-					list = expr.getList();
 					postIndex = expr.getPostIndex();
 					log.info("INTEXPR");
+					ParserMain.list.setInc(level);
 					return true; 
 				} else {
 					//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Expression near " + tokens.get(currIndex).getTokenValue());

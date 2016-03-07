@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import lexer.Token;
+import parser.ParserMain;
 
 public class Id {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -14,6 +15,7 @@ public class Id {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		ParserMain.list.addNode("ID", tokens.get(currIndex).getTokenValue());
 		charVar = new Char();
 		if (charVar.validate(tokens, currIndex)){
 			postIndex = currIndex + 1;

@@ -1,5 +1,8 @@
 package parser;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import lexer.Token;
 import parser.TerminalNode;
 public class ParserTerminalList {
 	private static ArrayList<TerminalNode> list;
@@ -43,6 +46,12 @@ public class ParserTerminalList {
 		}
 	}
 	
+	public static void printList() {
+		for (Iterator<TerminalNode> it = list.iterator(); it.hasNext();) {
+			
+		}
+	}
+	
 	public static int getSize() {
 		return list.size();
 	}
@@ -52,5 +61,13 @@ public class ParserTerminalList {
 	
 	public static void deinc() {
 		currIndent--;
+	}
+	
+	public static int getInc() {
+		return currIndent;
+	}
+	
+	public static void setInc(int newInc) {
+		currIndent = newInc;
 	}
 }

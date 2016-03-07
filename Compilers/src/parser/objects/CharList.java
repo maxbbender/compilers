@@ -3,6 +3,8 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import parser.ParserMain;
+
 public class CharList {
 	private static int postIndex;
 	private static Char charVar;
@@ -14,6 +16,8 @@ public class CharList {
 	}
 	
 	public static boolean validate(String input, int currIndex) {
+		ParserMain.list.addNode("CHARLIST", input);
+		ParserMain.list.inc();
 		charVar = new Char();
 		charList = new CharList();
 		space = new Space();
@@ -32,11 +36,21 @@ public class CharList {
 	}
 	
 	public static boolean validate(String[] input, int currIndex) {
+		int level = ParserMain.list.getInc();
+		StringBuilder temp = new StringBuilder();
+		for (String a : input ) {
+			temp.append(a);
+		}
+		ParserMain.list.addNode("CHARLIST", temp.toString());
+		ParserMain.list.inc();
+		
 		if (charVar.validate(input, currIndex)) {
 			if (charList.validate(input, charVar.getPostIndex())) {
+				ParserMain.list.setInc(level);
 				return true; //TRUE ON CHAR|CHARLIST
 			} else if (space.validate(input, currIndex)) {
 				if (charList.validate(input, space.getPostIndex())) {
+					ParserMain.list.setInc(level);
 					return true; //TRUE ON SPACE
 				} else {
 					return false; // FALSE ON SPACE|CHARLIST

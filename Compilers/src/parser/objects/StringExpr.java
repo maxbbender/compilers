@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lexer.Token;
+import parser.ParserMain;
 public class StringExpr {
 	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -14,6 +15,9 @@ public class StringExpr {
 	}
 	
 	public static boolean validateStringExpr(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
+		ParserMain.list.addNode("STRING_EXPR", tokens.get(currIndex).getTokenValue());
+		ParserMain.list.inc();
 		charList = new CharList();
 		Pattern p = Pattern.compile("\"([a-z\\s]*)\"");
 		Matcher m = p.matcher(tokens.get(currIndex).getTokenValue());
@@ -21,6 +25,7 @@ public class StringExpr {
 		if (m.find()) {
 			if (charList.validate(m.group(1), -1)){
 				postIndex = currIndex + 1;
+				ParserMain.list.setInc(level);
 				return true;
 			} else {
 				//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid charList near " + tokens.get(currIndex).getTokenValue());

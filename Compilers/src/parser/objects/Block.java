@@ -16,14 +16,14 @@ public class Block {
 	}
 	
 	public static boolean validateBlock(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("BLOCK", "block");
 		ParserMain.list.inc();
 		statementList = new StatementList();
 		if (tokens.get(currIndex).getTokenType() == "openBracket") {
-			ParserMain.list.addNode("STATEMENT_LIST", "statementList");
-			ParserMain.list.inc();
 			currIndex++;
 			if (statementList.validateStatementList(tokens, currIndex)) {
+				ParserMain.list.setInc(level);
 				if (tokens.get(statementList.getPostIndex()).getTokenType() == "closeBracket") {
 					postIndex = statementList.getPostIndex() + 1;
 					log.info("BLOCK");

@@ -4,7 +4,10 @@ package parser.objects;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import javax.swing.text.html.HTMLEditorKit.Parser;
+
 import lexer.Token;
+import parser.ParserMain;
 public class BooleanExpr {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static int postIndex;
@@ -15,13 +18,18 @@ public class BooleanExpr {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
+		ParserMain.list.addNode("BOOLEXPR", "boolExpr");
+		ParserMain.list.inc();
 		expr = new Expr();
 		boolop = new Boolop();
 		if(tokens.get(currIndex).getTokenType() == "openParen") {
 			currIndex++; // Plus because of open paren token
 			if (expr.validateExpr(tokens, currIndex)){
+				ParserMain.list.setInc(level);
 				if (boolop.validate(tokens, expr.getPostIndex())) {
 					if (expr.validateExpr(tokens, boolop.getPostIndex())){
+						ParserMain.list.setInc(level);
 						if (tokens.get(expr.getPostIndex()).getTokenType() == "closeParen"){
 							log.info("BOOLEAN EXPR");
 							postIndex = expr.getPostIndex() + 1;

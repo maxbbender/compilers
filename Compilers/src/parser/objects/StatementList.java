@@ -17,15 +17,16 @@ public class StatementList {
 	}
 	
 	public static boolean validateStatementList(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("STATEMENT_LIST", "statementList");
 		ParserMain.list.inc();
 		statement = new Statement();
 		if (statement.validateStatement(tokens, currIndex)) {
-			
-			statement.getList().addNode("STATEMENT_LIST", "statementList", 1);
-			statementList = new StatementList(statement.getList());
+			ParserMain.list.setInc(level);
+			statementList = new StatementList();
 			currIndex = statement.getPostIndex();
 			if (statementList.validateStatementList(tokens, currIndex)) {
+				ParserMain.list.setInc(level);
 				postIndex = statementList.getPostIndex();
 				return true;
 			} else {

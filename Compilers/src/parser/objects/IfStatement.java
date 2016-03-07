@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import lexer.Token;
+import parser.ParserMain;
 
 public class IfStatement {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -16,11 +17,16 @@ public class IfStatement {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		int level = ParserMain.list.getInc();
+		ParserMain.list.addNode("STATEMENT_IF", "ifStatement");
+		ParserMain.list.inc();
 		booleanExpr = new BooleanExpr();
 		block = new Block();
 		if (tokens.get(currIndex).getTokenType() == "ifKeyword") {
 			if (booleanExpr.validate(tokens, currIndex + 1)) {
+				ParserMain.list.setInc(level);
 				if (block.validateBlock(tokens, booleanExpr.getPostIndex())) {
+					ParserMain.list.setInc(level);
 					postIndex = block.getPostIndex();
 					log.info("IF STATEMENT");
 					return true;

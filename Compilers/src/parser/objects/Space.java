@@ -3,6 +3,8 @@ package parser.objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import parser.ParserMain;
+
 public class Space {
 	private static int postIndex;
 	public Space() {
@@ -10,6 +12,7 @@ public class Space {
 	}
 	
 	public static boolean validate(String[] input, int currIndex) {
+		ParserMain.list.addNode("SPACE", input[currIndex]);
 		Pattern p = Pattern.compile("(\\s)");
 		Matcher m = p.matcher(input[currIndex]);
 		if (m.matches()) {
