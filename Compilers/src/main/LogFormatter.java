@@ -13,6 +13,7 @@ public class LogFormatter extends Formatter {
 		StringBuilder log = new StringBuilder();
 		log.append(rec.getLevel());
 		log.append(": " + formatMessage(rec));
+		log.append("\n");
 		return log.toString();
 	}
 }

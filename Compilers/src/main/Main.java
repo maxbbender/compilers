@@ -6,18 +6,20 @@ import lexer.LexerMain;
 import lexer.Token;
 import parser.ParserMain;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
 public class Main {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static LogFormatter formatter;
+	private static boolean verbose = false;
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int numberOfPrograms = 0;
-		boolean verbose = false;
 		String temp = null;
 		String temp2 = null;
 		boolean valid = false;
@@ -25,10 +27,23 @@ public class Main {
 		ParserMain parser;
 		Scanner input = new Scanner(System.in);
 		
+		/* Logger/Verbose Setup */
+		log.setUseParentHandlers(false);
+		Handler[] handlers = log.getHandlers();
+		for(Handler handler : handlers) {
+		    log.removeHandler(handler);
+		}
+		ConsoleHandler handler = new ConsoleHandler();
+		handler.setFormatter(new LogFormatter());
+		log.addHandler(handler);
+		
 		/* What is the file path for code? */
 		while (!valid) {
 			System.out.println("What is the filePath for the code?");
 			temp = input.next();
+			if (temp.equals("d")) {
+				temp = "lib\\code.txt";
+			}
 			File f = new File(temp);
 			if(f.exists() && !f.isDirectory()) { 
 			    valid = true;
@@ -43,6 +58,7 @@ public class Main {
 			temp2 = input.next();
 			if (temp2.equals("y")) {
 				log.setLevel(Level.INFO);
+				verbose = true;
 				valid = true;
 			} else if (temp2.equals("n")) {
 				log.setLevel(Level.WARNING);
@@ -54,35 +70,43 @@ public class Main {
 		/* Initiate the Lexer with the input */
 		lexer = new LexerMain(temp);
 		
+		
+		/* Start the Lexer if there are no errors */
+		/* Checks quotes/unknowns and others */
 		if (!lexer.getMyRegex().hasErrors()) {
 			System.out.println("-------------------");
 			System.out.println("-------LEXER-------");
 			System.out.println("-------------------");
-			//System.out.println(lexer.getMyRegex().getFullRegex().toString());
+			
+			if (verbose) {
+				System.out.println(lexer.getMyRegex().getFullRegex().toString());
+			}
+			
 			for  (Iterator<Token> it = lexer.getMyRegex().getTokens().iterator(); it.hasNext();) {
 				Token tempToken = it.next();
 				/* Find the number of programs */
 				if (tempToken.getTokenType() == "endOfFile") {
 					numberOfPrograms++;
 				}
+				if (verbose) {
+					System.out.println(tempToken.getFullToken());
+				}
 				
-				System.out.println(tempToken.getFullToken());
 			}
-			System.out.println("Number of Programs: " + numberOfPrograms);
-			
-		
-			
-			
+			if (verbose) {
+				System.out.println("Number of Programs: " + numberOfPrograms);
+			}
+			System.out.println("Lexer Finished");
 			
 			/* Parser */
 			System.out.println("--------------------");
 			System.out.println("-------PARSER-------");
 			System.out.println("--------------------");
 			parser = new ParserMain(lexer.getMyRegex().getTokens(), numberOfPrograms);
+			System.out.println("Parser Finished");
 			
 			
 		}
-		
 		
 	}
 

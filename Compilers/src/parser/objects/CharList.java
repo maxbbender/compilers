@@ -18,7 +18,7 @@ public class CharList {
 		charList = new CharList();
 		space = new Space();
 		if (currIndex == -1) {
-			currIndex = 0;
+			currIndex = 1;
 		}
 		
 		String[] result = input.split("");
