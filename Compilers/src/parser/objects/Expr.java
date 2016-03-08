@@ -34,6 +34,7 @@ public class Expr {
 			ParserMain.list.setInc(level);
 			return true;
 		} else {
+			ParserMain.list.setInc(level);
 			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
 		}
 		
@@ -43,6 +44,7 @@ public class Expr {
 			ParserMain.list.setInc(level);
 			return true;
 		} else {
+			ParserMain.list.setInc(level);
 			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
 		}
 		
@@ -52,6 +54,7 @@ public class Expr {
 			ParserMain.list.setInc(level);
 			return true;
 		} else {
+			ParserMain.list.setInc(level);
 			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
 		}
 		

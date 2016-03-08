@@ -17,7 +17,6 @@ public class Digit {
 	public static boolean validateDigit(ArrayList<Token> tokens, int currIndex) {
 		ParserMain.list.addNode("digit", tokens.get(currIndex).getTokenValue());
 		if (tokens.get(currIndex).getTokenType() == "digit") {
-			ParserMain.list.addTempNode("DIGIT", tokens.get(currIndex).getTokenValue());
 			postIndex = currIndex + 1;
 			log.info("DIGIT");
 			return true; 

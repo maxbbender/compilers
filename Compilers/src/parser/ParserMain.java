@@ -14,11 +14,30 @@ public class ParserMain {
 	public ParserMain(ArrayList<Token> tokens) {
 		program = new Program(list);
 		if (program.validateProgram(tokens)) {
-			System.out.println("YAY");
+			System.out.println("Parser Completed");
+			
 		} else {
 			System.out.println("NAY");
 		}
 	}
+	
+	public static Program getProgram() {
+		return program;
+	}
+	public static void setProgram(Program program) {
+		ParserMain.program = program;
+	}
+	public static ParserTerminalList getList() {
+		return list;
+	}
+	public static void setList(ParserTerminalList list) {
+		ParserMain.list = list;
+	}
+	public static Logger getLog() {
+		return log;
+	}
+	
+	
 	
 	
 }

@@ -32,8 +32,8 @@ public class ParserTerminalList {
 	}
 	
 	public static void addTempNode(String nodeType, String nodeValue) {
-		TerminalNode node;
-		tempList.add(node = new TerminalNode(nodeType, nodeValue, currIndent));
+		TerminalNode node = new TerminalNode(nodeType, nodeValue, currIndent);
+		tempList.add(node);
 	}
 	
 	public static void clearTemp() {
@@ -41,14 +41,14 @@ public class ParserTerminalList {
 	}
 	
 	public static void removeRange(int low, int high) {
-		for (int lowVal = low; lowVal < high+1; low++) {
-			list.remove(lowVal);
+		for (int lowVal = low; lowVal < high; lowVal++) {
+			list.remove(low);
 		}
 	}
 	
 	public static void printList() {
 		for (Iterator<TerminalNode> it = list.iterator(); it.hasNext();) {
-			
+			System.out.println(it.next().getTerminalNode());
 		}
 	}
 	

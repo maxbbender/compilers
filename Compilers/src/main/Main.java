@@ -31,6 +31,7 @@ public class Main {
 			System.out.println("-------PARSER-------");
 			System.out.println("--------------------");
 			parser = new ParserMain(lexer.getMyRegex().getTokens());
+			parser.getList().printList();
 			
 		}
 		

@@ -26,8 +26,12 @@ public class CharList {
 		}
 		
 		String[] result = input.split("");
-
-		if(validate(result, currIndex)) {
+		
+		String[] fixedInput = new String[result.length-1];
+		for (int i = 0; i < result.length-1; i++) {
+			fixedInput[i] = result[i+1];
+		}
+		if (validate(fixedInput, currIndex)) {
 			log.info("CHARLIST");
 			return true;
 		} else {
@@ -38,9 +42,6 @@ public class CharList {
 	public static boolean validate(String[] input, int currIndex) {
 		int level = ParserMain.list.getInc();
 		StringBuilder temp = new StringBuilder();
-		for (String a : input ) {
-			temp.append(a);
-		}
 		ParserMain.list.addNode("CHARLIST", temp.toString());
 		ParserMain.list.inc();
 		
@@ -48,18 +49,18 @@ public class CharList {
 			if (charList.validate(input, charVar.getPostIndex())) {
 				ParserMain.list.setInc(level);
 				return true; //TRUE ON CHAR|CHARLIST
-			} else if (space.validate(input, currIndex)) {
-				if (charList.validate(input, space.getPostIndex())) {
-					ParserMain.list.setInc(level);
-					return true; //TRUE ON SPACE
-				} else {
-					return false; // FALSE ON SPACE|CHARLIST
-				}
 			} else {
-				return false; // FALSE ON INVALID CHARLIST
+				return false;
+			}
+		} else if (space.validate(input, currIndex)) {
+			if (charList.validate(input, space.getPostIndex())) {
+				ParserMain.list.setInc(level);
+				return true; //TRUE ON SPACE
+			} else {
+				return false; // FALSE ON SPACE|CHARLIST
 			}
 		} else {
-			return false; // INVALIDE CHARLIST
+			return false; // FALSE ON INVALID CHARLIST
 		}
 	}
 }

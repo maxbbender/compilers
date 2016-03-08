@@ -1,5 +1,5 @@
 {
-print ( x )
+print ("h d ")
 x = 5
 int a
 string b

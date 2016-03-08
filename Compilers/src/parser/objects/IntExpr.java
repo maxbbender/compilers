@@ -22,7 +22,7 @@ public class IntExpr {
 		int level = ParserMain.list.getInc();
 		digit = new Digit();
 		expr = new Expr();
-		ParserMain.list.addTempNode("IntExpression", "intExpr");
+		ParserMain.list.addNode("IntExpression", "intExpr");
 		ParserMain.list.inc();
 		
 		if (digit.validateDigit(tokens, currIndex)) {
