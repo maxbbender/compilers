@@ -22,9 +22,18 @@ public class CharList {
 		charList = new CharList();
 		space = new Space();
 		if (currIndex == -1) {
-			currIndex = 0;
+			currIndex = 1;
+		}
+		String[] result = null;
+		if (input.length() > 0) {
+			result = input.split("");
+		} else {
+			return true;
 		}
 		
+	
+		
+<<<<<<< HEAD
 		String[] result = input.split("");
 		
 		String[] fixedInput = new String[result.length-1];
@@ -32,6 +41,10 @@ public class CharList {
 			fixedInput[i] = result[i+1];
 		}
 		if (validate(fixedInput, currIndex)) {
+=======
+
+		if(validate(result, currIndex)) {
+>>>>>>> origin/master
 			log.info("CHARLIST");
 			return true;
 		} else {
@@ -45,22 +58,25 @@ public class CharList {
 		ParserMain.list.addNode("CHARLIST", temp.toString());
 		ParserMain.list.inc();
 		
-		if (charVar.validate(input, currIndex)) {
-			if (charList.validate(input, charVar.getPostIndex())) {
-				ParserMain.list.setInc(level);
-				return true; //TRUE ON CHAR|CHARLIST
+		if (currIndex < input.length) {
+			if (charVar.validate(input, currIndex)) {
+				if (charList.validate(input, charVar.getPostIndex())) {
+					return true; //TRUE ON CHAR|CHARLIST
+				} else {
+					return false; // FALSE ON INVALID CHARLIST
+				}
+			} else if (space.validate(input, currIndex)) {
+				if (charList.validate(input, space.getPostIndex())) {
+					return true; //TRUE ON SPACE
+				} else {
+					return false; // FALSE ON SPACE|CHARLIST
+				}
 			} else {
-				return false;
-			}
-		} else if (space.validate(input, currIndex)) {
-			if (charList.validate(input, space.getPostIndex())) {
-				ParserMain.list.setInc(level);
-				return true; //TRUE ON SPACE
-			} else {
-				return false; // FALSE ON SPACE|CHARLIST
+				return false; // INVALIDE CHARLIST
 			}
 		} else {
-			return false; // FALSE ON INVALID CHARLIST
+			return true;
 		}
+		
 	}
 }

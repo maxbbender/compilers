@@ -11,14 +11,17 @@ public class ParserMain {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static Program program;
 	public static ParserTerminalList list = new ParserTerminalList();
-	public ParserMain(ArrayList<Token> tokens) {
-		program = new Program(list);
-		if (program.validateProgram(tokens)) {
-			System.out.println("Parser Completed");
-			
-		} else {
-			System.out.println("NAY");
-		}
+	public ParserMain(ArrayList<Token> tokens, int numPrograms) {
+		int index = 0;
+		for (int i = 0; i < numPrograms; i++ ) {
+			program = new Program();
+			if (program.validateProgram(tokens, index)) {
+				System.out.println("Program " + (i+1) + " is valid");
+				index = program.getPostIndex();
+			} else {
+				System.out.println("Program " + (i+1) + " is not valid");
+			}
+		}	
 	}
 	
 	public static Program getProgram() {
@@ -36,8 +39,4 @@ public class ParserMain {
 	public static Logger getLog() {
 		return log;
 	}
-	
-	
-	
-	
 }

@@ -1,5 +1,6 @@
 package parser.objects;
 
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,6 +8,7 @@ import parser.ParserMain;
 
 public class Space {
 	private static int postIndex;
+	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public Space() {
 		
 	}
@@ -17,6 +19,7 @@ public class Space {
 		Matcher m = p.matcher(input[currIndex]);
 		if (m.matches()) {
 			postIndex = currIndex +1;
+			log.info("SPACE");
 			return true; // TRUE ON SPACE
 		} else {
 			return false; // FALSE ON SPACE
