@@ -20,8 +20,15 @@ public class CharList {
 		if (currIndex == -1) {
 			currIndex = 1;
 		}
+		String[] result = null;
+		if (input.length() > 0) {
+			result = input.split("");
+		} else {
+			return true;
+		}
 		
-		String[] result = input.split("");
+	
+		
 
 		if(validate(result, currIndex)) {
 			log.info("CHARLIST");
