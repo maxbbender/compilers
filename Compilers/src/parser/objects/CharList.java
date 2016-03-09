@@ -30,21 +30,8 @@ public class CharList {
 		} else {
 			return true;
 		}
-		
-	
-		
-<<<<<<< HEAD
-		String[] result = input.split("");
-		
-		String[] fixedInput = new String[result.length-1];
-		for (int i = 0; i < result.length-1; i++) {
-			fixedInput[i] = result[i+1];
-		}
-		if (validate(fixedInput, currIndex)) {
-=======
 
 		if(validate(result, currIndex)) {
->>>>>>> origin/master
 			log.info("CHARLIST");
 			return true;
 		} else {

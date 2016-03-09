@@ -11,11 +11,10 @@ public class Program {
 	private static int postIndex;
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	//private static ParserTerminalList list = new ParserTerminalList();
-	public Program(ParserTerminalList newList) {
-		//list = newList;
+	public Program() {
 	}
 	
-	public static boolean validateProgram(ArrayList<Token> tokens) {
+	public static boolean validateProgram(ArrayList<Token> tokens, int currIndex) {
 		ParserMain.list.addNode("PROGRAM", "program");
 		ParserMain.list.inc();
 		block = new Block();
