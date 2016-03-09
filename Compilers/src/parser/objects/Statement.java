@@ -83,6 +83,8 @@ public class Statement {
 			postIndex = block.getPostIndex();
 			return true;
 		} else {
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
 			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Statement near " + tokens.get(currIndex).getTokenValue());
 			return false; // ERROR ON STATEMENT
 		}

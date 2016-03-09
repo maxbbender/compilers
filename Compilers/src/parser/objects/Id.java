@@ -16,6 +16,7 @@ public class Id {
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
 		ParserMain.list.addNode("ID", tokens.get(currIndex).getTokenValue());
+		ParserMain.list.inc();
 		charVar = new Char();
 		if (charVar.validate(tokens, currIndex)){
 			postIndex = currIndex + 1;

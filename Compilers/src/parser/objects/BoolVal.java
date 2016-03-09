@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import lexer.Token;
+import parser.ParserMain;
 
 public class BoolVal {
 	private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -14,6 +15,7 @@ public class BoolVal {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
+		ParserMain.list.addNode("BoolVal", tokens.get(currIndex).getTokenValue());
 		if (tokens.get(currIndex).getTokenType() == "boolVal") {
 			log.info("BOOLVAL");
 			postIndex = currIndex + 1;

@@ -17,13 +17,14 @@ public class AssignmentStatement {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
-		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("STATEMENT_ASSIGNMENT", "assignment");
 		ParserMain.list.inc();
+		int level = ParserMain.list.getInc();
 		id = new Id();
 		expr = new Expr();
 		if (id.validate(tokens, currIndex)) {
 			if (tokens.get(id.getPostIndex()).getTokenType() == "assignment") {
+				ParserMain.list.setInc(level);
 				if (expr.validateExpr(tokens, id.getPostIndex() + 1)) {
 					ParserMain.list.setInc(level);
 					log.info("ASSIGNMENT STATEMENT");

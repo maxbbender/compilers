@@ -20,9 +20,9 @@ public class Expr {
 	}
 	
 	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
-		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("EXPRESSION", "EXPR");
 		ParserMain.list.inc();
+		int level = ParserMain.list.getInc();
 		int baseIndex = ParserMain.list.getSize();
 		intExpr = new IntExpr();
 		stringExpr = new StringExpr();

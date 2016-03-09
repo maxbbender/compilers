@@ -17,6 +17,7 @@ public class StatementList {
 	}
 	
 	public static boolean validateStatementList(ArrayList<Token> tokens, int currIndex) {
+		int baseIndex = ParserMain.list.getSize();
 		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("STATEMENT_LIST", "statementList");
 		ParserMain.list.inc();
@@ -34,6 +35,8 @@ public class StatementList {
 				return false; // ERROR ON STATEMENTLIST
 			}
 		} else if (tokens.get(currIndex).getTokenType() == "closeBracket"){
+			ParserMain.list.setInc(level);
+			ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
 			postIndex = currIndex;
 			return true;
 		} else {

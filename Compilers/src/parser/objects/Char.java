@@ -18,7 +18,7 @@ public class Char {
 	}
 	
 	public static boolean validate(String[] input, int currIndex) {
-		ParserMain.list.addNode("CHAR", input[currIndex]);
+		//ParserMain.list.addNode("CHAR", input[currIndex]);
 		Pattern p = Pattern.compile("([a-z])");
 		Matcher m = p.matcher(input[currIndex]);
 		if (m.matches()) {
@@ -32,7 +32,7 @@ public class Char {
 	}
 	
 	public static boolean validate(ArrayList<Token> tokens, int currIndex) {
-		ParserMain.list.addNode("CHAR", tokens.get(currIndex).getTokenValue());
+		//ParserMain.list.addNode("CHAR", tokens.get(currIndex).getTokenValue());
 		Pattern p = Pattern.compile("([a-z])");
 		Matcher m = p.matcher(tokens.get(currIndex).getTokenValue());
 		if (m.matches()) {
