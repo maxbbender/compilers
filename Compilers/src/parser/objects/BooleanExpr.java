@@ -13,6 +13,7 @@ public class BooleanExpr {
 	private static int postIndex;
 	private static Expr expr; 
 	private static Boolop boolop;
+	private static BoolVal boolval;
 	public BooleanExpr() {
 		
 	}
@@ -23,6 +24,7 @@ public class BooleanExpr {
 		ParserMain.list.inc();
 		expr = new Expr();
 		boolop = new Boolop();
+		boolval = new BoolVal();
 		if(tokens.get(currIndex).getTokenType() == "openParen") {
 			currIndex++; // Plus because of open paren token
 			if (expr.validateExpr(tokens, currIndex)){
@@ -50,6 +52,10 @@ public class BooleanExpr {
 				//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid First Expression near " + tokens.get(currIndex).getTokenValue());
 				return false; // FALSE ON FIRST EXPRESSION
 			}
+		} else if (boolval.validate(tokens, currIndex)) {
+			log.info("BOOLEAN EXPR");
+			postIndex = currIndex + 1;
+			return true;
 		} else {
 			//log.severe("ERROR LINE " + tokens.get(currIndex).getTokenLineNum() + ": Invalid Open Paren near " + tokens.get(currIndex).getTokenValue());
 			return false; // FALSE ON OPEN PAREN
