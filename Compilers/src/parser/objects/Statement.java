@@ -27,11 +27,9 @@ public class Statement {
 		block = new Block();
 		if (printStatement.validatePrintStatement(tokens, currIndex)) {
 			postIndex = printStatement.getPostIndex();
-			log.info("PRINT STATEMENT");
 			return true;
 		} else if (assignmentStatement.validate(tokens, currIndex)) {
 			postIndex = assignmentStatement.getPostIndex();
-			log.info("ASSIGNMENT STATEMENT");
 			return true;
 		} else if (varDecl.validate(tokens, currIndex)) {
 			postIndex = varDecl.getPostIndex();
