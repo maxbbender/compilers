@@ -24,6 +24,7 @@ public class Main {
 		String temp = null;
 		String temp2 = null;
 		boolean valid = false;
+		boolean valid2 = true;
 		LexerMain lexer = null;
 		ParserMain parser;
 		Scanner input = new Scanner(System.in);
@@ -40,32 +41,60 @@ public class Main {
 		
 		/* What is the file path for code? */
 		while (!valid) {
-			System.out.println("What is the filePath for the code?");
-			temp = input.next();
-			if (temp.equals("d")) {
-				temp = "lib\\code.txt";
-			}
-			File f = new File(temp);
-			if(f.exists() && !f.isDirectory()) { 
-			    valid = true;
+			if (!valid2) {
+				System.out.println("What is the filePath for the code?");
+				temp = input.next();
+				if (temp.equals("d")) {
+					temp = "lib\\code.txt";
+				}
+				File f = new File(temp);
+				if(f.exists() && !f.isDirectory()) { 
+				    valid = true;
+				} else {
+					valid2 = false;
+					System.out.println("File is not found please try again");
+				}
 			} else {
-				System.out.println("File is not found please try again");
+				File f = new File(args[0]);
+				if(f.exists() && !f.isDirectory()) { 
+					temp = args[0];
+				    valid = true;
+				} else {
+					valid2 = false;
+					System.out.println("File is not found please try again");
+				}
 			}
 		}
 		valid = false; 
+		valid2 = true;
 		/* Are we going to run in Verbose? */
 		while (!valid) {
-			System.out.println("Should we run in verbose? (y/n)");
-			temp2 = input.next();
-			if (temp2.equals("y")) {
-				log.setLevel(Level.INFO);
-				verbose = true;
-				valid = true;
-			} else if (temp2.equals("n")) {
-				log.setLevel(Level.WARNING);
-				valid = true;
+			if (!valid2) {
+				System.out.println("Should we run in verbose? (y/n)");
+				temp2 = input.next();
+				if (temp2.equals("y")) {
+					log.setLevel(Level.INFO);
+					verbose = true;
+					valid = true;
+				} else if (temp2.equals("n")) {
+					log.setLevel(Level.WARNING);
+					valid = true;
+				} else {
+					System.out.println("Invalid input, try again");
+				}
 			} else {
-				System.out.println("Invalid input, try again");
+				temp2 = args[1];
+				if (temp2.equals("y")) {
+					log.setLevel(Level.INFO);
+					verbose = true;
+					valid = true;
+				} else if (temp2.equals("n")) {
+					log.setLevel(Level.WARNING);
+					valid = true;
+				} else {
+					valid2 = false;
+					System.out.println("Invalid input, try again");
+				}
 			}
 		}
 		/* Initiate the Lexer with the input */
