@@ -28,7 +28,6 @@ public class BooleanExpr {
 		if(tokens.get(currIndex).getTokenType() == "openParen") {
 			currIndex++; // Plus because of open paren token
 			if (expr.validateExpr(tokens, currIndex)){
-				ParserMain.list.setInc(level);
 				if (boolop.validate(tokens, expr.getPostIndex())) {
 					if (expr.validateExpr(tokens, boolop.getPostIndex())){
 						ParserMain.list.setInc(level);

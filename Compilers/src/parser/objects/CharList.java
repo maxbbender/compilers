@@ -40,6 +40,7 @@ public class CharList {
 	}
 	
 	public static boolean validate(String[] input, int currIndex) {
+		int baseIndex = ParserMain.list.getSize() + 1;
 		int level = ParserMain.list.getInc();
 		StringBuilder temp = new StringBuilder();
 		ParserMain.list.addNode("CHARLIST", temp.toString());
@@ -52,7 +53,12 @@ public class CharList {
 				} else {
 					return false; // FALSE ON INVALID CHARLIST
 				}
-			} else if (space.validate(input, currIndex)) {
+			} else {
+				ParserMain.list.removeRange(baseIndex, ParserMain.list.getSize());
+			}
+			
+			
+			if (space.validate(input, currIndex)) {
 				if (charList.validate(input, space.getPostIndex())) {
 					return true; //TRUE ON SPACE
 				} else {

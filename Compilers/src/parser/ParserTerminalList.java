@@ -70,4 +70,7 @@ public class ParserTerminalList {
 	public static void setInc(int newInc) {
 		currIndent = newInc;
 	}
+	public static String getLast() {
+		return list.get(list.size()-1).getObjectType();
+	}
 }

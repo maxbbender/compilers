@@ -106,7 +106,12 @@ public class Main {
 
 			parser = new ParserMain(lexer.getMyRegex().getTokens(), numberOfPrograms);
 			System.out.println("Parser Finished");
-			parser.getList().printList();
+			
+			if (verbose) {
+				System.out.println("--CST--");
+				parser.getList().printList();
+			}
+			
 			
 		}
 		

@@ -20,9 +20,9 @@ public class Expr {
 	}
 	
 	public static boolean validateExpr(ArrayList<Token> tokens, int currIndex){
+		int level = ParserMain.list.getInc();
 		ParserMain.list.addNode("EXPRESSION", "EXPR");
 		ParserMain.list.inc();
-		int level = ParserMain.list.getInc();
 		int baseIndex = ParserMain.list.getSize();
 		intExpr = new IntExpr();
 		stringExpr = new StringExpr();
@@ -34,7 +34,7 @@ public class Expr {
 			ParserMain.list.setInc(level);
 			return true;
 		} else {
-			ParserMain.list.setInc(level);
+			ParserMain.list.setInc(level + 1);
 			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
 		}
 		
@@ -44,7 +44,7 @@ public class Expr {
 			ParserMain.list.setInc(level);
 			return true;
 		} else {
-			ParserMain.list.setInc(level);
+			ParserMain.list.setInc(level + 1);
 			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
 		}
 		
@@ -54,7 +54,7 @@ public class Expr {
 			ParserMain.list.setInc(level);
 			return true;
 		} else {
-			ParserMain.list.setInc(level);
+			ParserMain.list.setInc(level + 1);
 			ParserMain.list.removeRange(baseIndex,ParserMain.list.getSize());
 		}
 		
