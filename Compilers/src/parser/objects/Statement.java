@@ -34,7 +34,6 @@ public class Statement {
 		if (printStatement.validatePrintStatement(tokens, currIndex)) {
 			ParserMain.list.setInc(level);
 			postIndex = printStatement.getPostIndex();
-			log.info("PRINT STATEMENT");
 			return true;
 		} else {
 			ParserMain.list.setInc(level);
@@ -44,7 +43,6 @@ public class Statement {
 		if (assignmentStatement.validate(tokens, currIndex)) {
 			ParserMain.list.setInc(level);
 			postIndex = assignmentStatement.getPostIndex();
-			log.info("ASSIGNMENT STATEMENT");
 			return true;
 		} else {
 			ParserMain.list.setInc(level);
