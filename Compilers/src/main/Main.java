@@ -56,7 +56,8 @@ public class Main {
 				}
 			} else {
 				File f = new File(args[0]);
-				if(f.exists() && !f.isDirectory()) { 
+				if(f.exists() && !f.isDirectory()) {
+					System.out.println("File Found at path " + args[0]);
 					temp = args[0];
 				    valid = true;
 				} else {
