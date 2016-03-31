@@ -73,4 +73,10 @@ public class ParserTerminalList {
 	public static String getLast() {
 		return list.get(list.size()-1).getObjectType();
 	}
+	public static TerminalNode get(int index) {
+		return list.get(index);
+	}
+	public static ArrayList<TerminalNode> getList() {
+		return list;
+	}
 }
