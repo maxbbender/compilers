@@ -53,4 +53,8 @@ public class TerminalNode {
 		
 		return temp.toString();
 	}
+	
+	public void incLevel() {
+		objectLevel++;
+	}
 }

@@ -24,7 +24,7 @@ public class IfStatement {
 		block = new Block();
 		if (tokens.get(currIndex).getTokenType() == "ifKeyword") {
 			if (booleanExpr.validate(tokens, currIndex + 1)) {
-				ParserMain.list.setInc(level);
+				ParserMain.list.setInc(level+1);
 				if (block.validateBlock(tokens, booleanExpr.getPostIndex())) {
 					ParserMain.list.setInc(level);
 					postIndex = block.getPostIndex();

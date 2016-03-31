@@ -25,7 +25,7 @@ public class WhileStatement {
 		if (tokens.get(currIndex).getTokenType() == "whileKeyword") {
 			currIndex++;
 			if (booleanExpr.validate(tokens, currIndex)) {
-				ParserMain.list.setInc(level);
+				ParserMain.list.setInc(level+1);
 				currIndex = booleanExpr.getPostIndex();
 				if (block.validateBlock(tokens, currIndex)) {
 					ParserMain.list.setInc(level);
