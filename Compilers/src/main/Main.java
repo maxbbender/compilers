@@ -26,11 +26,14 @@ public class Main {
 		String temp = null;
 		String temp2 = null;
 		boolean valid = false;
-		boolean valid2 = true;
+		boolean valid2 = false;
 		LexerMain lexer = null;
 		ParserMain parser;
 		Scanner input = new Scanner(System.in);
 		
+		if (args[0] != null && args[1] != null) {
+			valid2 = true;
+		}
 		/* Logger/Verbose Setup */
 		log.setUseParentHandlers(false);
 		Handler[] handlers = log.getHandlers();
@@ -69,7 +72,6 @@ public class Main {
 			}
 		}
 		valid = false; 
-		valid2 = true;
 		/* Are we going to run in Verbose? */
 		while (!valid) {
 			if (!valid2) {
@@ -145,12 +147,16 @@ public class Main {
 			}
 			
 			/*AST GENERATION */
+			System.out.println("AST Generation started");
 			AST ast = new AST(parser.getList());
+			System.out.println("AST init");
 			ast.run();
-			System.out.println("----AST----");
-			ast.printList();
+			System.out.println("AST created");
 			
-			
+			if (verbose) {
+				System.out.println("----AST----");
+				ast.printList();
+			}
 		}
 		
 	}

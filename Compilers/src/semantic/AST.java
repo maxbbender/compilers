@@ -44,7 +44,7 @@ public class AST {
 	private static void parseStatement(int level) {
 		currIndex++; // @ VarDecl|WhileStmt|IfStmt|AssignmentStmt|PrintStmt|Block
 		String type = cst.get(currIndex).getObjectValue();
-		System.out.println("parseStatement type: " + type);
+		//System.out.println("parseStatement type: " + type);
 		switch (type) {
 		case "varDecl":
 			varDecl(level); // @ StatementList
@@ -129,7 +129,7 @@ public class AST {
 	private static void parseExpression(int level) {
 		currIndex++; // At IntExpr|StringExpr|BoolExpr|ID
 		String type = cst.get(currIndex).getObjectType();
-		System.out.println("parseExpression type: " + type);
+		//System.out.println("parseExpression type: " + type);
 		switch (type) {
 		case "IntExpression":
 			intExpr(level); // @ Element after Expression
