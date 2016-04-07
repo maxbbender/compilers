@@ -5,6 +5,8 @@ import lexer.LexerMain;
 import lexer.Token;
 import parser.ParserMain;
 import parser.ParserTerminalList;
+import semantic.AST;
+
 import java.util.logging.Logger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -141,6 +143,12 @@ public class Main {
 				System.out.println("--CST--");
 				parser.getList().printList();
 			}
+			
+			/*AST GENERATION */
+			AST ast = new AST(parser.getList());
+			ast.run();
+			System.out.println("----AST----");
+			ast.printList();
 			
 			
 		}

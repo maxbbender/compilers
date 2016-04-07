@@ -1,6 +1,7 @@
 package semantic;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import parser.ParserTerminalList;
 import parser.TerminalNode;
@@ -25,33 +26,39 @@ public class AST {
 		level++;
 		ast.add(baseBlock);
 		currIndex = 2; // This will put us at the first StatementList
+		parseStatementList(level);
 		
 		
 	}
 	
 	private static void parseStatementList(int level) {
-		parseStatement(level);
-		parseStatementList(level);
+		if (currIndex < cst.size() - 1) {
+			parseStatement(level);
+		}
+		if (currIndex < cst.size() - 1) {
+			parseStatementList(level);
+		}
 	}
 	
 	
 	private static void parseStatement(int level) {
 		currIndex++; // @ VarDecl|WhileStmt|IfStmt|AssignmentStmt|PrintStmt|Block
 		String type = cst.get(currIndex).getObjectValue();
+		System.out.println("parseStatement type: " + type);
 		switch (type) {
-		case "VARDECL":
+		case "varDecl":
 			varDecl(level); // @ StatementList
 			break;
-		case "STATEMENT_ASSIGNMENT":
+		case "assignment":
 			assignment(level); // @ StatementList
 			break;
-		case "STATEMENT_WHILE":
+		case "while_Statement":
 			whileStatement(level); // @ StatementList
 			break;
-		case "STATEMENT_IF": 
+		case "ifStatement": 
 			ifStatement(level); // @ StatementList
 			break;
-		case "STATEMENT_PRINT": 
+		case "print": 
 			printStatement(level); // @ StatementList
 			break;
 			
@@ -60,6 +67,7 @@ public class AST {
 	
 	private static void ifStatement(int level) {
 		TerminalNode ifStmt = new TerminalNode("IfStmt", "IfStmt", level);
+		ast.add(ifStmt);
 		level++; // Under IfStmt
 		currIndex++; // @ BoolExpr
 		parseBoolExpr(level); // @ Block
@@ -80,9 +88,11 @@ public class AST {
 	
 	private static void assignment(int level) {
 		TerminalNode assignment = new TerminalNode("AssignmentStmt", "AssignmentStmt", level);
+		ast.add(assignment);
 		currIndex++; // @id
 		level++; // Under Assignment
 		TerminalNode id = new TerminalNode("id", cst.get(currIndex).getObjectValue(), level);
+		ast.add(id);
 		currIndex++; // @ Expression
 		parseExpression(level); // @ StatementList
 		
@@ -90,6 +100,7 @@ public class AST {
 	
 	private static void printStatement(int level) {
 		TerminalNode printStatement = new TerminalNode("PrintStmt", "PrintStmt", level);
+		ast.add(printStatement);
 		currIndex++; // @ Expression
 		level++; // Under PrintStmt
 		parseExpression(level); // @ StatementList
@@ -118,6 +129,7 @@ public class AST {
 	private static void parseExpression(int level) {
 		currIndex++; // At IntExpr|StringExpr|BoolExpr|ID
 		String type = cst.get(currIndex).getObjectType();
+		System.out.println("parseExpression type: " + type);
 		switch (type) {
 		case "IntExpression":
 			intExpr(level); // @ Element after Expression
@@ -166,16 +178,15 @@ public class AST {
 	
 	private static void parseBoolExpr(int level) {
 		TerminalNode boolExpr = new TerminalNode("BoolExpr", "BoolExpr", level);
+		ast.add(boolExpr);
 		level++; // We are in BoolExpr
 		currIndex++; // At Expression|BoolVal
 		String type = cst.get(currIndex).getObjectType();
 		switch (type) {
 		/* This would be the (Expr boolop Expr) */
 		case "EXPRESSION":
-			currIndex++; // Inside Expression
 			parseExpression(level); //returns @ Boolop
 			parseBoolop(level); //returns @ Expression
-			currIndex++; // Inside Expression
 			parseExpression(level);
 			break;
 		/* This would be for (boolval) */
@@ -184,5 +195,35 @@ public class AST {
 			currIndex++; //At Block
 			ast.add(newBool);
 		}
+	}
+	
+	public static void printList() {
+		for (Iterator<TerminalNode> it = ast.iterator(); it.hasNext();) {
+			System.out.println(it.next().getTerminalNode());
+		}
+	}
+
+	public static ArrayList<TerminalNode> getAst() {
+		return ast;
+	}
+
+	public static void setAst(ArrayList<TerminalNode> ast) {
+		AST.ast = ast;
+	}
+
+	public static ArrayList<TerminalNode> getCst() {
+		return cst;
+	}
+
+	public static void setCst(ArrayList<TerminalNode> cst) {
+		AST.cst = cst;
+	}
+
+	public static int getCurrIndex() {
+		return currIndex;
+	}
+
+	public static void setCurrIndex(int currIndex) {
+		AST.currIndex = currIndex;
 	}
 }
