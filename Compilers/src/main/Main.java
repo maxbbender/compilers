@@ -6,6 +6,7 @@ import lexer.Token;
 import parser.ParserMain;
 import parser.ParserTerminalList;
 import semantic.AST;
+import semantic.SymbolTable;
 
 import java.util.logging.Logger;
 import java.util.logging.ConsoleHandler;
@@ -156,6 +157,14 @@ public class Main {
 			if (verbose) {
 				System.out.println("----AST----");
 				ast.printList();
+			}
+			
+			System.out.println("Symbol Table Generation");
+			SymbolTable symbolTable = new SymbolTable(ast);
+			
+			if (verbose) {
+				System.out.println("----Symbol Table-----");
+				symbolTable.printSymbolTable();
 			}
 		}
 		

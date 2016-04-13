@@ -1,0 +1,4 @@
+{
+boolean c
+c = ((1 != 2) == false)
+} $

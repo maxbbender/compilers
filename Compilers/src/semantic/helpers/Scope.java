@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Scope {
 	private int scope;
-	private static ArrayList<Decleration> decl;
-	private static ArrayList<Assignment> assign;
+	private ArrayList<Decleration> decl;
+	private ArrayList<Assignment> assign;
 	private int levelStart;
 	private int levelEnd;
 	
@@ -24,64 +24,81 @@ public class Scope {
 		levelEnd = -1;
 	}
 	
-	public static void addAssignment(Assignment newAss) {
+	public void printDeclerations() {
+		for (Decleration temp : decl) {
+			temp.printDecl();
+		}
+	}
+	
+	public void printAssignments() {
+		for (Assignment temp : assign) {
+			temp.printAss();
+		}
+	}
+	public void addAssignment(Assignment newAss) {
 		assign.add(newAss);
 	}
 	
-	public static void addAssignment(String id, int newInt) {
+	public void addAssignment(String id, int newInt) {
 		Assignment temp = new Assignment(id, newInt);
 		assign.add(temp);
 	}
 	
-	public static void addAssignment(String id, String newString) {
+	public void addAssignment(String id, String newString) {
 		Assignment temp = new Assignment(id, newString);
 		assign.add(temp);
 	}
 	
-	public static void addAssignment(String id, Boolean newBool) {
+	public void addAssignment(String id, Boolean newBool) {
 		Assignment temp = new Assignment(id, newBool);
 		assign.add(temp);
 	}
 	
-	public static void addAssignment(String id, IntExpr expr) {
+	public void addAssignment(String id, IntExpr expr) {
 		Assignment temp = new Assignment(id, expr);
 		assign.add(temp);
 	}
 	
-	public static void addAssignment(String id, BoolExpr expr) {
+	public void addAssignment(String id, BoolExpr expr) {
 		Assignment temp = new Assignment(id, expr);
 		assign.add(temp);
 	}
 	
-	public static void addDecl(Decleration newDecl) {
+	public void addDecl(Decleration newDecl) {
 		decl.add(newDecl);
 	}
 	
-	public static void addDecl(String type, String id) {
+	public void addDecl(String type, String id) {
 		Decleration temp = new Decleration(type,id);
 		decl.add(temp);
 	}
 	
-	public static boolean checkDeclaration(String id) {
+	public boolean checkDeclaration(String id) {
 		for(Decleration declNode : decl) {
-			if (declNode.getId() == id){
+//			System.out.println("Input ID: " + id);
+//			System.out.println("DeclNode ID: " + declNode.getId());
+			if (declNode.getId().equals(id)){
 				return true;
 			}
 		} 
 		return false;
 	}
 	
-	public static boolean checkType(String type, String id) {
+	public boolean checkType(String type, String id) {
 		for(Decleration declNode : decl) {
-			if (declNode.getId() == id) {
+			if (declNode.getId().equals(id)) {
 				/* IntExpression Type set */
 				if (type == "IntExpr") {
-					type = "digit";
+					type = "int";
 				} else if (type == "BoolExpr") {
 					type = "boolean";
+				} else if (type == "digit") {
+					type = "int";
+				} else if (type == "stringExpr") {
+					type = "string";
 				}
 				
-				if (declNode.getType() == type) {
+				if (declNode.getType().equals(type)) {
 					return true;
 				}
 			}
@@ -97,12 +114,12 @@ public class Scope {
 		this.scope = scope;
 	}
 
-	public static ArrayList<Decleration> getDecl() {
+	public ArrayList<Decleration> getDecl() {
 		return decl;
 	}
 
-	public static void setDecl(ArrayList<Decleration> decl) {
-		Scope.decl = decl;
+	public void setDecl(ArrayList<Decleration> newDecl) {
+		decl = newDecl;
 	}
 
 	public int getLevelStart() {

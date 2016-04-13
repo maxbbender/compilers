@@ -61,7 +61,8 @@ public class AST {
 		case "print": 
 			printStatement(level); // @ StatementList
 			break;
-			
+		case "block":
+			parseBlock(level); // @ StatementList
 		}
 	}
 	
@@ -141,6 +142,10 @@ public class AST {
 			currIndex++; // @ Charlist. Now we iterate through to pass CharList/Chars
 			while (cst.get(currIndex).getObjectType() == "CHARLIST" || cst.get(currIndex).getObjectType() == "CHAR") {
 				currIndex++;
+				
+				if (currIndex >= cst.size()) {
+					break;
+				}
 			} // After this we are outside of the Char/CharList
 			break;
 		case "BOOLEXPR":
@@ -159,16 +164,22 @@ public class AST {
 		currIndex++; // @ Digit
 		TerminalNode newInt = new TerminalNode("digit", cst.get(currIndex).getObjectValue(), level);
 		TerminalNode newIntExpr = new TerminalNode("IntExpr", "IntExpr", level);
-		if (cst.get(currIndex + 1).getObjectType() == "INTOP") { // Are we looking @ (digit intop Expr)
-			newInt.incLevel(); //Set digit to be under the IntopExpr
-			ast.add(newIntExpr);
-			ast.add(newInt);
-			currIndex = currIndex + 2; // @ Expression
-			parseExpression(level+1);
-		} else { // Are we looking at just a digit
+		if (currIndex + 1 < cst.size()) {
+			if (cst.get(currIndex + 1).getObjectType() == "INTOP") { // Are we looking @ (digit intop Expr)
+				newInt.incLevel(); //Set digit to be under the IntopExpr
+				ast.add(newIntExpr);
+				ast.add(newInt);
+				currIndex = currIndex + 2; // @ Expression
+				parseExpression(level+1);
+			} else { // Are we looking at just a digit
+				ast.add(newInt);
+				currIndex++; // @ next Element after digit
+			}
+		} else {
 			ast.add(newInt);
 			currIndex++; // @ next Element after digit
 		}
+		
 	}
 	
 	private static void parseBoolop(int level) {

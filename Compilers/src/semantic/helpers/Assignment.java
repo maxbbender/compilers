@@ -2,6 +2,7 @@ package semantic.helpers;
 
 public class Assignment {
 	private String id;
+	private String assignId;
 	private int valueInt;
 	private String valueString;
 	private Boolean valueBoolean;
@@ -10,6 +11,7 @@ public class Assignment {
 	private String type;
 
 	public Assignment() {
+		assignId = null;
 		type = null;
 		intExpr = null;
 		boolExpr = null;
@@ -27,6 +29,7 @@ public class Assignment {
 		intExpr = null;
 		valueString = null;
 		boolExpr = null;
+		assignId = null;
 	}
 	/* BOOLEAN */
 	public Assignment(String newId, Boolean newBool) {
@@ -37,11 +40,19 @@ public class Assignment {
 		intExpr = null;
 		valueInt = -1;
 		boolExpr = null;
+		assignId = null;
 	}
 	/* STRING */
 	public Assignment(String newId, String newString) {
-		type = "string";
-		valueString = newString;
+		if (newString.startsWith("\"")) {
+			type = "string";
+			valueString = newString;
+			assignId = null;
+		} else {
+			type = "id";
+			assignId = newString;
+			valueString = null;
+		}
 		id = newId;
 		valueInt = -1;
 		intExpr = null;
@@ -57,18 +68,50 @@ public class Assignment {
 		valueInt = -1;
 		valueString = null;
 		boolExpr = null;
+		assignId = null;
 	}
-	
+	/* BoolExpr */
 	public Assignment(String newId, BoolExpr expr) {
-		type = "intExpr";
+		type = "boolExpr";
 		id = newId;
 		boolExpr = expr;
 		valueBoolean = null;
 		valueInt = -1;
 		valueString = null;
 		intExpr = null;
+		assignId = null;
 	}
 	
+	public void printAss() {
+		String data = null;
+		switch (type) {
+		case "int":
+			data = String.valueOf(valueInt);
+			break;
+		case "bool":
+			data = String.valueOf(valueBoolean);
+			break;
+		case "string":
+			data = valueString;
+			break;
+		case "id":
+			data = assignId;
+			break;
+		case "intExpr":
+			data = intExpr.print();
+			break;
+		case "boolExpr":
+			data = boolExpr.print();
+			break;
+		}
+		
+		if (data != null) {
+			System.out.println(id + ": " + data);
+		} else {
+			System.out.println("ERROR PRINTING ASSIGNMENT STATEMENT. Data is null");
+		}
+		
+	}
 	public String getId() {
 		return id;
 	}

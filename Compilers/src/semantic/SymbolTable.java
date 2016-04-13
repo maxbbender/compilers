@@ -48,7 +48,7 @@ public class SymbolTable {
 					if (checkType(id, type)) { // Is the variable type declaration the same
 						switch (type) {
 						case "digit": 
-							getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
+							getCurrScope().addAssignment(id, Integer.valueOf(astList.get(index).getObjectValue()));
 							index++; // @ next stmt
 							break;
 						case "IntExpr":
@@ -61,33 +61,41 @@ public class SymbolTable {
 							index++; // @ next stmt
 							break;
 						case "BoolExpr":
-							index++; // @ BoolVal|BoolExpr2|id
 							getCurrScope().addAssignment(id, parseBoolExpr()); // @ next stmt
+							break;
+						case "id": 
+							getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
+							index++;
 						}
 					} else {
-						// Variable Type mismatch
+						System.out.println("ERORR: Type Mismatch on \"" + id + "\" for type \"" + type + "\"");
 					}
 					
 				} else {
-					// Not declared
+					System.out.println("ERROR: Variable " + id + " is not declared");
 				}
-				
-				
+				break; 
 			}
-			index++; // Increment 1 to get to Stmt/Expr/ect
 		}
 			
 	}
-	
+	public void printSymbolTable() {
+		int scopeNum = 0;
+		for (Scope temp : scope) {
+			System.out.println("Scope " + scopeNum + "('s) Declerations:");
+			temp.printDeclerations();
+			System.out.println("Scope " + scopeNum + "('s) Assignments:");
+			temp.printAssignments();
+			System.out.println("---------------------");
+			scopeNum++;
+		}
+	}
 	private BoolExpr parseBoolExpr() { // @ 
 		int startLevel = astList.get(index).getObjectLevel();
 		int currLevel = startLevel;
 		BoolExpr temp = new BoolExpr();
 		while(astList.get(index).getObjectLevel() >= startLevel) {
-			if (astList.get(index).getObjectLevel() < currLevel) {
-				temp.addExpr(")");
-				currLevel--;
-			}
+			
 			
 			if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() != "BoolVal") {
 				currLevel++;
@@ -107,15 +115,27 @@ public class SymbolTable {
 				temp.addExpr(astList.get(index).getObjectValue());
 				index++; // @ boolop | next stmt
 			} else if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() == "BoolVal") {
-				index++; // @ BoolVal
+				index++;
 				temp.addExpr(astList.get(index).getObjectValue());
 				index++; // @ boolop | next stmt
 			} else {
 				temp = null; // Type Error
 			}
+			if (index >= astList.size()) {
+				if (temp.getExpr().get(temp.getExpr().size()-1) != ")"){
+					temp.addExpr(")");
+				}
+				break;
+			}
+			
+			if (astList.get(index).getObjectLevel() < currLevel) {
+				temp.addExpr(")");
+				currLevel--;
+			}
 		}
 		return temp;
 	}
+	
 	private IntExpr parseIntExpr() { // @ digit1
 		int startLevel = astList.get(index).getObjectLevel();
 		IntExpr temp = new IntExpr();
@@ -148,7 +168,7 @@ public class SymbolTable {
 		
 		/* Check previous scopes for type */
 		int tempS = currScope - 1;
-		while (tempS > 0) {
+		while (tempS >= 0) {
 			if (scope.get(tempS).checkType(id, type)) {
 				return true;
 			}
@@ -163,7 +183,7 @@ public class SymbolTable {
 		}
 		/* Check previous scopes for declaration */
 		int tempS = currScope - 1;
-		while (tempS > 0) {
+		while (tempS >= 0) {
 			if(scope.get(tempS).checkDeclaration(id)) {
 				return true;
 			}

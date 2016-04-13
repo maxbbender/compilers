@@ -13,6 +13,10 @@ public class Decleration {
 		id = newId;
 	}
 
+	public void printDecl() {
+		System.out.println(id + ": " + type); 
+	}
+	
 	public String getType() {
 		return type;
 	}

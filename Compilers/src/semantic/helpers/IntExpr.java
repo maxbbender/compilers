@@ -23,6 +23,22 @@ public class IntExpr {
 		this.id = id;
 	}
 	
+	public String print() {
+		StringBuilder tempString = new StringBuilder();
+		for (int temp : integers) {
+			if (tempString.length() > 0) { 
+				tempString.append(" + ");
+			}
+			tempString.append(temp);
+		}
+		
+		if (id != null) {
+			tempString.append(" + ");
+			tempString.append(id);
+		}
+		return tempString.toString();
+	}
+	
 	public ArrayList<String> forBoolExpr() {
 		ArrayList<String> temp = new ArrayList();
 		for (int tempInt : integers) {

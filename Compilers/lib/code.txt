@@ -1,7 +1,7 @@
 {
 int a
 boolean f
-a = (false == true)
+a = b
 string z
 z = "bond"
 while (a != 9) {
