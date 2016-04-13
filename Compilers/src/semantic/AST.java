@@ -73,6 +73,7 @@ public class AST {
 		parseBoolExpr(level); // @ Block
 		parseBlock(level); // @ StatementList
 	}
+	
 	private static void varDecl(int level) {
 		TerminalNode decl = new TerminalNode("VarDecl", "VarDecl", level);
 		currIndex++; // @ Type
