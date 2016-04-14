@@ -9,12 +9,12 @@ import semantic.helpers.BoolExpr;
 import semantic.helpers.IntExpr;
 
 public class SymbolTable {
-	private static Scope parent;
-	private static Scope currScope;
-	private static ArrayList<TerminalNode> astList;
-	private static int index;
+	private Scope parent;
+	private Scope currScope;
+	private ArrayList<TerminalNode> astList;
+	private int index;
 	private boolean errors; 
-	private static int currLevel;
+	private int currLevel;
 	
 	public SymbolTable(AST ast) {
 		errors = false;
@@ -27,6 +27,7 @@ public class SymbolTable {
 		String id;
 		String id1;
 		String id2;
+		int scopeNum = 2;
 		
 		/* Try to be at next Stmt/Expr/ect. */
 		while(index < astList.size()) {
@@ -44,11 +45,12 @@ public class SymbolTable {
 				/* Where are we */
 				switch(nodeType) {
 				case "Block": // Go into new scope
-					Scope tempScope = new Scope(node.getObjectLevel());
+					Scope tempScope = new Scope(node.getObjectLevel(), scopeNum);
 					currScope.addChild(tempScope);
 					tempScope.setParent(currScope);
 					currScope = tempScope;
 					index++; // @ next stmt
+					scopeNum++;
 					break;
 				case "VarDecl":
 					getCurrScope().addDecl(astList.get(index+1).getObjectValue(), astList.get(index+2).getObjectValue());
@@ -65,16 +67,31 @@ public class SymbolTable {
 								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
 								toContinue = false;
 								errors = true;
+							} 
+							if (type == "BoolExpr") {
+								int backLevel = astList.get(index - 1).getObjectLevel();
+								while (astList.get(index).getObjectType() != "Block" 
+										&& astList.get(index).getObjectType() != "AssignmentStmt" 
+										&& astList.get(index).getObjectType() != "VarDecl" 
+										&& astList.get(index).getObjectType() != "IfStmt" 
+										&& astList.get(index).getObjectType() != "WhileStmt") {
+//									System.out.println(astList.get(index).getObjectType());
+									index++;
+									if (index >= astList.size()) {
+										break;
+									}
+								}
+							} else {
+								index++;
 							}
 						} else {
 							toContinue = false;
 							System.out.println("ERROR: Variable " + id + " is not declared");
 							errors = true;
 						}
-						index++;
 					} else {
 						if (checkDeclaration(id)) { // returns true on declared
-							if (checkIntExpr(id)) { // returns false on no errors
+							if (typeIntExpr(id)) { // returns false on no errors
 								toContinue = false;
 								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
 							}
@@ -151,7 +168,7 @@ public class SymbolTable {
 			
 	}
 	
-	public boolean checkIdsType(String id1, String id2, String nodeType){
+	private boolean checkIdsType(String id1, String id2, String nodeType){
 		if (checkDeclaration(id1)) {
 			if (checkDeclaration(id2)) {
 				if (getType(id1) == getType(id2)) {
@@ -176,10 +193,11 @@ public class SymbolTable {
 		do {
 			if (!temp.isPrinted()) {
 				System.out.println("Scope " + scopeNum);
-				temp.printDeclerations();
+				temp.print();
+//				temp.printDeclerations();
 //				System.out.println("Scope " + scopeNum + "('s) Assignments:");
 //				temp.printAssignments();
-				System.out.println("---------------------");
+				System.out.println("*****************");
 				temp.setPrinted(true);
 				scopeNum++;
 			}
@@ -239,7 +257,7 @@ public class SymbolTable {
 		return temp;
 	}
 	
-	private boolean checkIntExpr(String id) {
+	private boolean typeIntExpr(String id) {
 		if (checkType("int", id)) {
 			index++; // @ digit | id
 			while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {

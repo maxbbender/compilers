@@ -3,7 +3,7 @@ package semantic.helpers;
 import java.util.ArrayList;
 
 public class Scope {
-	private int scope;
+	private int scopeNum;
 	private ArrayList<Decleration> decl;
 	private ArrayList<Assignment> assign;
 	private Scope parent; 
@@ -16,7 +16,7 @@ public class Scope {
 	public Scope() {
 		children = new ArrayList();
 		parent = null;
-		scope = -1;
+		scopeNum = 1;
 		levelStart = -1;
 		levelEnd = -1;
 		decl = new ArrayList();
@@ -25,7 +25,8 @@ public class Scope {
 		printed = false;
 	}
 	
-	public Scope(int nlevelStart) {
+	public Scope(int nlevelStart, int newScopeNum) {
+		scopeNum = newScopeNum;
 		children = new ArrayList();
 		parent = null;
 		assign = new ArrayList();
@@ -69,9 +70,36 @@ public class Scope {
 		return returnScope;
 		
 	}
+	
+	public void print() {
+		StringBuilder output = new StringBuilder();
+		
+		if (children.size() > 0) { 
+			System.out.println("    Children:");
+			for (Scope child : children) {
+				System.out.println("        Scope " + child.getScopeNum());
+			}
+		} else {
+			System.out.println("    Children: None");
+
+		}
+		
+		if (parent != null) { 
+			System.out.println("    Parent: Scope " + parent.getScopeNum());
+
+		} else { 
+			System.out.println("    Parent: NULL");
+		}
+		
+		System.out.println("    Declarations");
+		printDeclerations();
+		
+		
+	}
+	
 	public void printDeclerations() {
 		for (Decleration temp : decl) {
-			temp.printDecl();
+			System.out.println("        " + temp.printDecl());
 		}
 	}
 	
@@ -205,11 +233,11 @@ public class Scope {
 	}
 
 	public int getScope() {
-		return scope;
+		return scopeNum;
 	}
 
 	public void setScope(int scope) {
-		this.scope = scope;
+		this.scopeNum = scope;
 	}
 
 	public ArrayList<Decleration> getDecl() {
@@ -234,5 +262,13 @@ public class Scope {
 
 	public void setLevelEnd(int levelEnd) {
 		this.levelEnd = levelEnd;
+	}
+
+	public int getScopeNum() {
+		return scopeNum;
+	}
+
+	public void setScopeNum(int scopeNum) {
+		this.scopeNum = scopeNum;
 	}
 }
