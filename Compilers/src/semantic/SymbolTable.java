@@ -155,12 +155,13 @@ public class SymbolTable {
 		Scope temp = parent;
 		do {
 			if (!temp.isPrinted()) {
-				System.out.println("Scope " + scopeNum + "('s) Declerations:");
+				System.out.println("Scope " + scopeNum);
 				temp.printDeclerations();
-				System.out.println("Scope " + scopeNum + "('s) Assignments:");
-				temp.printAssignments();
+//				System.out.println("Scope " + scopeNum + "('s) Assignments:");
+//				temp.printAssignments();
 				System.out.println("---------------------");
 				temp.setPrinted(true);
+				scopeNum++;
 			}
 			if (temp.hasChildren()) {
 				temp = temp.getCurrChild();

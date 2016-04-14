@@ -23,6 +23,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		boolean toContinue = true;
 		int numberOfPrograms = 0;
 		String temp = null;
 		String temp2 = null;
@@ -133,7 +134,11 @@ public class Main {
 				System.out.println("Number of Programs: " + numberOfPrograms);
 			}
 			System.out.println("Lexer Finished");
-			
+		} else {
+			toContinue = false; 
+		}
+		
+		if (toContinue) {
 			/* Parser */
 			System.out.println("--------------------");
 			System.out.println("-------PARSER-------");
@@ -141,33 +146,36 @@ public class Main {
 
 			parser = new ParserMain(lexer.getMyRegex().getTokens(), numberOfPrograms);
 			System.out.println("Parser Finished");
+			System.out.println("#####################");
+			/* is there no errors in the parseing? Are we good to go? */
+			toContinue = parser.isToContinue();
 			
-			if (verbose) {
-				System.out.println("--CST--");
-				parser.getList().printList();
-			}
-			
-			/*AST GENERATION */
-			System.out.println("AST Generation started");
-			AST ast = new AST(parser.getList());
-			System.out.println("AST init");
-			ast.run();
-			System.out.println("AST created");
-			
-			if (verbose) {
-				System.out.println("----AST----");
-				ast.printList();
-			}
-			
-			System.out.println("Symbol Table Generation");
-			SymbolTable symbolTable = new SymbolTable(ast);
-			
-			if (verbose) {
-				System.out.println("----Symbol Table-----");
-				symbolTable.printSymbolTable();
-			}
+			if (toContinue) {
+				System.out.println("CST Generation Started");
+				if (verbose) {
+					parser.printCst();
+				}
+				
+//				/*AST GENERATION */
+//				System.out.println("AST Generation started");
+//				AST ast = new AST(parser.getList());
+//				System.out.println("AST init");
+//				ast.run();
+//				System.out.println("AST created");
+//				
+//				if (verbose) {
+//					System.out.println("----AST----");
+//					ast.printList();
+//				}
+//				
+//				System.out.println("Symbol Table Generation");
+//				SymbolTable symbolTable = new SymbolTable(ast);
+//				
+//				if (verbose) {
+//					System.out.println("----Symbol Table-----");
+//					symbolTable.printSymbolTable();
+//				}
+			}		
 		}
-		
-	}
-
+	}	
 }
