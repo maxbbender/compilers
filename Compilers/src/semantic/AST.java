@@ -11,18 +11,25 @@ public class AST {
 	private static ArrayList<TerminalNode> ast;
 	private static ArrayList<TerminalNode> cst;
 	private static int currIndex;
+	private static ArrayList<Integer> blockLevelsCST;
+	private static ArrayList<Integer> blockLevelsAST;
+	private static int blockIndex;
 	
 	public AST(ParserTerminalList list) {
+		blockIndex = 0;
 		currIndex = 0;
 		ast = new ArrayList();
 		cst = list.getList();
-		
+		blockLevelsCST = new ArrayList();
+		blockLevelsAST = new ArrayList();
 		
 	}
 	
 	public static void run() {
 		int level = 0;
 		TerminalNode baseBlock = new TerminalNode("Block", "Block", level);
+		blockLevelsCST.add(level);
+		blockLevelsAST.add(level+1);
 		level++;
 		ast.add(baseBlock);
 		currIndex = 2; // This will put us at the first StatementList
@@ -36,7 +43,15 @@ public class AST {
 			parseStatement(level);
 		}
 		if (currIndex < cst.size() - 1) {
-			parseStatementList(level);
+			if (cst.get(currIndex).getObjectLevel() < blockLevelsCST.get(blockIndex)) {
+				if (blockIndex > 0) {
+					blockIndex--;
+				}
+				parseStatementList(blockLevelsAST.get(blockIndex));
+			} else {
+				parseStatementList(level);
+			}
+			
 		}
 	}
 	
@@ -62,7 +77,7 @@ public class AST {
 			printStatement(level); // @ StatementList
 			break;
 		case "block":
-			parseBlock(level); // @ StatementList
+			parseBlock(level, cst.get(currIndex).getObjectLevel()); // @ StatementList
 		}
 	}
 	
@@ -72,7 +87,7 @@ public class AST {
 		level++; // Under IfStmt
 		currIndex++; // @ BoolExpr
 		parseBoolExpr(level); // @ Block
-		parseBlock(level); // @ StatementList
+		parseBlock(level, cst.get(currIndex).getObjectLevel()); // @ StatementList
 	}
 	
 	private static void varDecl(int level) {
@@ -114,11 +129,14 @@ public class AST {
 		currIndex++; // @ Boolean Expression
 		level++; // inc level
 		parseBoolExpr(level); // @ Block
-		parseBlock(level); // @ StatementList
+		parseBlock(level, cst.get(currIndex).getObjectLevel()); // @ StatementList
 	}
 	
-	private static void parseBlock(int level) {
+	private static void parseBlock(int level, int cstLevel) {
 		TerminalNode block = new TerminalNode("Block", "Block", level);
+		blockLevelsAST.add(level+1);
+		blockLevelsCST.add(cstLevel);
+		blockIndex++;
 		ast.add(block);
 		currIndex++; // @ Statement List
 		parseStatementList(level + 1);

@@ -6,24 +6,69 @@ public class Scope {
 	private int scope;
 	private ArrayList<Decleration> decl;
 	private ArrayList<Assignment> assign;
+	private Scope parent; 
+	private ArrayList<Scope> children;
+	private int currChild;
 	private int levelStart;
 	private int levelEnd;
+	private boolean printed;
 	
 	public Scope() {
+		children = new ArrayList();
+		parent = null;
 		scope = -1;
 		levelStart = -1;
 		levelEnd = -1;
 		decl = new ArrayList();
 		assign = new ArrayList();
+		currChild = 0;
+		printed = false;
 	}
 	
 	public Scope(int nlevelStart) {
+		children = new ArrayList();
+		parent = null;
 		assign = new ArrayList();
 		decl = new ArrayList();
 		levelStart = nlevelStart;
 		levelEnd = -1;
+		currChild = 0;
+		printed = false;
 	}
 	
+	public boolean hasParent() {
+		if (parent != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public Scope getParent() {
+		return parent;
+	}
+	public boolean hasChildren() {
+		if (children.size() > 0) {
+			if (currChild < children.size()) {
+				if (children.get(currChild) != null) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	public Scope getCurrChild() {
+		Scope returnScope = children.get(currChild);
+		currChild++;
+		return returnScope;
+		
+	}
 	public void printDeclerations() {
 		for (Decleration temp : decl) {
 			temp.printDecl();
@@ -73,6 +118,42 @@ public class Scope {
 		decl.add(temp);
 	}
 	
+	public ArrayList<Assignment> getAssign() {
+		return assign;
+	}
+
+	public void setAssign(ArrayList<Assignment> assign) {
+		this.assign = assign;
+	}
+
+	public ArrayList<Scope> getChildren() {
+		return children;
+	}
+
+	public void setChildren(ArrayList<Scope> children) {
+		this.children = children;
+	}
+
+	public boolean isPrinted() {
+		return printed;
+	}
+
+	public void setPrinted(boolean printed) {
+		this.printed = printed;
+	}
+
+	public void setCurrChild(int currChild) {
+		this.currChild = currChild;
+	}
+
+	public void addChild(Scope newScope) {
+		children.add(newScope);
+	}
+	
+	public void setParent(Scope newScope) {
+		parent = newScope;
+	}
+	
 	public boolean checkDeclaration(String id) {
 		for(Decleration declNode : decl) {
 //			System.out.println("Input ID: " + id);
@@ -84,6 +165,23 @@ public class Scope {
 		return false;
 	}
 	
+	public boolean hasId(String id) {
+		for(Decleration declNode : decl) {
+			if (declNode.getId() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public String getType(String id) {
+		for(Decleration declNode : decl) {
+			if (declNode.getId() == id) {
+				return declNode.getType();
+			}
+		}
+		return null;
+	}
 	public boolean checkType(String type, String id) {
 		for(Decleration declNode : decl) {
 			if (declNode.getId().equals(id)) {

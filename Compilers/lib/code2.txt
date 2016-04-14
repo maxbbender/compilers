@@ -1,4 +1,12 @@
 {
-boolean c
-c = ((1 != 2) == false)
+int a
+int d
+a = 0
+{
+	while (a == d) {
+		boolean r
+	}
+	string b
+}
+int c
 } $

@@ -9,87 +9,169 @@ import semantic.helpers.BoolExpr;
 import semantic.helpers.IntExpr;
 
 public class SymbolTable {
-	private static ArrayList<Scope> scope;
+	private static Scope parent;
+	private static Scope currScope;
 	private static ArrayList<TerminalNode> astList;
 	private static int index;
-	private static int currScope;
+	
 	private static int currLevel;
 	public SymbolTable(AST ast) {
-		currScope = -1;
+		boolean toContinue = true;
 		currLevel = 0;
-		Scope tempScope;
-		scope = new ArrayList();
+		parent = new Scope();
+		currScope = parent;
 		astList = ast.getAst();
-		index = 0;
+		index = 1;
+		String id;
+		String id1;
+		String id2;
 		
 		/* Try to be at next Stmt/Expr/ect. */
 		while(index < astList.size()) {
-			// TODO DECRIMINT currSCOPE if the level is < currScope.getStartLevel
-			TerminalNode node = astList.get(index);
-			String nodeType = node.getObjectValue();
-			/* Where are we */
-			switch(nodeType) {
-			case "Block":
-				currScope++; // Increment the current scope we are in. Starts @ 0
-				scope.add(tempScope = new Scope(node.getObjectLevel()));
-				index++; // @ next stmt
-				break;
-			case "VarDecl":
-				getCurrScope().addDecl(astList.get(index+1).getObjectValue(), astList.get(index+2).getObjectValue());
-				index = index + 3; // @ next stmt
-				break;
-			case "AssignmentStmt":
-				index++; // @ id
-				String id = astList.get(index).getObjectValue();
-				index++; // @ digit|IntExpr|stringExpr|BoolExpr
-				String type = astList.get(index).getObjectType();
-			
-				if (checkDeclaration(id)) { // Has the variable been declared
-					if (checkType(id, type)) { // Is the variable type declaration the same
-						switch (type) {
-						case "digit": 
-							getCurrScope().addAssignment(id, Integer.valueOf(astList.get(index).getObjectValue()));
-							index++; // @ next stmt
-							break;
-						case "IntExpr":
-							index++; // @ digit1
-							getCurrScope().addAssignment(id, parseIntExpr()); // @ next stmt
-							// TODO if parseIntExpr == null throw type error
-							break;
-						case "stringExpr":
-							getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
-							index++; // @ next stmt
-							break;
-						case "BoolExpr":
-							getCurrScope().addAssignment(id, parseBoolExpr()); // @ next stmt
-							break;
-						case "id": 
-							getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
-							index++;
+			if (toContinue) {
+				if (index > 2) {
+ 					if (astList.get(index).getObjectLevel() <= currScope.getLevelStart()) {
+						if (currScope.hasParent()) {
+							currScope = currScope.getParent();
+						}
+					}
+				}
+				
+				// TODO DECRIMINT currSCOPE if the level is < currScope.getStartLevel
+				TerminalNode node = astList.get(index);
+				String nodeType = node.getObjectValue();
+				/* Where are we */
+				switch(nodeType) {
+				case "Block": // Go into new scope
+					Scope tempScope = new Scope(node.getObjectLevel());
+					currScope.addChild(tempScope);
+					tempScope.setParent(currScope);
+					currScope = tempScope;
+					index++; // @ next stmt
+					break;
+				case "VarDecl":
+					getCurrScope().addDecl(astList.get(index+1).getObjectValue(), astList.get(index+2).getObjectValue());
+					index = index + 3; // @ next stmt
+					break;
+				case "AssignmentStmt":
+					index++; // @ id
+					id = astList.get(index).getObjectValue();
+					index++; // @ digit|IntExpr|stringExpr|BoolExpr
+					String type = astList.get(index).getObjectType();
+				
+					if (checkDeclaration(id)) { // Has the variable been declared
+						if (!checkType(type, id)) { // Is the variable type declaration the same
+							System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+							toContinue = false;
 						}
 					} else {
-						System.out.println("ERORR: Type Mismatch on \"" + id + "\" for type \"" + type + "\"");
+						toContinue = false;
+						System.out.println("ERROR: Variable " + id + " is not declared");
 					}
-					
-				} else {
-					System.out.println("ERROR: Variable " + id + " is not declared");
+					index++;
+					break;
+//					switch (type) {
+//					case "digit": 
+//						getCurrScope().addAssignment(id, Integer.valueOf(astList.get(index).getObjectValue()));
+//						index++; // @ next stmt
+//						break;
+//					case "IntExpr":
+//						index++; // @ digit1
+//						getCurrScope().addAssignment(id, parseIntExpr()); // @ next stmt
+//						// TODO if parseIntExpr == null throw type error
+//						break;
+//					case "stringExpr":
+//						getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
+//						index++; // @ next stmt
+//						break;
+//					case "BoolExpr":
+//						getCurrScope().addAssignment(id, parseBoolExpr()); // @ next stmt
+//						break;
+//					case "id": 
+//						getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
+//						index++;
+//					}
+//				} else {
+//					System.out.println("ERORR: Type Mismatch on \"" + id + "\" for type \"" + type + "\"");
+//				}
+//				
+//			} else {
+//				System.out.println("ERROR: Variable " + id + " is not declared");
+//			}
+				case "IfStmt":
+					index = index + 2; // @id
+					id1 = astList.get(index).getObjectValue();
+					id2 = astList.get(index + 2).getObjectValue();
+					index = index + 3;
+					if (!checkIdsType(id1, id2, nodeType)) {
+						toContinue = false;
+					}
+					break;
+				case "WhileStmt": 
+					index = index + 2; // @id
+					id1 = astList.get(index).getObjectValue();
+					id2 = astList.get(index + 2).getObjectValue();
+					index = index + 3;
+					if (!checkIdsType(id1, id2, nodeType)) {
+						toContinue = false;
+					}
+					break;
+				default:
+					toContinue = false;
+					System.out.println("ERROR DEFAULT HIT");
+					System.out.println("Current: " + nodeType);
+				//case "
 				}
-				break; 
+			} else {
+				break;
 			}
+			
 		}
 			
 	}
-	public void printSymbolTable() {
-		int scopeNum = 0;
-		for (Scope temp : scope) {
-			System.out.println("Scope " + scopeNum + "('s) Declerations:");
-			temp.printDeclerations();
-			System.out.println("Scope " + scopeNum + "('s) Assignments:");
-			temp.printAssignments();
-			System.out.println("---------------------");
-			scopeNum++;
+	
+	
+	public boolean checkIdsType(String id1, String id2, String nodeType){
+		if (checkDeclaration(id1)) {
+			if (checkDeclaration(id2)) {
+				if (getType(id1) == getType(id2)) {
+					return true;
+				} else {
+					System.out.println("Types do no match. Ids " + id1 + " and " + id2);
+					return false;
+				}
+			} else {
+				System.out.println("Second argument is not defined in " + nodeType);
+				return false;
+			}
+		} else {
+			System.out.println("First argument is not defined in " + nodeType);
+			return false;
 		}
 	}
+	
+	public void printSymbolTable() {
+		int scopeNum = 1;
+		Scope temp = parent;
+		do {
+			if (!temp.isPrinted()) {
+				System.out.println("Scope " + scopeNum + "('s) Declerations:");
+				temp.printDeclerations();
+				System.out.println("Scope " + scopeNum + "('s) Assignments:");
+				temp.printAssignments();
+				System.out.println("---------------------");
+				temp.setPrinted(true);
+			}
+			if (temp.hasChildren()) {
+				temp = temp.getCurrChild();
+			} else if (temp.hasParent()) {
+				temp = temp.getParent();
+			} else {
+				temp = null;
+			}
+		} while (temp != null); 
+	}
+	
 	private BoolExpr parseBoolExpr() { // @ 
 		int startLevel = astList.get(index).getObjectLevel();
 		int currLevel = startLevel;
@@ -160,40 +242,67 @@ public class SymbolTable {
 		return temp;
 		
 	}
-	private Boolean checkType(String type, String id) {
-		/* Check current scope for type */
-		if (getCurrScope().checkType(id, type)) {
-			return true;
-		}
-		
-		/* Check previous scopes for type */
-		int tempS = currScope - 1;
-		while (tempS >= 0) {
-			if (scope.get(tempS).checkType(id, type)) {
-				return true;
+	
+	private String getType(String id) {
+		Scope temp = currScope;
+		if (temp.hasId(id)) {
+			String type = temp.getType(id);
+			if (type != null) {
+				return type;
 			}
-			tempS--;
+		} else {
+			do {
+				temp = temp.getParent();
+				if (temp != null) {
+					if (temp.hasId(id)) {
+						String type = temp.getType(id);
+						if (type != null) {
+							return type;
+						}
+					}
+				}
+			} while (temp != null);
 		}
-		return false;
+		return null;
 	}
-	private Boolean checkDeclaration(String id) {
-		/* Check current scope for declaration */
-		if (getCurrScope().checkDeclaration(id)) {
+	
+	private Boolean checkType(String type, String id) {
+		Scope temp = currScope;
+		if (temp.checkType(type, id)) {
 			return true;
+		} else {
+			do {
+				temp = temp.getParent();
+				if (temp != null) {
+					if (temp.checkType(type, id)) {
+						return true;
+					}
+				}
+			} while (temp != null);
 		}
-		/* Check previous scopes for declaration */
-		int tempS = currScope - 1;
-		while (tempS >= 0) {
-			if(scope.get(tempS).checkDeclaration(id)) {
-				return true;
-			}
-			tempS--;
+		return false; 
+	}
+	
+	private Boolean checkDeclaration(String id) {
+		Scope temp = currScope;
+		if (temp.checkDeclaration(id)) {
+			return true;
+		} else {
+			do {
+				temp = temp.getParent();
+				if (temp != null) {
+					if (temp.checkDeclaration(id)) {
+						return true;
+					}
+				}
+			} while (temp != null);
 		}
 		return false;
+		
 	}
 	
 	private Scope getCurrScope() {
-		return scope.get(currScope);
+		return currScope;
 	}
 }
 
