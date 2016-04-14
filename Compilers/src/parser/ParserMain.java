@@ -21,6 +21,7 @@ public class ParserMain {
 			if (program.validateProgram(tokens, index)) {
 				System.out.println("Program " + (i+1) + " is valid");
 				programs.add(list);
+				index = program.getPostIndex();
 			} else {
 				System.out.println("Program " + (i+1) + " is not valid");
 				toContinue = false;
@@ -40,9 +41,9 @@ public class ParserMain {
 				System.out.println("CST for Program " + currCst);
 				System.out.println("---------------------------");
 				temp.printList();
-				System.out.println("****************************");
+				System.out.println("---------------------------");
 				System.out.println("Program " + currCst + " finished printing");
-				System.out.println("****************************");
+				System.out.println("---------------------------");
 				currCst++;
 			}
 		}

@@ -1,5 +1,6 @@
 package main;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import lexer.LexerMain;
 import lexer.Token;
@@ -23,6 +24,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		ArrayList<AST> astPrograms = new ArrayList();
 		boolean toContinue = true;
 		int numberOfPrograms = 0;
 		String temp = null;
@@ -145,29 +147,55 @@ public class Main {
 			System.out.println("--------------------");
 
 			parser = new ParserMain(lexer.getMyRegex().getTokens(), numberOfPrograms);
+			System.out.println("#####################");
 			System.out.println("Parser Finished");
 			System.out.println("#####################");
 			/* is there no errors in the parseing? Are we good to go? */
 			toContinue = parser.isToContinue();
 			
 			if (toContinue) {
-				System.out.println("CST Generation Started");
+				System.out.println("#######################");
+				System.out.println("CST Generation Started");				
+				System.out.println("#######################");
 				if (verbose) {
 					parser.printCst();
+					System.out.println("#######################");
+					System.out.println("CST Generation Finished");
+					System.out.println("#######################");
 				}
 				
-//				/*AST GENERATION */
-//				System.out.println("AST Generation started");
-//				AST ast = new AST(parser.getList());
-//				System.out.println("AST init");
-//				ast.run();
-//				System.out.println("AST created");
-//				
-//				if (verbose) {
-//					System.out.println("----AST----");
-//					ast.printList();
-//				}
-//				
+				
+				/*AST GENERATION */
+				int currAst = 1;
+				AST ast;
+				System.out.println("#######################");
+				System.out.println("AST Generation Started");
+				System.out.println("#######################");
+				for (ParserTerminalList list : parser.programs) {
+					ast = new AST(list);
+					System.out.println("AST init for program " + currAst);
+					ast.run();
+					System.out.println("AST created for program " + currAst);
+					astPrograms.add(ast);
+					currAst++;
+				}
+				System.out.println("#######################");
+				System.out.println("Ast Generation Finished");
+				System.out.println("#######################");
+				currAst = 1;
+				if (verbose) {
+					System.out.println("#######################");
+					System.out.println("Printing out AST's");
+					System.out.println("#######################");
+					for (AST astTemp : astPrograms) {
+//						System.out.println("AST for Program " + currAst);
+						System.out.println("----AST~START~PROGRAM~" + currAst + "~----");
+						astTemp.printList();
+						System.out.println("----AST~FINISH~PROGRAM~" + currAst + "~----");
+						currAst++;
+					}
+				}
+				
 //				System.out.println("Symbol Table Generation");
 //				SymbolTable symbolTable = new SymbolTable(ast);
 //				
