@@ -217,13 +217,22 @@ public class Main {
 				System.out.println("Symbol Table Generation Finished");
 				System.out.println("###############################");
 				currSymbol = 1;
-				if (verbose && toContinue) {
-					for (SymbolTable tempS : symbolTables) {
-						System.out.println("-------------------------");
-						System.out.println("Symbol Table ~ Program " + currSymbol);
-						System.out.println("-------------------------");
-						tempS.printSymbolTable();
-						currSymbol++;
+				if (verbose) {
+					if (toContinue) {
+						for (SymbolTable tempS : symbolTables) {
+							if (!tempS.hasErrors()) {
+								System.out.println("-------------------------");
+								System.out.println("Symbol Table ~ Program " + currSymbol);
+								System.out.println("-------------------------");
+								tempS.printSymbolTable();
+								currSymbol++;
+							} else {
+								System.out.println("Error");
+								break;
+							}
+						}
+					} else {
+						System.out.println("Errors in the SymbolTable");
 					}
 				}
 			}		

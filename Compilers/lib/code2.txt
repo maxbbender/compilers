@@ -12,6 +12,7 @@ int c
 } $
 
 {
+int n
 int r
 boolean b
 string c

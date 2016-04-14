@@ -59,19 +59,32 @@ public class SymbolTable {
 					id = astList.get(index).getObjectValue();
 					index++; // @ digit|IntExpr|stringExpr|BoolExpr
 					String type = astList.get(index).getObjectType();
-				
-					if (checkDeclaration(id)) { // Has the variable been declared
-						if (!checkType(type, id)) { // Is the variable type declaration the same
-							System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+					if (type != "IntExpr") { 
+						if (checkDeclaration(id)) { // Has the variable been declared
+							if (!checkType(type, id)) { // Is the variable type declaration the same
+								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+								toContinue = false;
+								errors = true;
+							}
+						} else {
 							toContinue = false;
+							System.out.println("ERROR: Variable " + id + " is not declared");
 							errors = true;
 						}
+						index++;
 					} else {
-						toContinue = false;
-						System.out.println("ERROR: Variable " + id + " is not declared");
-						errors = true;
+						if (checkDeclaration(id)) { // returns true on declared
+							if (checkIntExpr(id)) { // returns false on no errors
+								toContinue = false;
+								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+							}
+						} else {
+							toContinue = false;
+							System.out.println("ERROR: Variable " + id + " is not declared");
+							errors = true;
+						}
 					}
-					index++;
+					
 					break;
 //					switch (type) {
 //					case "digit": 
@@ -108,6 +121,7 @@ public class SymbolTable {
 					index = index + 3;
 					if (!checkIdsType(id1, id2, nodeType)) {
 						toContinue = false;
+						errors = true;
 					}
 					break;
 				case "WhileStmt": 
@@ -122,8 +136,10 @@ public class SymbolTable {
 					break;
 				default:
 					toContinue = false;
-					System.out.println("ERROR DEFAULT HIT");
-					System.out.println("Current: " + nodeType);
+					System.out.println("ERROR: Unknown Next Statement. See below");
+					System.out.println("Previous Node: " + astList.get(index-1).getObjectType());
+					System.out.println("Current Node: " + nodeType);
+					System.out.println("Next Node: " + astList.get(index + 1).getObjectType());
 					errors = true;
 				//case "
 				}
@@ -134,7 +150,6 @@ public class SymbolTable {
 		}
 			
 	}
-	
 	
 	public boolean checkIdsType(String id1, String id2, String nodeType){
 		if (checkDeclaration(id1)) {
@@ -222,6 +237,23 @@ public class SymbolTable {
 			}
 		}
 		return temp;
+	}
+	
+	private boolean checkIntExpr(String id) {
+		if (checkType("int", id)) {
+			index++; // @ digit | id
+			while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
+				if (astList.get(index).getObjectType() == "id") {
+					if (!checkIdsType(id, astList.get(index).getObjectValue(), "IntExpr")){ 
+						errors = true;
+					}
+				}
+				index++;
+			}
+		} else {
+			errors = true;
+		}
+		return errors;
 	}
 	
 	private IntExpr parseIntExpr() { // @ digit1
