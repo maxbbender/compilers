@@ -8,12 +8,12 @@ import parser.TerminalNode;
 
 public class AST {
 	
-	private static ArrayList<TerminalNode> ast;
-	private static ArrayList<TerminalNode> cst;
-	private static int currIndex;
-	private static ArrayList<Integer> blockLevelsCST;
-	private static ArrayList<Integer> blockLevelsAST;
-	private static int blockIndex;
+	private ArrayList<TerminalNode> ast;
+	private ArrayList<TerminalNode> cst;
+	private int currIndex;
+	private ArrayList<Integer> blockLevelsCST;
+	private ArrayList<Integer> blockLevelsAST;
+	private int blockIndex;
 	
 	public AST(ParserTerminalList list) {
 		blockIndex = 0;
@@ -25,7 +25,7 @@ public class AST {
 		
 	}
 	
-	public static void run() {
+	public void run() {
 		int level = 0;
 		TerminalNode baseBlock = new TerminalNode("Block", "Block", level);
 		blockLevelsCST.add(level);
@@ -38,7 +38,7 @@ public class AST {
 		
 	}
 	
-	private static void parseStatementList(int level) {
+	private void parseStatementList(int level) {
 		if (currIndex < cst.size() - 1) {
 			parseStatement(level);
 		}
@@ -56,7 +56,7 @@ public class AST {
 	}
 	
 	
-	private static void parseStatement(int level) {
+	private void parseStatement(int level) {
 		currIndex++; // @ VarDecl|WhileStmt|IfStmt|AssignmentStmt|PrintStmt|Block
 		String type = cst.get(currIndex).getObjectValue();
 		//System.out.println("parseStatement type: " + type);
@@ -81,7 +81,7 @@ public class AST {
 		}
 	}
 	
-	private static void ifStatement(int level) {
+	private void ifStatement(int level) {
 		TerminalNode ifStmt = new TerminalNode("IfStmt", "IfStmt", level);
 		ast.add(ifStmt);
 		level++; // Under IfStmt
@@ -90,7 +90,7 @@ public class AST {
 		parseBlock(level, cst.get(currIndex).getObjectLevel()); // @ StatementList
 	}
 	
-	private static void varDecl(int level) {
+	private void varDecl(int level) {
 		TerminalNode decl = new TerminalNode("VarDecl", "VarDecl", level);
 		currIndex++; // @ Type
 		level++; // Under VarDecl
@@ -103,7 +103,7 @@ public class AST {
 		ast.add(id);
 	}
 	
-	private static void assignment(int level) {
+	private void assignment(int level) {
 		TerminalNode assignment = new TerminalNode("AssignmentStmt", "AssignmentStmt", level);
 		ast.add(assignment);
 		currIndex++; // @id
@@ -115,7 +115,7 @@ public class AST {
 		
 	}
 	
-	private static void printStatement(int level) {
+	private void printStatement(int level) {
 		TerminalNode printStatement = new TerminalNode("PrintStmt", "PrintStmt", level);
 		ast.add(printStatement);
 		currIndex++; // @ Expression
@@ -123,7 +123,7 @@ public class AST {
 		parseExpression(level); // @ StatementList
 	}
 	
-	private static void whileStatement(int level) {
+	private void whileStatement(int level) {
 		TerminalNode whileStmt = new TerminalNode("WhileStmt", "WhileStmt", level);
 		ast.add(whileStmt);
 		currIndex++; // @ Boolean Expression
@@ -132,7 +132,7 @@ public class AST {
 		parseBlock(level, cst.get(currIndex).getObjectLevel()); // @ StatementList
 	}
 	
-	private static void parseBlock(int level, int cstLevel) {
+	private void parseBlock(int level, int cstLevel) {
 		TerminalNode block = new TerminalNode("Block", "Block", level);
 		blockLevelsAST.add(level+1);
 		blockLevelsCST.add(cstLevel);
@@ -146,7 +146,7 @@ public class AST {
 	 * Need to be @ Expression
 	 * @param level
 	 */
-	private static void parseExpression(int level) {
+	private void parseExpression(int level) {
 		currIndex++; // At IntExpr|StringExpr|BoolExpr|ID
 		String type = cst.get(currIndex).getObjectType();
 		//System.out.println("parseExpression type: " + type);
@@ -178,14 +178,14 @@ public class AST {
 	}
 	
 	/* Start @ IntExpression */
-	private static void intExpr(int level) {
+	private void intExpr(int level) {
 		currIndex++; // @ Digit
 		TerminalNode newInt = new TerminalNode("digit", cst.get(currIndex).getObjectValue(), level);
 		TerminalNode newIntExpr = new TerminalNode("IntExpr", "IntExpr", level);
 		if (currIndex + 1 < cst.size()) {
 			if (cst.get(currIndex + 1).getObjectType() == "INTOP") { // Are we looking @ (digit intop Expr)
 				newInt.incLevel(); //Set digit to be under the IntopExpr
-				ast.add(newIntExpr);
+				ast.add (newIntExpr);
 				ast.add(newInt);
 				currIndex = currIndex + 2; // @ Expression
 				parseExpression(level+1);
@@ -200,13 +200,13 @@ public class AST {
 		
 	}
 	
-	private static void parseBoolop(int level) {
+	private void parseBoolop(int level) {
 		TerminalNode boolop = new TerminalNode("boolop", cst.get(currIndex).getObjectValue() , level);
 		ast.add(boolop);
 		currIndex++; // At Second Expression of BoolExpr
 	}
 	
-	private static void parseBoolExpr(int level) {
+	private void parseBoolExpr(int level) {
 		TerminalNode boolExpr = new TerminalNode("BoolExpr", "BoolExpr", level);
 		ast.add(boolExpr);
 		level++; // We are in BoolExpr
@@ -227,33 +227,33 @@ public class AST {
 		}
 	}
 	
-	public static void printList() {
+	public void printList() {
 		for (Iterator<TerminalNode> it = ast.iterator(); it.hasNext();) {
 			System.out.println(it.next().getTerminalNode());
 		}
 	}
 
-	public static ArrayList<TerminalNode> getAst() {
+	public ArrayList<TerminalNode> getAst() {
 		return ast;
 	}
 
-	public static void setAst(ArrayList<TerminalNode> ast) {
-		AST.ast = ast;
+	public void setAst(ArrayList<TerminalNode> ast) {
+		ast = ast;
 	}
 
-	public static ArrayList<TerminalNode> getCst() {
+	public ArrayList<TerminalNode> getCst() {
 		return cst;
 	}
 
-	public static void setCst(ArrayList<TerminalNode> cst) {
-		AST.cst = cst;
+	public void setCst(ArrayList<TerminalNode> cst) {
+		cst = cst;
 	}
 
-	public static int getCurrIndex() {
+	public int getCurrIndex() {
 		return currIndex;
 	}
 
-	public static void setCurrIndex(int currIndex) {
-		AST.currIndex = currIndex;
+	public void setCurrIndex(int currIndex) {
+		currIndex = currIndex;
 	}
 }

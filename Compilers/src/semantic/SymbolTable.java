@@ -13,9 +13,11 @@ public class SymbolTable {
 	private static Scope currScope;
 	private static ArrayList<TerminalNode> astList;
 	private static int index;
-	
+	private boolean errors; 
 	private static int currLevel;
+	
 	public SymbolTable(AST ast) {
+		errors = false;
 		boolean toContinue = true;
 		currLevel = 0;
 		parent = new Scope();
@@ -37,7 +39,6 @@ public class SymbolTable {
 					}
 				}
 				
-				// TODO DECRIMINT currSCOPE if the level is < currScope.getStartLevel
 				TerminalNode node = astList.get(index);
 				String nodeType = node.getObjectValue();
 				/* Where are we */
@@ -63,10 +64,12 @@ public class SymbolTable {
 						if (!checkType(type, id)) { // Is the variable type declaration the same
 							System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
 							toContinue = false;
+							errors = true;
 						}
 					} else {
 						toContinue = false;
 						System.out.println("ERROR: Variable " + id + " is not declared");
+						errors = true;
 					}
 					index++;
 					break;
@@ -114,12 +117,14 @@ public class SymbolTable {
 					index = index + 3;
 					if (!checkIdsType(id1, id2, nodeType)) {
 						toContinue = false;
+						errors = true;
 					}
 					break;
 				default:
 					toContinue = false;
 					System.out.println("ERROR DEFAULT HIT");
 					System.out.println("Current: " + nodeType);
+					errors = true;
 				//case "
 				}
 			} else {
@@ -304,6 +309,10 @@ public class SymbolTable {
 	
 	private Scope getCurrScope() {
 		return currScope;
+	}
+	
+	public boolean hasErrors() {
+		return errors;
 	}
 }
 

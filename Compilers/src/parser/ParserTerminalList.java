@@ -5,9 +5,9 @@ import java.util.Iterator;
 import lexer.Token;
 import parser.TerminalNode;
 public class ParserTerminalList {
-	private static ArrayList<TerminalNode> list;
-	private static ArrayList<TerminalNode> tempList;
-	private static int currIndent;
+	private ArrayList<TerminalNode> list;
+	private ArrayList<TerminalNode> tempList;
+	private int currIndent;
 	
 	public ParserTerminalList () {
 		list = new ArrayList();
@@ -18,11 +18,11 @@ public class ParserTerminalList {
 		list = newParserList;
 	}
 	
-	public static void addNode(TerminalNode newNode) {
+	public void addNode(TerminalNode newNode) {
 		list.add(newNode);
 	}
 	
-	public static void addNode(String nodeType, String nodeValue) {
+	public void addNode(String nodeType, String nodeValue) {
 		TerminalNode node;
 		list.add(node = new TerminalNode(nodeType, nodeValue, currIndent));
 	}
@@ -31,52 +31,52 @@ public class ParserTerminalList {
 		return list;
 	}
 	
-	public static void addTempNode(String nodeType, String nodeValue) {
+	public void addTempNode(String nodeType, String nodeValue) {
 		TerminalNode node = new TerminalNode(nodeType, nodeValue, currIndent);
 		tempList.add(node);
 	}
 	
-	public static void clearTemp() {
+	public void clearTemp() {
 		tempList.clear();
 	}
 	
-	public static void removeRange(int low, int high) {
+	public void removeRange(int low, int high) {
 		for (int lowVal = low; lowVal < high; lowVal++) {
 			list.remove(low);
 		}
 	}
 	
-	public static void printList() {
+	public void printList() {
 		for (Iterator<TerminalNode> it = list.iterator(); it.hasNext();) {
 			System.out.println(it.next().getTerminalNode());
 		}
 	}
 	
-	public static int getSize() {
+	public int getSize() {
 		return list.size();
 	}
-	public static void inc() {
+	public void inc() {
 		currIndent++;
 	}
 	
-	public static void deinc() {
+	public void deinc() {
 		currIndent--;
 	}
 	
-	public static int getInc() {
+	public int getInc() {
 		return currIndent;
 	}
 	
-	public static void setInc(int newInc) {
+	public void setInc(int newInc) {
 		currIndent = newInc;
 	}
-	public static String getLast() {
+	public String getLast() {
 		return list.get(list.size()-1).getObjectType();
 	}
-	public static TerminalNode get(int index) {
+	public TerminalNode get(int index) {
 		return list.get(index);
 	}
-	public static ArrayList<TerminalNode> getList() {
+	public ArrayList<TerminalNode> getList() {
 		return list;
 	}
 }

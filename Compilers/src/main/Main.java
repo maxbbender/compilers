@@ -25,6 +25,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		ArrayList<AST> astPrograms = new ArrayList();
+		ArrayList<SymbolTable> symbolTables = new ArrayList();
 		boolean toContinue = true;
 		int numberOfPrograms = 0;
 		String temp = null;
@@ -195,14 +196,36 @@ public class Main {
 						currAst++;
 					}
 				}
-				
-//				System.out.println("Symbol Table Generation");
-//				SymbolTable symbolTable = new SymbolTable(ast);
-//				
-//				if (verbose) {
-//					System.out.println("----Symbol Table-----");
-//					symbolTable.printSymbolTable();
-//				}
+				System.out.println("###############################");
+				System.out.println("Symbol Table Generation Started");
+				System.out.println("###############################");
+				int currSymbol = 1;
+				SymbolTable symbolTable;
+				for (AST tempAST: astPrograms) {
+					System.out.println("---Init Semantic Analysis for Program " + currSymbol + "---");
+					symbolTable = new SymbolTable(tempAST);
+					if (symbolTable.hasErrors()) {
+						toContinue = false;
+						System.out.println("Semantic Analysis Errors in Program " + currSymbol);
+						break;
+					}
+					symbolTables.add(symbolTable);
+					System.out.println("---Finished Semantic Analysis for Program " + currSymbol + "---");
+					currSymbol++;
+				}
+				System.out.println("###############################");
+				System.out.println("Symbol Table Generation Finished");
+				System.out.println("###############################");
+				currSymbol = 1;
+				if (verbose && toContinue) {
+					for (SymbolTable tempS : symbolTables) {
+						System.out.println("-------------------------");
+						System.out.println("Symbol Table ~ Program " + currSymbol);
+						System.out.println("-------------------------");
+						tempS.printSymbolTable();
+						currSymbol++;
+					}
+				}
 			}		
 		}
 	}	
