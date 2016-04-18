@@ -141,6 +141,15 @@ public class Scope {
 		decl.add(newDecl);
 	}
 	
+	public Decleration getDeclarationId(String id) {
+		for (Decleration tempDecl : decl) {
+			if (tempDecl.getId().equals(id) ) { 
+				return tempDecl;
+			}
+		}
+		return null;
+	}
+	
 	public void addDecl(String type, String id) {
 		Decleration temp = new Decleration(type,id);
 		decl.add(temp);
@@ -195,7 +204,7 @@ public class Scope {
 	
 	public boolean hasId(String id) {
 		for(Decleration declNode : decl) {
-			if (declNode.getId() == id) {
+			if (declNode.getId().equals(id)) {
 				return true;
 			}
 		}
@@ -204,7 +213,7 @@ public class Scope {
 	
 	public String getType(String id) {
 		for(Decleration declNode : decl) {
-			if (declNode.getId() == id) {
+			if (declNode.getId().equals(id)) {
 				return declNode.getType();
 			}
 		}

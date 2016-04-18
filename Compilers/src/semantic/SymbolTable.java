@@ -6,6 +6,7 @@ import java.util.Iterator;
 import parser.TerminalNode;
 import semantic.helpers.Scope;
 import semantic.helpers.BoolExpr;
+import semantic.helpers.Decleration;
 import semantic.helpers.IntExpr;
 
 public class SymbolTable {
@@ -55,8 +56,27 @@ public class SymbolTable {
 					scopeNum++;
 					break;
 				case "VarDecl":
-					getCurrScope().addDecl(astList.get(index+1).getObjectValue(), astList.get(index+2).getObjectValue());
-					index = index + 3; // @ next stmt
+					/* TODO Has the variable already been declared in this scope? */
+					index++; // @ type
+					String tempType = astList.get(index).getObjectValue();
+					index++; // @ id
+					String tempId = astList.get(index).getObjectValue();
+					
+					if (checkCurrScopeDecl(tempId)) {
+						Decleration tempDecl = currScope.getDeclarationId(tempId);
+						System.out.println("ERROR: Trying to declare var " + tempId + " to be type " + tempType);
+						if (tempDecl != null) {
+							System.out.println("ERROR: var " + tempId + " has already been declared as \"" + currScope.getDeclarationId(tempId).getType() + " " + currScope.getDeclarationId(tempId).getId() + "\"" );
+						} else {
+							System.out.println("ERROR: var " + tempId + " has already been declared");
+							System.out.println("ERROR: Check VARDECL. Our declaration was returned null and shouldn't be. w00ps");
+						}
+						toContinue = false;
+						errors = true;
+					} else {
+						getCurrScope().addDecl(tempType, tempId);
+					}
+					index++; // @ next stmt
 					break;
 				case "AssignmentStmt":
 					index++; // @ id
@@ -67,12 +87,12 @@ public class SymbolTable {
 						if (checkDeclaration(id)) { // Has the variable been declared
 							if (type == "id") {
 								if (!checkIdsType(id, astList.get(index).getObjectValue(), "AssignmentStmt")) {
-									System.out.println("ERROR: Type Mismatch on ID: " + id + " and ID " + astList.get(index).getObjectValue());
+									System.out.println("ERROR: Type Mismatch on var " + id + " and var " + astList.get(index).getObjectValue());
 									toContinue = false;
 									errors = true;
 								}
 							} else if (!checkType(type, id)) { // Is the variable type declaration the same
-								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+								System.out.println("ERROR: Type Mismatch on var " + id + " for type " + type);
 								toContinue = false;
 								errors = true;
 							} 
@@ -385,7 +405,13 @@ public class SymbolTable {
 //		}
 //		return false; 
 //	}
-
+	private boolean checkCurrScopeDecl(String id) {
+		if (currScope.checkDeclaration(id)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	private Boolean checkDeclaration(String id) {
 		Scope temp = currScope;
 		if (temp.checkDeclaration(id)) {
