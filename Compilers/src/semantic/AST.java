@@ -138,8 +138,13 @@ public class AST {
 		blockLevelsCST.add(cstLevel);
 		blockIndex++;
 		ast.add(block);
-		currIndex++; // @ Statement List
-		parseStatementList(level + 1);
+		currIndex++; // @ Statement List | 
+		if (cst.get(currIndex).getObjectLevel() > cst.get(currIndex-1).getObjectLevel()) {
+			parseStatementList(level + 1);
+		} else {
+			parseStatementList(level);
+		}
+		
 	}
 	
 	/**

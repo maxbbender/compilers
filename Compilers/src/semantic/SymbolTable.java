@@ -59,15 +59,22 @@ public class SymbolTable {
 				case "AssignmentStmt":
 					index++; // @ id
 					id = astList.get(index).getObjectValue();
-					index++; // @ digit|IntExpr|stringExpr|BoolExpr
+					index++; // @ digit|IntExpr|stringExpr|BoolExpr|id
 					String type = astList.get(index).getObjectType();
 					if (type != "IntExpr") { 
 						if (checkDeclaration(id)) { // Has the variable been declared
-							if (!checkType(type, id)) { // Is the variable type declaration the same
+							if (type == "id") {
+								if (!checkIdsType(id, astList.get(index).getObjectValue(), "AssignmentStmt")) {
+									System.out.println("ERROR: Type Mismatch on ID: " + id + " and ID " + astList.get(index).getObjectValue());
+									toContinue = false;
+									errors = true;
+								}
+							} else if (!checkType(type, id)) { // Is the variable type declaration the same
 								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
 								toContinue = false;
 								errors = true;
 							} 
+							
 							if (type == "BoolExpr") {
 								int backLevel = astList.get(index - 1).getObjectLevel();
 								while (astList.get(index).getObjectType() != "Block" 
@@ -360,6 +367,23 @@ public class SymbolTable {
 		return false; 
 	}
 	
+//	private Boolean checkType(String type, String id) {
+//		Scope temp = currScope;
+//		if (temp.checkType(type, id)) {
+//			return true;
+//		} else {
+//			do {
+//				temp = temp.getParent();
+//				if (temp != null) {
+//					if (temp.checkType(type, id)) {
+//						return true;
+//					}
+//				}
+//			} while (temp != null);
+//		}
+//		return false; 
+//	}
+
 	private Boolean checkDeclaration(String id) {
 		Scope temp = currScope;
 		if (temp.checkDeclaration(id)) {
