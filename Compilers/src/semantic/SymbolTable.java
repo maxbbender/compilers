@@ -83,8 +83,8 @@ public class SymbolTable {
 					id = astList.get(index).getObjectValue();
 					index++; // @ digit|IntExpr|stringExpr|BoolExpr|id
 					String type = astList.get(index).getObjectType();
-					if (type != "IntExpr") { 
-						if (checkDeclaration(id)) { // Has the variable been declared
+					if (checkDeclaration(id)) {
+						if (type != "IntExpr") { 
 							if (type == "id") {
 								if (!checkIdsType(id, astList.get(index).getObjectValue(), "AssignmentStmt")) {
 									System.out.println("ERROR: Type Mismatch on var " + id + " and var " + astList.get(index).getObjectValue());
@@ -113,6 +113,10 @@ public class SymbolTable {
 							} else {
 								index++;
 							}
+					}
+					
+						if (checkDeclaration(id)) { // Has the variable been declared
+							
 						} else {
 							toContinue = false;
 							System.out.println("ERROR: Variable " + id + " is not declared");
@@ -184,7 +188,6 @@ public class SymbolTable {
 					index++; // @ IntExpr/BoolExpr/StringExpr
 					if (astList.get(index).getObjectType() == "IntExpr") {
 						while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
-							
 							if (astList.get(index).getObjectType() == "id") {
 								if (!checkType("int", astList.get(index).getObjectValue())){ 
 									toContinue = false;
