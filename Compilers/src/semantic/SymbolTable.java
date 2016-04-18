@@ -151,6 +151,27 @@ public class SymbolTable {
 						errors = true;
 					}
 					break;
+				case "PrintStmt": 
+					index++; // @ IntExpr/BoolExpr/StringExpr
+					if (astList.get(index).getObjectType() == "IntExpr") {
+						while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
+							
+							if (astList.get(index).getObjectType() == "id") {
+								if (!checkType("int", astList.get(index).getObjectValue())){ 
+									toContinue = false;
+									errors = true;
+								}
+							}
+							index++;
+							
+							if (index >= astList.size()) {
+								break;
+							}
+						}
+					} else {
+						index++;
+					}
+					break;	
 				default:
 					toContinue = false;
 					System.out.println("ERROR: Unknown Next Statement. See below");
