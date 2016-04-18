@@ -4,6 +4,7 @@ public class Decleration {
 	private String type;
 	private String id;
 	private boolean init;
+
 	public Decleration() {
 		type = null;
 		id = null;
@@ -23,7 +24,7 @@ public class Decleration {
 	public boolean isInitialized() {
 		return init;
 	}
-
+	
 	public String printDecl() {
 		return id + " : " + type + "|Initialized: " + init; 
 	}
