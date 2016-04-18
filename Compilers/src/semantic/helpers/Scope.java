@@ -48,6 +48,28 @@ public class Scope {
 	public Scope getParent() {
 		return parent;
 	}
+	
+	public boolean isInitialized(String id) {
+		for (Decleration tempDecl : decl) {
+			if (tempDecl.getId().equals(id)) {
+				if (tempDecl.isInitialized()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public void init(String id) {
+		for (Decleration tempDecl : decl) {
+			if (tempDecl.getId().equals(id)) {
+				tempDecl.init();
+				break;
+			}
+		}
+	}
 	public boolean hasChildren() {
 		if (children.size() > 0) {
 			if (currChild < children.size()) {

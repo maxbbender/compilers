@@ -90,12 +90,16 @@ public class SymbolTable {
 									System.out.println("ERROR: Type Mismatch on var " + id + " and var " + astList.get(index).getObjectValue());
 									toContinue = false;
 									errors = true;
+								} else {
+									currScope.init(id);
 								}
 							} else if (!checkType(type, id)) { // Is the variable type declaration the same
 								System.out.println("ERROR: Type Mismatch on var " + id + " for type " + type);
 								toContinue = false;
 								errors = true;
-							} 
+							} else {
+								currScope.init(id);
+							}
 							
 							if (type == "BoolExpr") {
 								int backLevel = astList.get(index - 1).getObjectLevel();
@@ -110,6 +114,7 @@ public class SymbolTable {
 										break;
 									}
 								}
+								currScope.init(id);
 							} else {
 								index++;
 							}
@@ -123,6 +128,8 @@ public class SymbolTable {
 							if (typeIntExpr(id)) { // returns false on no errors
 								toContinue = false;
 								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+							} else {
+								currScope.init(id);
 							}
 						} else {
 							toContinue = false;
@@ -181,14 +188,29 @@ public class SymbolTable {
 					}
 					break;
 				case "PrintStmt": 
-					index++; // @ IntExpr/BoolExpr/StringExpr
-					if (astList.get(index).getObjectType() == "IntExpr") {
+					index++; // @ IntExpr/BoolExpr/StringExpr/id
+					type = astList.get(index).getObjectType();		
+					if (type == "id") {
+						if (!isInitialized(astList.get(index).getObjectValue())) {
+							toContinue = false;
+							errors = true;
+							System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not initialized");
+						} else {
+							index++;
+						}
+					} else if (astList.get(index).getObjectType() == "IntExpr") {
 						while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
-							
 							if (astList.get(index).getObjectType() == "id") {
-								if (!checkType("int", astList.get(index).getObjectValue())){ 
+								if (isInitialized(astList.get(index).getObjectValue())) {
+									if (!checkType("int", astList.get(index).getObjectValue())){ 
+										toContinue = false;
+										errors = true;
+										System.out.println("ERROR: var " + astList.get(index).getObjectValue() + "is not type int");
+									}
+								} else {
 									toContinue = false;
 									errors = true;
+									System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not initialized");
 								}
 							}
 							index++;
@@ -200,6 +222,7 @@ public class SymbolTable {
 					} else {
 						index++;
 					}
+					
 					break;	
 				default:
 					toContinue = false;
@@ -216,6 +239,23 @@ public class SymbolTable {
 			
 		}
 			
+	}
+	
+	private boolean isInitialized(String id) {
+		Scope temp = currScope;
+		if (temp.isInitialized(id)) {
+			return true;
+		} else { 
+			do {
+				temp = temp.getParent();
+				if (temp != null) {
+					if (temp.isInitialized(id)) {
+						return true;
+					}
+				}
+			} while (temp != null);
+		}
+		return false;
 	}
 	
 	private boolean checkIdsType(String id1, String id2, String nodeType){
