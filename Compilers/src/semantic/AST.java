@@ -44,8 +44,12 @@ public class AST {
 		}
 		if (currIndex < cst.size() - 1) {
 			if (cst.get(currIndex).getObjectLevel() < blockLevelsCST.get(blockIndex)) {
-				if (blockIndex > 0) {
-					blockIndex--;
+				while(cst.get(currIndex).getObjectLevel() < blockLevelsCST.get(blockIndex)) {
+					if (blockIndex > 0) {
+						blockIndex--;
+					} else {
+						break;
+					}
 				}
 				parseStatementList(blockLevelsAST.get(blockIndex));
 			} else {
@@ -139,12 +143,19 @@ public class AST {
 		blockIndex++;
 		ast.add(block);
 		currIndex++; // @ Statement List | 
-		if (cst.get(currIndex).getObjectLevel() > cst.get(currIndex-1).getObjectLevel()) {
-			parseStatementList(level + 1);
-		} else {
-			parseStatementList(level);
+		if (currIndex < cst.size()) {
+			if (cst.get(currIndex).getObjectLevel() > cst.get(currIndex-1).getObjectLevel()) {
+				parseStatementList(level + 1);
+			} else {
+				if (cst.get(currIndex).getObjectLevel() < blockLevelsCST.get(blockIndex)) {
+					while (cst.get(currIndex).getObjectLevel() < blockLevelsCST.get(blockIndex) && level > 1) {
+						blockIndex--;
+						level--;
+					}
+				}
+				parseStatementList(level);
+			}
 		}
-		
 	}
 	
 	/**

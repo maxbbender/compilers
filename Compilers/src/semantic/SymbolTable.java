@@ -34,9 +34,11 @@ public class SymbolTable {
 			if (toContinue) {
 				if (index > 2) {
  					if (astList.get(index).getObjectLevel() <= currScope.getLevelStart()) {
-						if (currScope.hasParent()) {
-							currScope = currScope.getParent();
-						}
+ 						while (astList.get(index).getObjectLevel() <= currScope.getLevelStart()) {
+ 							if (currScope.hasParent()) {
+ 								currScope = currScope.getParent();
+ 							}
+ 						}
 					}
 				}
 				
