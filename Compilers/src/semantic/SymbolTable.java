@@ -254,21 +254,52 @@ public class SymbolTable {
 			
 	}
 	
-	private boolean isInitialized(String id) {
-		Scope temp = currScope;
-		if (temp.isInitialized(id)) {
-			return true;
-		} else { 
-			do {
-				temp = temp.getParent();
-				if (temp != null) {
-					if (temp.isInitialized(id)) {
+	private boolean typeIntExpr(String id) {
+		boolean justDigits = true;
+		if (id != null && id != "null") {
+			if (checkType("int", id)) {
+				index++; // @ digit | id
+				while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
+					if (astList.get(index).getObjectType() == "id") {
+						if (!checkType("int", astList.get(index).getObjectValue())){ 
+							System.out.println("ERROR: Type Mismatch on ID: " + astList.get(index).getObjectValue() + " for type IntExpr");
+							errors = true;
+							return false;
+						} else {
+							if (!isInitialized(astList.get(index).getObjectValue())) {
+								System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
+							} 
+							index++;
+							return true;
+						}
+					}
+					index++;
+				}
+			} else {
+				System.out.println("ERROR: var " + id + " is not type int");
+				errors = true;
+				return false;
+			}
+		} else {
+			index++; // @ digit | id
+			while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
+				if (astList.get(index).getObjectType() == "id") {
+					if (!checkType("int", astList.get(index).getObjectValue())){ 
+						System.out.println("ERROR: Type Mismatch on ID: " + astList.get(index).getObjectValue() + " type IntExpr");
+						errors = true;
+						return false;
+					} else {
+						if (!isInitialized(astList.get(index).getObjectValue())) {
+							System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
+						}
+						index++;
 						return true;
 					}
 				}
-			} while (temp != null);
+				index++;
+			}
 		}
-		return false;
+		return true;
 	}
 	
 	private boolean typeBoolExpr(String stmtType) {
@@ -442,7 +473,6 @@ public class SymbolTable {
 				}
 			} else { // TODO BoolExpr recurisve
 				errors = true;
-				//l
 				System.out.println("ERROR: Expected BoolVal|BoolExpr, recieved " + astList.get(index).getObjectType());
 				return false;
 			}
@@ -504,147 +534,190 @@ public class SymbolTable {
 		} while (temp != null); 
 	}
 	
-	private BoolExpr parseBoolExpr() { // @ 
-		int startLevel = astList.get(index).getObjectLevel();
-		int currLevel = startLevel;
-		BoolExpr temp = new BoolExpr();
-		while(astList.get(index).getObjectLevel() >= startLevel) {
-			
-			if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() != "BoolVal") {
-				currLevel++;
-				temp.addExpr("(");
-				index++; // TODO@ digit| 
-			} else if (astList.get(index).getObjectType() == "digit") {
-				temp.addExpr(astList.get(index).getObjectValue());
-				index++;
-			} else if (astList.get(index).getObjectType() == "boolop") {
-				temp.addExpr(astList.get(index).getObjectValue());
-				index++; // @ BoolExpr | id
-			} else if (astList.get(index).getObjectType() == "IntExpr") {
-				index++; // @ digit1
-				IntExpr temp1 = parseIntExpr(); // @ boolop | next stmt
-				temp.addExprs(temp1.forBoolExpr());
-			} else if (astList.get(index).getObjectType() == "stringExpr") {
-				temp.addExpr(astList.get(index).getObjectValue());
-				index++; // @ boolop | next stmt
-			} else if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() == "BoolVal") {
-				index++;
-				temp.addExpr(astList.get(index).getObjectValue());
-				index++; // @ boolop | next stmt
-			} else {
-				temp = null; // Type Error
-			}
-			if (index >= astList.size()) {
-				if (temp.getExpr().get(temp.getExpr().size()-1) != ")"){
-					temp.addExpr(")");
-				}
-				break;
-			}
-			
-			if (astList.get(index).getObjectLevel() < currLevel) {
-				temp.addExpr(")");
-				currLevel--;
-			}
-		}
-		return temp;
-	}
+//	private BoolExpr parseBoolExpr() { // @ 
+//		int startLevel = astList.get(index).getObjectLevel();
+//		int currLevel = startLevel;
+//		BoolExpr temp = new BoolExpr();
+//		while(astList.get(index).getObjectLevel() >= startLevel) {
+//			
+//			if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() != "BoolVal") {
+//				currLevel++;
+//				temp.addExpr("(");
+//				index++; // TODO@ digit| 
+//			} else if (astList.get(index).getObjectType() == "digit") {
+//				temp.addExpr(astList.get(index).getObjectValue());
+//				index++;
+//			} else if (astList.get(index).getObjectType() == "boolop") {
+//				temp.addExpr(astList.get(index).getObjectValue());
+//				index++; // @ BoolExpr | id
+//			} else if (astList.get(index).getObjectType() == "IntExpr") {
+//				index++; // @ digit1
+//				IntExpr temp1 = parseIntExpr(); // @ boolop | next stmt
+//				temp.addExprs(temp1.forBoolExpr());
+//			} else if (astList.get(index).getObjectType() == "stringExpr") {
+//				temp.addExpr(astList.get(index).getObjectValue());
+//				index++; // @ boolop | next stmt
+//			} else if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() == "BoolVal") {
+//				index++;
+//				temp.addExpr(astList.get(index).getObjectValue());
+//				index++; // @ boolop | next stmt
+//			} else {
+//				temp = null; // Type Error
+//			}
+//			if (index >= astList.size()) {
+//				if (temp.getExpr().get(temp.getExpr().size()-1) != ")"){
+//					temp.addExpr(")");
+//				}
+//				break;
+//			}
+//			
+//			if (astList.get(index).getObjectLevel() < currLevel) {
+//				temp.addExpr(")");
+//				currLevel--;
+//			}
+//		}
+//		return temp;
+//	}
 	
-	private boolean typeIntExpr(String id) {
-		boolean justDigits = true;
-		if (id != null && id != "null") {
-			if (checkType("int", id)) {
-				index++; // @ digit | id
-				while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
-					if (astList.get(index).getObjectType() == "id") {
-						if (!checkType("int", astList.get(index).getObjectValue())){ 
-							System.out.println("ERROR: Type Mismatch on ID: " + astList.get(index).getObjectValue() + " for type IntExpr");
-							errors = true;
-							return false;
-						} else {
-							if (!isInitialized(astList.get(index).getObjectValue())) {
-								System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
-							} 
-							index++;
-							return true;
-						}
-					}
-					index++;
-				}
-			} else {
-				System.out.println("ERROR: var " + id + " is not type int");
-				errors = true;
-				return false;
-			}
-		} else {
-			index++; // @ digit | id
-			while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
-				if (astList.get(index).getObjectType() == "id") {
-					if (!checkType("int", astList.get(index).getObjectValue())){ 
-						System.out.println("ERROR: Type Mismatch on ID: " + astList.get(index).getObjectValue() + " type IntExpr");
-						errors = true;
-						return false;
-					} else {
-						if (!isInitialized(astList.get(index).getObjectValue())) {
-							System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
-						}
-						index++;
-						return true;
-					}
-				}
-				index++;
-			}
-		}
-		return true;
-	}
 	
-	private IntExpr parseIntExpr() { // @ digit1
-		int startLevel = astList.get(index).getObjectLevel();
-		IntExpr temp = new IntExpr();
-		while (astList.get(index).getObjectLevel() >= startLevel) { // This will end @ next Stmt
-			temp.addInt(Integer.valueOf(astList.get(index).getObjectValue()));
-			index++; // @ digit2|id|IntExpr
-			if (astList.get(index).getObjectType() == "digit") { // We can break here as no more recursive Expressions
-				temp.addInt(Integer.valueOf(astList.get(index).getObjectValue()));
-				index++; // @ next stmt
-				break;
-			} else if (astList.get(index).getObjectType() == "id") { // We can break here as no more recursive Expressions
-				temp.setId(astList.get(index).getObjectValue());
-				index++; // @ next stmt
-				break;
-			} else if (astList.get(index).getObjectType() == "IntExpr") {
-				index++; // @ digit1
-			} else {
-				temp = null;
-				System.out.println("ERROR"); // Error on Type. Can only be digit|id|IntExpr
-			}
-		}
-		return temp;
-		
-	}
 	
-	private String getType(String id) {
+//	private IntExpr parseIntExpr() { // @ digit1
+//		int startLevel = astList.get(index).getObjectLevel();
+//		IntExpr temp = new IntExpr();
+//		while (astList.get(index).getObjectLevel() >= startLevel) { // This will end @ next Stmt
+//			temp.addInt(Integer.valueOf(astList.get(index).getObjectValue()));
+//			index++; // @ digit2|id|IntExpr
+//			if (astList.get(index).getObjectType() == "digit") { // We can break here as no more recursive Expressions
+//				temp.addInt(Integer.valueOf(astList.get(index).getObjectValue()));
+//				index++; // @ next stmt
+//				break;
+//			} else if (astList.get(index).getObjectType() == "id") { // We can break here as no more recursive Expressions
+//				temp.setId(astList.get(index).getObjectValue());
+//				index++; // @ next stmt
+//				break;
+//			} else if (astList.get(index).getObjectType() == "IntExpr") {
+//				index++; // @ digit1
+//			} else {
+//				temp = null;
+//				System.out.println("ERROR"); // Error on Type. Can only be digit|id|IntExpr
+//			}
+//		}
+//		return temp;
+//		
+//	}
+	
+	private boolean isInitialized(String id) {
 		Scope temp = currScope;
-		if (temp.hasId(id)) {
-			String type = temp.getType(id);
-			if (type != null) {
-				return type;
-			}
-		} else {
+		if (temp.isInitialized(id)) {
+			return true;
+		} else { 
 			do {
 				temp = temp.getParent();
 				if (temp != null) {
-					if (temp.hasId(id)) {
-						String type = temp.getType(id);
-						if (type != null) {
-							return type;
-						}
+					if (temp.isInitialized(id)) {
+						return true;
 					}
 				}
 			} while (temp != null);
 		}
-		return null;
+		return false;
 	}
-	
+
+	//	private BoolExpr parseBoolExpr() { // @ 
+	//		int startLevel = astList.get(index).getObjectLevel();
+	//		int currLevel = startLevel;
+	//		BoolExpr temp = new BoolExpr();
+	//		while(astList.get(index).getObjectLevel() >= startLevel) {
+	//			
+	//			if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() != "BoolVal") {
+	//				currLevel++;
+	//				temp.addExpr("(");
+	//				index++; // TODO@ digit| 
+	//			} else if (astList.get(index).getObjectType() == "digit") {
+	//				temp.addExpr(astList.get(index).getObjectValue());
+	//				index++;
+	//			} else if (astList.get(index).getObjectType() == "boolop") {
+	//				temp.addExpr(astList.get(index).getObjectValue());
+	//				index++; // @ BoolExpr | id
+	//			} else if (astList.get(index).getObjectType() == "IntExpr") {
+	//				index++; // @ digit1
+	//				IntExpr temp1 = parseIntExpr(); // @ boolop | next stmt
+	//				temp.addExprs(temp1.forBoolExpr());
+	//			} else if (astList.get(index).getObjectType() == "stringExpr") {
+	//				temp.addExpr(astList.get(index).getObjectValue());
+	//				index++; // @ boolop | next stmt
+	//			} else if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() == "BoolVal") {
+	//				index++;
+	//				temp.addExpr(astList.get(index).getObjectValue());
+	//				index++; // @ boolop | next stmt
+	//			} else {
+	//				temp = null; // Type Error
+	//			}
+	//			if (index >= astList.size()) {
+	//				if (temp.getExpr().get(temp.getExpr().size()-1) != ")"){
+	//					temp.addExpr(")");
+	//				}
+	//				break;
+	//			}
+	//			
+	//			if (astList.get(index).getObjectLevel() < currLevel) {
+	//				temp.addExpr(")");
+	//				currLevel--;
+	//			}
+	//		}
+	//		return temp;
+	//	}
+		
+		
+		
+	//	private IntExpr parseIntExpr() { // @ digit1
+	//		int startLevel = astList.get(index).getObjectLevel();
+	//		IntExpr temp = new IntExpr();
+	//		while (astList.get(index).getObjectLevel() >= startLevel) { // This will end @ next Stmt
+	//			temp.addInt(Integer.valueOf(astList.get(index).getObjectValue()));
+	//			index++; // @ digit2|id|IntExpr
+	//			if (astList.get(index).getObjectType() == "digit") { // We can break here as no more recursive Expressions
+	//				temp.addInt(Integer.valueOf(astList.get(index).getObjectValue()));
+	//				index++; // @ next stmt
+	//				break;
+	//			} else if (astList.get(index).getObjectType() == "id") { // We can break here as no more recursive Expressions
+	//				temp.setId(astList.get(index).getObjectValue());
+	//				index++; // @ next stmt
+	//				break;
+	//			} else if (astList.get(index).getObjectType() == "IntExpr") {
+	//				index++; // @ digit1
+	//			} else {
+	//				temp = null;
+	//				System.out.println("ERROR"); // Error on Type. Can only be digit|id|IntExpr
+	//			}
+	//		}
+	//		return temp;
+	//		
+	//	}
+		
+		private String getType(String id) {
+			Scope temp = currScope;
+			if (temp.hasId(id)) {
+				String type = temp.getType(id);
+				if (type != null) {
+					return type;
+				}
+			} else {
+				do {
+					temp = temp.getParent();
+					if (temp != null) {
+						if (temp.hasId(id)) {
+							String type = temp.getType(id);
+							if (type != null) {
+								return type;
+							}
+						}
+					}
+				} while (temp != null);
+			}
+			return null;
+		}
+
 	private Boolean checkType(String type, String id) {
 		Scope temp = currScope;
 		if (temp.checkType(type, id)) {
