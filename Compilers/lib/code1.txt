@@ -1,6 +1,8 @@
 {
     string s
     int a
+        int b
+boolean c
     a = 1
     {
         s = "meow"
@@ -9,7 +11,7 @@
         print(a)
     }
     {
-        while (a != 5) {
+        while ((s == "s") == c) {
             a = 1 + a
             print(a)
         }
