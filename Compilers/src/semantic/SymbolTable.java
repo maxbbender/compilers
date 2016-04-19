@@ -442,6 +442,7 @@ public class SymbolTable {
 				}
 			} else { // TODO BoolExpr recurisve
 				errors = true;
+				//l
 				System.out.println("ERROR: Expected BoolVal|BoolExpr, recieved " + astList.get(index).getObjectType());
 				return false;
 			}
