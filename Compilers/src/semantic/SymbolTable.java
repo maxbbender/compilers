@@ -180,26 +180,32 @@ public class SymbolTable {
 					index++; // @ IntExpr/BoolExpr/StringExpr/id
 					type = astList.get(index).getObjectType();		
 					if (type == "id") {
-						if (!isInitialized(astList.get(index).getObjectValue())) {
+						if (!checkDeclaration(astList.get(index).getObjectValue())) {
 							toContinue = false;
 							errors = true;
-							System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not initialized");
-						} else {
-							index++;
+							System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not declared");
 						}
+//						if (!isInitialized(astList.get(index).getObjectValue())) {
+////							toContinue = false;
+////							errors = true;
+//							System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
+//							
+//						} 
+						index++;
 					} else if (astList.get(index).getObjectType() == "IntExpr") {
 						while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
 							if (astList.get(index).getObjectType() == "id") {
-								if (isInitialized(astList.get(index).getObjectValue())) {
+								if (checkDeclaration(astList.get(index).getObjectValue())) {
 									if (!checkType("int", astList.get(index).getObjectValue())){ 
 										toContinue = false;
 										errors = true;
 										System.out.println("ERROR: var " + astList.get(index).getObjectValue() + "is not type int");
 									}
+									
 								} else {
 									toContinue = false;
 									errors = true;
-									System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not initialized");
+									System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not declared");
 								}
 							}
 							index++;
