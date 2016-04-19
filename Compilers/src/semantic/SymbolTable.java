@@ -157,23 +157,22 @@ public class SymbolTable {
 //				System.out.println("ERROR: Variable " + id + " is not declared");
 //			}
 				case "IfStmt":
-					index = index + 2; // @id
-					id1 = astList.get(index).getObjectValue();
-					id2 = astList.get(index + 2).getObjectValue();
-					index = index + 3;
-					if (!checkIdsType(id1, id2, nodeType)) {
+					index++; // @ BoolExpr
+					if (!typeBoolExpr("IfStmt")) {
 						toContinue = false;
-						errors = true;
 					}
+//					id1 = astList.get(index).getObjectValue();
+//					id2 = astList.get(index + 2).getObjectValue();
+//					index = index + 3;
+//					if (!checkIdsType(id1, id2, nodeType)) {
+//						toContinue = false;
+//						errors = true;
+//					}
 					break;
 				case "WhileStmt": 
-					index = index + 2; // @id
-					id1 = astList.get(index).getObjectValue();
-					id2 = astList.get(index + 2).getObjectValue();
-					index = index + 3;
-					if (!checkIdsType(id1, id2, nodeType)) {
+					index++; // @ BoolExpr
+					if (!typeBoolExpr("WhileStmt")) {
 						toContinue = false;
-						errors = true;
 					}
 					break;
 				case "PrintStmt": 
@@ -253,6 +252,90 @@ public class SymbolTable {
 					}
 				}
 			} while (temp != null);
+		}
+		return false;
+	}
+	
+	private boolean typeBoolExpr(String stmtType) {
+		index++; // @ first expr
+		TerminalNode node1 = astList.get(index);
+		TerminalNode node2 = astList.get(index + 2);
+		index = index + 3;
+		if (node1.getObjectType().equals("id")) { // id
+			if (checkDeclaration(node1.getObjectValue())) {
+				if (node2.getObjectType().equals("id")) { //boolexpr id id
+					if (checkDeclaration(node2.getObjectValue())) {
+						if (checkIdsType(node1.getObjectValue(), node2.getObjectValue(), stmtType)) {
+							return true;
+						} else {
+							errors = true;
+							System.out.println("ERROR: var " + node1.getObjectValue() + " and var " + node2.getObjectValue() + " types do not match");
+							return false;
+						}
+					} else {
+						errors = true;
+						System.out.println("ERROR: var " + node2.getObjectValue() + " is not declared");
+						return false;
+					}
+				} else if (node2.getObjectType().equals("digit")) { // id digit
+					if (checkType("int", node1.getObjectValue())) {
+						return true;
+					} else {
+						errors = true;
+						System.out.println("ERROR: var " + node1.getObjectValue() + " does not match type int");
+						return false;
+					}
+				} else if (node2.getObjectType().equals("stringExpr")) {
+					if (checkType("string", node1.getObjectValue())) { 
+						return true;
+					} else {
+						errors = true;
+						System.out.println("ERROR: var " + node1.getObjectValue() + " does not match type string");
+						return false;
+					}
+				} // TODO else if (intExpr)
+			} else {
+				errors = true;
+				System.out.println("ERROR: var " + node1.getObjectValue() + " is not declared");
+				return false;
+			}
+		} else if (node1.getObjectType().equals("digit")) {
+			if (node2.getObjectType().equals("id")) {
+				if (checkType("int", node2.getObjectValue())) {
+					return true;
+				} else {
+					errors = true;
+					System.out.println("ERROR: var " + node2.getObjectType() + " does not match type int");
+					return false;
+				}
+			} else if (node2.getObjectType().equals("digit")) {
+				return true;
+			} else {
+				System.out.println("ERROR: The second argument in the " + stmtType + " does not match type \"int\"s");
+				return false;
+			} // TODO else if IntExpr
+		} else if (node1.getObjectType().equals("stringExpr")) {
+			if (node2.getObjectType().equals("id")) {
+				if (checkType("string", node2.getObjectValue())) {
+					return true;
+				} else {
+					errors = true;
+					System.out.println("ERROR: var " + node2.getObjectType() + " does not match type string");
+					return false;
+				}
+			} else if (node2.getObjectType().equals("stringExpr")) {
+				return true;
+			} else {
+				errors = true;
+				System.out.println("ERROR: The second argument in the " + stmtType + " does not match type \"string\"");
+				return false;
+			}
+		} else { //TODO else if IntExpr
+			errors = true;
+			System.out.println("ERROR: Unknown expression type in typeBoolExpr");
+			System.out.println("ERROR: Arg1 Type/Value: " + node1.getObjectType() + "/" + node1.getObjectValue());
+			System.out.println("ERROR: Arg2 Type/Value: " + node2.getObjectType() + "/" + node2.getObjectValue());
+			return false;
 		}
 		return false;
 	}
