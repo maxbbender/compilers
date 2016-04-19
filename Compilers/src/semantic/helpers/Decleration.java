@@ -26,7 +26,7 @@ public class Decleration {
 	}
 	
 	public String printDecl() {
-		return id + " : " + type + "|Initialized: " + init; 
+		return id + " : " + type; 
 	}
 	
 	public String getType() {

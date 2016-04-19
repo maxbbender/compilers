@@ -56,7 +56,6 @@ public class SymbolTable {
 					scopeNum++;
 					break;
 				case "VarDecl":
-					/* TODO Has the variable already been declared in this scope? */
 					index++; // @ type
 					String tempType = astList.get(index).getObjectValue();
 					index++; // @ id
@@ -84,7 +83,7 @@ public class SymbolTable {
 					index++; // @ digit|IntExpr|stringExpr|BoolExpr|id
 					String type = astList.get(index).getObjectType();
 					if (checkDeclaration(id)) {
-						if (type != "IntExpr") { 
+						if (type != "IntExpr" && type != "BoolExpr") { 
 							if (type == "id") {
 								if (!checkIdsType(id, astList.get(index).getObjectValue(), "AssignmentStmt")) {
 									System.out.println("ERROR: Type Mismatch on var " + id + " and var " + astList.get(index).getObjectValue());
@@ -92,6 +91,7 @@ public class SymbolTable {
 									errors = true;
 								} else {
 									currScope.init(id);
+									index++;
 								}
 							} else if (!checkType(type, id)) { // Is the variable type declaration the same
 								System.out.println("ERROR: Type Mismatch on var " + id + " for type " + type);
@@ -99,49 +99,35 @@ public class SymbolTable {
 								errors = true;
 							} else {
 								currScope.init(id);
-							}
-							
-							if (type == "BoolExpr") {
-								int backLevel = astList.get(index - 1).getObjectLevel();
-								while (astList.get(index).getObjectType() != "Block" 
-										&& astList.get(index).getObjectType() != "AssignmentStmt" 
-										&& astList.get(index).getObjectType() != "VarDecl" 
-										&& astList.get(index).getObjectType() != "IfStmt" 
-										&& astList.get(index).getObjectType() != "WhileStmt") {
-//									System.out.println(astList.get(index).getObjectType());
-									index++;
-									if (index >= astList.size()) {
-										break;
-									}
-								}
-								currScope.init(id);
-							} else {
 								index++;
 							}
-					}
-					
-						if (checkDeclaration(id)) { // Has the variable been declared
-							
-						} else {
-							toContinue = false;
-							System.out.println("ERROR: Variable " + id + " is not declared");
-							errors = true;
-						}
-					} else {
-						if (checkDeclaration(id)) { // returns true on declared
+						} else if (type == "BoolExpr") {
+//							int backLevel = astList.get(index - 1).getObjectLevel();
+							while (astList.get(index).getObjectType() != "Block" 
+									&& astList.get(index).getObjectType() != "AssignmentStmt" 
+									&& astList.get(index).getObjectType() != "VarDecl" 
+									&& astList.get(index).getObjectType() != "IfStmt" 
+									&& astList.get(index).getObjectType() != "WhileStmt") {
+//								System.out.println(astList.get(index).getObjectType());
+								index++;
+								if (index >= astList.size()) {
+									break;
+								}
+							}
+							currScope.init(id);
+						} else if (type == "IntExpr") { 
 							if (typeIntExpr(id)) { // returns false on no errors
 								toContinue = false;
-								System.out.println("ERROR: Type Mismatch on ID: " + id + " for type " + type);
+								
 							} else {
 								currScope.init(id);
 							}
-						} else {
-							toContinue = false;
-							System.out.println("ERROR: Variable " + id + " is not declared");
-							errors = true;
 						}
+					} else {
+						System.out.println("ERROR: var " + id + " is not declared");
+						toContinue = false;
+						errors = true;
 					}
-					
 					break;
 //					switch (type) {
 //					case "digit": 
@@ -151,7 +137,6 @@ public class SymbolTable {
 //					case "IntExpr":
 //						index++; // @ digit1
 //						getCurrScope().addAssignment(id, parseIntExpr()); // @ next stmt
-//						// TODO if parseIntExpr == null throw type error
 //						break;
 //					case "stringExpr":
 //						getCurrScope().addAssignment(id, astList.get(index).getObjectValue());
@@ -231,9 +216,13 @@ public class SymbolTable {
 				default:
 					toContinue = false;
 					System.out.println("ERROR: Unknown Next Statement. See below");
-					System.out.println("Previous Node: " + astList.get(index-1).getObjectType());
-					System.out.println("Current Node: " + nodeType);
-					System.out.println("Next Node: " + astList.get(index + 1).getObjectType());
+					System.out.println("Previous Node: " + astList.get(index-1).getObjectType() + "(NodeNum: " + (index-1) + ")");
+					System.out.println("Current Node: " + nodeType  + "(NodeNum: " + (index) + ")");
+					if (index+1 < astList.size()) {
+						System.out.println("Next Node: " + astList.get(index + 1).getObjectType()  + "(NodeNum: " + (index+1) + ")");
+					} else {
+						System.out.println("Next Node: END OF PROGRAM");
+					}
 					errors = true;
 				//case "
 				}
@@ -265,7 +254,7 @@ public class SymbolTable {
 	private boolean checkIdsType(String id1, String id2, String nodeType){
 		if (checkDeclaration(id1)) {
 			if (checkDeclaration(id2)) {
-				if (getType(id1) == getType(id2)) {
+				if (getType(id1).equals(getType(id2))) {
 					return true;
 				} else {
 					System.out.println("Types do no match. Ids " + id1 + " and " + id2);
@@ -287,6 +276,12 @@ public class SymbolTable {
 		do {
 			if (!temp.isPrinted()) {
 				System.out.println("Scope " + scopeNum);
+				ArrayList<Decleration> tempDeclList = temp.getUnInitialized();
+				if (tempDeclList.size() > 0) {
+					for (Decleration tempDecl : tempDeclList) {
+						System.out.println("WARNING: Uninitialized var " + tempDecl.getId());
+					}
+				}
 				temp.print();
 //				temp.printDeclerations();
 //				System.out.println("Scope " + scopeNum + "('s) Assignments:");
@@ -315,7 +310,7 @@ public class SymbolTable {
 			if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() != "BoolVal") {
 				currLevel++;
 				temp.addExpr("(");
-				index++; // @ digit| TODO
+				index++; // TODO@ digit| 
 			} else if (astList.get(index).getObjectType() == "digit") {
 				temp.addExpr(astList.get(index).getObjectValue());
 				index++;
@@ -357,7 +352,15 @@ public class SymbolTable {
 			while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
 				if (astList.get(index).getObjectType() == "id") {
 					if (!checkIdsType(id, astList.get(index).getObjectValue(), "IntExpr")){ 
+						System.out.println("ERROR: Type Mismatch on ID: " + id + " for type IntExpr");
 						errors = true;
+						break;
+					} else {
+						if (!isInitialized(astList.get(index).getObjectValue())) {
+							System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not initialized");
+							errors = true;
+							break;
+						}
 					}
 				}
 				index++;

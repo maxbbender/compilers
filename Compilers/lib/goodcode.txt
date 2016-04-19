@@ -1,0 +1,65 @@
+{
+  print("")
+  {}
+  int a
+  a = 0
+  a = 3 + a
+  int b
+  b = 8
+  {
+    {
+      print ("inta is not int a")
+      print (1+2+3+4+5+4+3+2+1)
+      print (a)
+    }
+    int a
+    a = 7
+    string b
+    b = "one string"
+    print(b)
+  }
+}$
+
+{
+  int a
+  a = 6
+  {
+    string a
+    a = "a string"
+    string b
+    b = a
+    print(b)
+  }
+  print(a)
+}$
+
+{
+  int a
+  boolean b
+  string c
+  a = 5
+  b = true
+  c = "inta"
+  print(c)
+  print(b)
+  print(a)
+  print(5+a)
+}$
+
+{
+  int a
+  {
+    boolean b
+    {
+      string c
+      {
+        a = 5
+        b = false
+        c = "inta"
+      }
+      print(c)
+    }
+    print(b)
+  }
+  print(a)
+}$

@@ -241,6 +241,16 @@ public class Scope {
 		}
 		return null;
 	}
+	
+	public ArrayList<Decleration> getUnInitialized() {
+		ArrayList<Decleration> temp = new ArrayList<Decleration>();
+		for (Decleration tempDecl : decl) {
+			if (!tempDecl.isInitialized()) {
+				temp.add(tempDecl);
+			}
+		}
+		return temp;
+	}
 	public boolean checkType(String type, String id) {
 		for(Decleration declNode : decl) {
 			if (declNode.getId().equals(id)) {
