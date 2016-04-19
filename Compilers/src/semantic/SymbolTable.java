@@ -116,9 +116,8 @@ public class SymbolTable {
 							}
 							currScope.init(id);
 						} else if (type == "IntExpr") { 
-							if (typeIntExpr(id)) { // returns false on no errors
+							if (!typeIntExpr(id)) { // returns false on no errors
 								toContinue = false;
-								
 							} else {
 								currScope.init(id);
 							}
@@ -191,32 +190,48 @@ public class SymbolTable {
 //							
 //						} 
 						index++;
-					} else if (astList.get(index).getObjectType() == "IntExpr") {
-						while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
-							if (astList.get(index).getObjectType() == "id") {
-								if (checkDeclaration(astList.get(index).getObjectValue())) {
-									if (!checkType("int", astList.get(index).getObjectValue())){ 
-										toContinue = false;
-										errors = true;
-										System.out.println("ERROR: var " + astList.get(index).getObjectValue() + "is not type int");
-									}
-									
-								} else {
-									toContinue = false;
-									errors = true;
-									System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not declared");
-								}
-							}
-							index++;
-							
-							if (index >= astList.size()) {
-								break;
-							}
+					} else if (type == "IntExpr") {
+						if (!typeIntExpr(null)) {
+							toContinue = false;
+							errors = true;
+							System.out.println("ERROR: Invalid IntExpr for PrintStmt");
 						}
+//						while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
+//							if (astList.get(index).getObjectType() == "id") {
+//								if (checkDeclaration(astList.get(index).getObjectValue())) {
+//									if (!checkType("int", astList.get(index).getObjectValue())){ 
+//										toContinue = false;
+//										errors = true;
+//										System.out.println("ERROR: var " + astList.get(index).getObjectValue() + "is not type int");
+//									}
+//									
+//								} else {
+//									toContinue = false;
+//									errors = true;
+//									System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not declared");
+//								}
+//							}
+//							index++;
+//							
+//							if (index >= astList.size()) {
+//								break;
+//							}
+//						}
+					} else if (type == "BoolExpr") {
+						if (!typeBoolExpr("PrintStmt")) {
+							toContinue = false;
+							errors = true;
+							System.out.println("ERROR: Invalid BoolExpr in PrintStmt");
+						}
+					} else if (type == "stringExpr") {
+						index++;
 					} else {
+						toContinue = false;
+						errors = true;
+						System.out.println("ERROR: Unknown argument type for Print Statement");
+						System.out.println("ERROR: Arg Type: " + type);
 						index++;
 					}
-					
 					break;	
 				default:
 					toContinue = false;
@@ -260,12 +275,12 @@ public class SymbolTable {
 		index++; // @ first expr
 		TerminalNode node1 = astList.get(index);
 		TerminalNode node2 = astList.get(index + 2);
-		index = index + 3;
 		if (node1.getObjectType().equals("id")) { // id
 			if (checkDeclaration(node1.getObjectValue())) {
-				if (node2.getObjectType().equals("id")) { //boolexpr id id
+				if (node2.getObjectType().equals("id")) { // id id
 					if (checkDeclaration(node2.getObjectValue())) {
 						if (checkIdsType(node1.getObjectValue(), node2.getObjectValue(), stmtType)) {
+							index = index + 3;
 							return true;
 						} else {
 							errors = true;
@@ -279,65 +294,141 @@ public class SymbolTable {
 					}
 				} else if (node2.getObjectType().equals("digit")) { // id digit
 					if (checkType("int", node1.getObjectValue())) {
+						index = index + 3;
 						return true;
 					} else {
 						errors = true;
 						System.out.println("ERROR: var " + node1.getObjectValue() + " does not match type int");
 						return false;
 					}
-				} else if (node2.getObjectType().equals("stringExpr")) {
+				} else if (node2.getObjectType().equals("stringExpr")) { // id string
 					if (checkType("string", node1.getObjectValue())) { 
+						index = index + 3;
 						return true;
 					} else {
 						errors = true;
 						System.out.println("ERROR: var " + node1.getObjectValue() + " does not match type string");
 						return false;
 					}
-				} // TODO else if (intExpr)
+				} else if (node2.getObjectType().equals("IntExpr")) {
+					if (typeIntExpr(node1.getObjectValue())) {
+						return true;
+					} else {
+						errors = true;
+						System.out.println("ERROR: Invalid IntExpr in " + stmtType);
+						return false;
+					}
+				} else {
+					errors = true;
+					System.out.println("ERROR: Unkown second argument type");
+					System.out.println("ERROR: Arg2 Type/Value" + node2.getObjectType() + "/" + node2.getObjectValue());
+					return false;
+				}
 			} else {
 				errors = true;
 				System.out.println("ERROR: var " + node1.getObjectValue() + " is not declared");
 				return false;
 			}
-		} else if (node1.getObjectType().equals("digit")) {
-			if (node2.getObjectType().equals("id")) {
-				if (checkType("int", node2.getObjectValue())) {
+		} else if (node1.getObjectType().equals("digit")) { //digit
+			if (node2.getObjectType().equals("id")) { // digit id
+				if (checkDeclaration(node2.getObjectValue())) {
+					if (checkType("int", node2.getObjectValue())) {
+						index = index + 3;
+						return true;
+					} else {
+						errors = true;
+						System.out.println("ERROR: var " + node2.getObjectType() + " does not match type int");
+						return false;
+					}
+				} else {
+					errors = true;
+					System.out.println("ERROR: Arg2 (var " + node2.getObjectValue() + ") is not declared for stmt " + stmtType);
+					return false;
+				}
+			} else if (node2.getObjectType().equals("digit")) { // digit digit
+				index = index + 3;
+				return true;
+			} else if (node2.getObjectType().equals("IntExpr")) { // digit IntExpr
+				index = index + 2;
+				if (typeIntExpr(null)) {
 					return true;
 				} else {
 					errors = true;
-					System.out.println("ERROR: var " + node2.getObjectType() + " does not match type int");
+					System.out.println("Invalid IntExpr for stmt " + stmtType);
 					return false;
 				}
-			} else if (node2.getObjectType().equals("digit")) {
-				return true;
 			} else {
-				System.out.println("ERROR: The second argument in the " + stmtType + " does not match type \"int\"s");
+				System.out.println("ERROR: The second argument in " + stmtType + " does not match type \"int\"s");
 				return false;
-			} // TODO else if IntExpr
-		} else if (node1.getObjectType().equals("stringExpr")) {
-			if (node2.getObjectType().equals("id")) {
+			}
+		} else if (node1.getObjectType().equals("stringExpr")) { // string
+			if (node2.getObjectType().equals("id")) { // string id
 				if (checkType("string", node2.getObjectValue())) {
+					index = index + 3;
 					return true;
 				} else {
 					errors = true;
 					System.out.println("ERROR: var " + node2.getObjectType() + " does not match type string");
 					return false;
 				}
-			} else if (node2.getObjectType().equals("stringExpr")) {
+			} else if (node2.getObjectType().equals("stringExpr")) { // string string
+				index = index + 3;
 				return true;
 			} else {
 				errors = true;
 				System.out.println("ERROR: The second argument in the " + stmtType + " does not match type \"string\"");
 				return false;
 			}
-		} else { //TODO else if IntExpr
+		} else if (node1.getObjectType().equals("IntExpr")) { // IntExpr
+			index = index + 2;
+			if (typeIntExpr(null)) {
+				index++;
+				node2 = astList.get(index); // reset node 2 to next.
+				if (node2.getObjectType().equals("digit")) { // IntExpr digit
+					index++;
+					return true;
+				} else if (node2.getObjectType().equals("id")) {
+					if (checkDeclaration(node2.getObjectValue())) {
+						if (checkType("int", node2.getObjectValue())) {
+							index++;
+							return true;
+						} else {
+							errors = true;
+							System.out.println("ERROR: var " + node2.getObjectValue() + " does not match type string");
+							return false;
+						}
+					} else {
+						errors = true;
+						System.out.println("ERROR: var " + node2.getObjectValue() + " is not declared");
+						return false;
+					}
+				} else if (node2.getObjectType().equals("IntExpr")) {
+					if (typeIntExpr(null)) {
+						return true;
+					} else {
+						errors = true;
+						System.out.println("ERROR: IntExpr error for Arg2 of statement" + stmtType);
+						return false;
+					}
+				} else {
+					errors = true;
+					System.out.println("ERROR: Invalid second argument for statement " + stmtType);
+					return false;
+				}
+			} else {
+				errors = true;
+				System.out.println("ERROR: Arg1(IntExpr) is not valid for statement " + stmtType);
+				return false;
+			}
+		} else {
 			errors = true;
 			System.out.println("ERROR: Unknown expression type in typeBoolExpr");
 			System.out.println("ERROR: Arg1 Type/Value: " + node1.getObjectType() + "/" + node1.getObjectValue());
 			System.out.println("ERROR: Arg2 Type/Value: " + node2.getObjectType() + "/" + node2.getObjectValue());
 			return false;
 		}
-		return false;
+		
+		
 	}
 	
 	private boolean checkIdsType(String id1, String id2, String nodeType){
@@ -395,7 +486,6 @@ public class SymbolTable {
 		BoolExpr temp = new BoolExpr();
 		while(astList.get(index).getObjectLevel() >= startLevel) {
 			
-			
 			if (astList.get(index).getObjectType() == "BoolExpr" && astList.get(index + 1).getObjectType() != "BoolVal") {
 				currLevel++;
 				temp.addExpr("(");
@@ -436,28 +526,52 @@ public class SymbolTable {
 	}
 	
 	private boolean typeIntExpr(String id) {
-		if (checkType("int", id)) {
+		boolean justDigits = true;
+		if (id != null && id != "null") {
+			if (checkType("int", id)) {
+				index++; // @ digit | id
+				while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
+					if (astList.get(index).getObjectType() == "id") {
+						if (!checkType("int", astList.get(index).getObjectValue())){ 
+							System.out.println("ERROR: Type Mismatch on ID: " + astList.get(index).getObjectValue() + " for type IntExpr");
+							errors = true;
+							return false;
+						} else {
+							if (!isInitialized(astList.get(index).getObjectValue())) {
+								System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
+							} 
+							index++;
+							return true;
+						}
+					}
+					index++;
+				}
+			} else {
+				System.out.println("ERROR: var " + id + " is not type int");
+				errors = true;
+				return false;
+			}
+		} else {
 			index++; // @ digit | id
 			while (astList.get(index).getObjectType() == "digit" || astList.get(index).getObjectType() == "IntExpr" || astList.get(index).getObjectType() == "id") {
 				if (astList.get(index).getObjectType() == "id") {
-					if (!checkIdsType(id, astList.get(index).getObjectValue(), "IntExpr")){ 
-						System.out.println("ERROR: Type Mismatch on ID: " + id + " for type IntExpr");
+					if (!checkType("int", astList.get(index).getObjectValue())){ 
+						System.out.println("ERROR: Type Mismatch on ID: " + astList.get(index).getObjectValue() + " type IntExpr");
 						errors = true;
-						break;
+						return false;
 					} else {
 						if (!isInitialized(astList.get(index).getObjectValue())) {
-							System.out.println("ERROR: var " + astList.get(index).getObjectValue() + " is not initialized");
-							errors = true;
-							break;
+							System.out.println("WARNING: var " + astList.get(index).getObjectValue() + " is not initialized");
 						}
+						index++;
+						return true;
 					}
 				}
 				index++;
 			}
-		} else {
-			errors = true;
 		}
-		return errors;
+		index++;
+		return true;
 	}
 	
 	private IntExpr parseIntExpr() { // @ digit1

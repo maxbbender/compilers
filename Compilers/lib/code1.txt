@@ -1,32 +1,21 @@
 {
     int a
-    a = 1
-    print(a)
-
-    {
-        int a
-        a = 2
+    int n
+    int r
+    a = 0
+    while (a != 5) {
         print(a)
+        a = 1 + a
     }
 
-    {
-        int a
-        a = 3
-        print(a)
+    if (1+1+n == 1+ 2 + r) {
+        print("they are equal")
     }
 
-    string s
-    s = "stra"
-    print(s)
-
-    s = "strb"
-    print(s)
-
-    if (a != 5) {
-        print("true")
+    if ("stra" == "strb") {
+        print("no dice")
     }
 
-    if (a == 5) {
-        print("false")
-    }
+    print(("a" != "b"))
+    print(("a" != "a"))
 } $
