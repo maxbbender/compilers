@@ -402,7 +402,7 @@ public class SymbolTable {
 						System.out.println("ERROR: var " + node2.getObjectValue() + " is not declared");
 						return false;
 					}
-				} else if (node2.getObjectType().equals("IntExpr")) {
+				} else if (node2.getObjectType().equals("IntExpr")) { // IntExpr IntExpr
 					if (typeIntExpr(null)) {
 						return true;
 					} else {
@@ -420,6 +420,31 @@ public class SymbolTable {
 				System.out.println("ERROR: Arg1(IntExpr) is not valid for statement " + stmtType);
 				return false;
 			}
+		} else if (node1.getObjectType().equals("BoolExpr")) {
+			index++; // @ BoolVal | BoolExpr
+			if (astList.get(index).getObjectType().equals("BoolVal")) {
+				index = index + 2; // @ second expr;
+				node2 = astList.get(index);
+				if (node2.getObjectType().equals("BoolExpr")) {
+					index++; // @ BoolVal | BoolExpr
+					if (astList.get(index).getObjectType().equals("BoolVal")) { 
+						index++;
+						return true;
+					} else { // TODO else if BoolExpr recursive
+						errors = true;
+						System.out.println("ERROR: Expected BoolVal|BoolExpr, recieved " + astList.get(index).getObjectType());
+						return false;
+					}
+				} else {
+					errors = true;
+					System.out.println("ERROR: Invalid type argument " + astList.get(index).getObjectType() + ". Expected BoolExpr");
+					return false;
+				}
+			} else { // TODO BoolExpr recurisve
+				errors = true;
+				System.out.println("ERROR: Expected BoolVal|BoolExpr, recieved " + astList.get(index).getObjectType());
+				return false;
+			}
 		} else {
 			errors = true;
 			System.out.println("ERROR: Unknown expression type in typeBoolExpr");
@@ -427,8 +452,6 @@ public class SymbolTable {
 			System.out.println("ERROR: Arg2 Type/Value: " + node2.getObjectType() + "/" + node2.getObjectValue());
 			return false;
 		}
-		
-		
 	}
 	
 	private boolean checkIdsType(String id1, String id2, String nodeType){
@@ -570,7 +593,6 @@ public class SymbolTable {
 				index++;
 			}
 		}
-		index++;
 		return true;
 	}
 	
