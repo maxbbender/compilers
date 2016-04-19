@@ -282,12 +282,12 @@ public class SymbolTable {
 		do {
 			if (!temp.isPrinted()) {
 				System.out.println("Scope " + scopeNum);
-				ArrayList<Decleration> tempDeclList = temp.getUnInitialized();
-				if (tempDeclList.size() > 0) {
-					for (Decleration tempDecl : tempDeclList) {
-						System.out.println("WARNING: Uninitialized var " + tempDecl.getId());
-					}
-				}
+//				ArrayList<Decleration> tempDeclList = temp.getUnInitialized();
+//				if (tempDeclList.size() > 0) {
+//					for (Decleration tempDecl : tempDeclList) {
+//						System.out.println("WARNING: Uninitialized var " + tempDecl.getId());
+//					}
+//				}
 				temp.print();
 //				temp.printDeclerations();
 //				System.out.println("Scope " + scopeNum + "('s) Assignments:");
