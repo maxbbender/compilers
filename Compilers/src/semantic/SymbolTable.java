@@ -561,6 +561,9 @@ public class SymbolTable {
 				System.out.println("ERROR: Expected BoolVal|BoolExpr, recieved " + astList.get(index).getObjectType());
 				return false;
 			}
+		} else if (node1.getObjectType().equals("BoolVal")) {
+			index++;
+			return true;
 		} else {
 			errors = true;
 			System.out.println("ERROR: Unknown expression type in typeBoolExpr");
@@ -568,6 +571,8 @@ public class SymbolTable {
 			System.out.println("ERROR: Arg2 Type/Value: " + node2.getObjectType() + "/" + node2.getObjectValue());
 			return false;
 		}
+		
+		
 	}
 	
 	private boolean checkIdsType(String id1, String id2, String nodeType){
