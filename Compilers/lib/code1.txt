@@ -1,21 +1,4 @@
 {
-    string s
-    int a
-        int b
 boolean c
-    a = 1
-    {
-        s = "meow"
-        int a
-        a = 2
-        print(a)
-    }
-    {
-        while ((s == "s") == c) {
-            a = 1 + a
-            print(a)
-        }
-        print(3 + a)
-        print(s)
-    }
+c = (1 == (1!=1))
 } $

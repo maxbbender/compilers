@@ -103,18 +103,24 @@ public class SymbolTable {
 							}
 						} else if (type == "BoolExpr") {
 //							int backLevel = astList.get(index - 1).getObjectLevel();
-							while (astList.get(index).getObjectType() != "Block" 
-									&& astList.get(index).getObjectType() != "AssignmentStmt" 
-									&& astList.get(index).getObjectType() != "VarDecl" 
-									&& astList.get(index).getObjectType() != "IfStmt" 
-									&& astList.get(index).getObjectType() != "WhileStmt") {
-//								System.out.println(astList.get(index).getObjectType());
-								index++;
-								if (index >= astList.size()) {
-									break;
-								}
+//							while (astList.get(index).getObjectType() != "Block" 
+//									&& astList.get(index).getObjectType() != "AssignmentStmt" 
+//									&& astList.get(index).getObjectType() != "VarDecl" 
+//									&& astList.get(index).getObjectType() != "IfStmt" 
+//									&& astList.get(index).getObjectType() != "WhileStmt") {
+////								System.out.println(astList.get(index).getObjectType());
+//								index++;
+//								if (index >= astList.size()) {
+//									break;
+//								}
+//							}
+							if (typeBoolExpr("AssignmentStmt")) {
+								currScope.init(id);
+							} else {
+								toContinue = false;
+								System.out.println("ERROR: Invalid BoolExpr for assignment for var " + id);
 							}
-							currScope.init(id);
+							
 						} else if (type == "IntExpr") { 
 							if (!typeIntExpr(id)) { // returns false on no errors
 								toContinue = false;
@@ -514,29 +520,35 @@ public class SymbolTable {
 				index--;
 				if (typeBoolExpr(stmtType)) {
 					index = index + 2; // @ BoolVal | other
-					if (astList.get(index).getObjectType().equals("BoolVal")) { // BoolExpr BoolVal
-						index++;
-						return true;
-					} else if (astList.get(index -1).getObjectType().equals("BoolExpr")) { // BoolExpr BoolExpr
-						index--;
-						if (typeBoolExpr(stmtType)) {
+					if (index < astList.size()) {
+						if (astList.get(index).getObjectType().equals("BoolVal")) { // BoolExpr BoolVal
+							index++;
 							return true;
+						} else if (astList.get(index -1).getObjectType().equals("BoolExpr")) { // BoolExpr BoolExpr
+							index--;
+							if (typeBoolExpr(stmtType)) {
+								return true;
+							} else {
+								errors = true;
+								System.out.println("ERROR: Invalid arg2 for statement " + stmtType + ". Expected BoolExpr");
+								return false;
+							}
+						} else if (astList.get(index -1).getObjectType().equals("id")) { // BoolExpr id
+							if (checkType("boolean", astList.get(index -1).getObjectValue())) {
+								return true;
+							} else {
+								errors = true;
+								System.out.println("ERROR: var " + astList.get(index -1).getObjectValue() + " does not match type \"boolean\"");
+								return false;
+							}
 						} else {
 							errors = true;
-							System.out.println("ERROR: Invalid arg2 for statement " + stmtType + ". Expected BoolExpr");
-							return false;
-						}
-					} else if (astList.get(index -1).getObjectType().equals("id")) { // BoolExpr id
-						if (checkType("boolean", astList.get(index -1).getObjectValue())) {
-							return true;
-						} else {
-							errors = true;
-							System.out.println("ERROR: var " + astList.get(index -1).getObjectValue() + " does not match type \"boolean\"");
+							System.err.println("ERROR: Invalid arg2 for statement " + stmtType + ". Expected BoolExpr. Got " + astList.get(index-1).getObjectType());
 							return false;
 						}
 					} else {
 						errors = true;
-						System.err.println("ERROR: Invalid arg2 for statement " + stmtType + ". Expected BoolExpr. Got " + astList.get(index-1).getObjectType());
+						System.out.println("ERROR: Invalid BoolExpr for statement " + stmtType);
 						return false;
 					}
 				} else {
