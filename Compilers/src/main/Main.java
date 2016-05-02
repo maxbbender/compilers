@@ -10,6 +10,9 @@ import semantic.AST;
 import semantic.SymbolTable;
 
 import java.util.logging.Logger;
+
+import codegeneration.GenerationMain;
+
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -233,6 +236,19 @@ public class Main {
 						}
 					} else {
 						System.out.println("Errors in the SymbolTable");
+					}
+				}
+				
+				/* Code Generation */
+				GenerationMain gen;
+				for (AST tempAST : astPrograms) {
+					gen = new GenerationMain(tempAST);
+					gen.run();
+					gen.print();
+				}
+				if (verbose) {
+					if (toContinue) {
+						
 					}
 				}
 			}		
