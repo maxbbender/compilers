@@ -3,23 +3,34 @@ package codegeneration;
 public class StaticVar {
 	private String tempNum;
 	private String tempX;
+	private String scope;
 	private String var;
 	private String address;
 	
 	public StaticVar() {
+		scope = null;
 		tempNum = null;
 		tempX = null;
 		var = null;
 		address = null;
 	}
 	
-	public StaticVar(String newTempNum, String newTempX, String newVar, String newAddress) {
+	public StaticVar(String newTempNum, String newTempX, String newVar, String newAddress, String newScope) {
+		scope = newScope;
 		tempNum = newTempNum;
 		tempX = newTempX;
 		var = newVar;
 		address = newAddress;
 	}
 	
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
 	public String fullName() {
 		return tempNum + tempX;
 	}

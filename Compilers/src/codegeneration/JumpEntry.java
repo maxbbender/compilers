@@ -23,7 +23,11 @@ public class JumpEntry {
 	}
 
 	public String getDistance() {
-		return distance;
+		if (distance.length() == 1) {
+			return "0" + distance;
+		} else {
+			return distance;
+		}
 	}
 
 	public void setDistance(String distance) {

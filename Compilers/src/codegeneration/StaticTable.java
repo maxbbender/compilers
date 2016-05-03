@@ -9,22 +9,22 @@ public class StaticTable {
 		table = new ArrayList<StaticVar>();
 	}
 	
-	public void addEntry(String newTempNum, String newTempX, String newVar, String newAddress) {
+	public void addEntry(String newTempNum, String newTempX, String newVar, String newAddress, String newScope) {
 		StaticVar tempStaticVar;
-		table.add(tempStaticVar= new StaticVar(newTempNum, newTempX, newVar, newAddress));
+		table.add(tempStaticVar= new StaticVar(newTempNum, newTempX, newVar, newAddress, newScope));
 	}
 	
-	public void addEntry(String newVar, String newAddress) {
+	public void addEntry(String newVar, String newAddress, String newScope) {
 		StaticVar tempStaticVar;
 		String tempT = "T" + String.valueOf(table.size());
-		table.add(tempStaticVar = new StaticVar(tempT, "XX", newVar, newAddress));
+		table.add(tempStaticVar = new StaticVar(tempT, "XX", newVar, newAddress, newScope));
 	}
 	
-	public void addEntry(String newVar) {
+	public void addEntry(String newVar, String newScope) {
 		StaticVar tempStaticVar;
 		String tempT = "T" + String.valueOf(table.size());
 		String address = "+" + String.valueOf(table.size());
-		table.add(tempStaticVar = new StaticVar(tempT, "XX", newVar, address));
+		table.add(tempStaticVar = new StaticVar(tempT, "XX", newVar, address, newScope));
 	}
 	
 	public StaticVar getEntryForVar(String var) {
@@ -46,10 +46,10 @@ public class StaticTable {
 	}
 	
 	public void print() {
-		System.out.println("TX|XX|Var|Address");
+		System.out.println("TX|XX|Var|Scope|Address");
 		System.out.println("~~~~~~~~~~~~~~~~~");
 		for (StaticVar tempVar : table) {
-			System.out.println(tempVar.getTempNum()+ "|" + tempVar.getTempX() + "|" + tempVar.getVar() + "|" + tempVar.getAddress());
+			System.out.println(tempVar.getTempNum()+ "|" + tempVar.getTempX() + "|" + tempVar.getVar() + "|" + tempVar.getScope() + "|" + tempVar.getAddress());
 		}
 	}
 }

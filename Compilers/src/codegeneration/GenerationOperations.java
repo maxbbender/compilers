@@ -26,13 +26,28 @@ public class GenerationOperations {
 		System.out.println();
 	}
 	
+	public void updateJumps() {
+		for (JumpEntry tempEntry : jumpTable.getJumpTable()) {
+			int changeIndex = exec.indexOf(tempEntry.getJumpId());
+			exec.set(changeIndex, tempEntry.getDistance());
+		}
+	}
 	public void printStaticTable() {
 		staticTable.print();
 	}
 	
+	public void printJumpTable() {
+		jumpTable.print();
+	}
+	
 	public void loadConst(String newConst) {
 		exec.add("A9");
-		exec.add(newConst);
+		if (newConst.length() == 1) {
+			String tempConst = "0" + newConst;
+			exec.add(tempConst);
+		} else {
+			exec.add(newConst);
+		}
 	}
 	
 	public void loadMemory(String var) {
@@ -66,10 +81,10 @@ public class GenerationOperations {
 		exec.add(tempSVar.getTempX());
 	}
 	
-	public void storeAccumulator(String var) {
+	public void storeAccumulator(String var, String scope) {
 		exec.add("8D");
 		if (!staticTable.varExists(var)) {
-			staticTable.addEntry(var);
+			staticTable.addEntry(var, scope);
 		}
 		StaticVar tempSVar = staticTable.getEntryForVar(var);
 		exec.add(tempSVar.getTempNum());
@@ -95,6 +110,18 @@ public class GenerationOperations {
 		exec.add("D0");
 		JumpEntry tempEntry = jumpTable.addEntry();
 		exec.add(tempEntry.getJumpId());
+	}
+	
+	public void updateJump() {
+		for (int i = exec.size() - 1; i >= 0; i--) {
+			if (exec.get(i).equals("D0")) {
+				String jumpId = exec.get(i + 1);
+				if (jumpTable.getEntry(jumpId).getDistance().equals("XX")) {
+					int diff = exec.size() - exec.indexOf(jumpId);
+					jumpTable.updateEntry(jumpId, String.valueOf(diff));
+				}
+			}
+		}
 	}
 	
 }

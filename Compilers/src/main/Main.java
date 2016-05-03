@@ -246,12 +246,13 @@ public class Main {
 					gen.run();
 					gen.print();
 				}
-				if (verbose) {
-					if (toContinue) {
-						
-					}
-				}
+//				if (verbose) {
+//					if (toContinue) {
+//						
+//					}
+//				}
 			}		
 		}
-	}	
+		System.exit(0);
+	}
 }
