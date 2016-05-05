@@ -15,13 +15,14 @@ public class GenerationMain {
 	}
 	
 	public void run() {
+		boolean error = false;
 		int scope = 0;
 		int currScopeLevel = 0;
 		int jumpLevel = 0;
 		boolean jumped = false;
 		int index = 0;
 		ArrayList<TerminalNode> astList = ast.getAst();
-		while (index < astList.size()) {
+		while (index < astList.size() && !error) {
 			if (astList.get(index).getObjectLevel() <= currScopeLevel) {
 				if (jumped) {
 					genOps.updateJump();
@@ -35,8 +36,16 @@ public class GenerationMain {
 			
 			switch(nodeType) {
 			case "VarDecl": 
-				index = index + 2; // @ id
-				declaration(astList.get(index).getObjectValue(), String.valueOf(scope));
+				index++;
+				String type = astList.get(index).getObjectValue();
+				if (type.equals("int")) {
+					index++;
+					declaration(astList.get(index).getObjectValue(), String.valueOf(scope));
+				} else if (type.equals("string")){
+					index++;
+					stringDeclaration(astList.get(index).getObjectValue(), String.valueOf(scope));
+				}
+				
 				index++;
 				break;
 			case "AssignmentStmt": 
@@ -44,6 +53,8 @@ public class GenerationMain {
 					assignConst(astList.get(index + 1).getObjectValue(), astList.get(index + 2).getObjectValue() , String.valueOf(scope));
 				} else if (astList.get(index + 2).getObjectType() == "id") {
 					assignMemory(astList.get(index + 1).getObjectValue(), astList.get(index + 2).getObjectValue(), String.valueOf(scope));
+				} else if (astList.get(index + 2).getObjectType().equals("stringExpr")) {
+					assignString(astList.get(index + 1).getObjectValue(), astList.get(index + 2).getObjectValue() , String.valueOf(scope));
 				}
 				index = index + 3;
 				break;
@@ -74,10 +85,22 @@ public class GenerationMain {
 				scope++;
 				currScopeLevel = astList.get(index).getObjectLevel();
 				index++;
+				break;
+			default:
+				System.out.println("ERRORRRR");
+				System.out.println(astList.get(index-1).getObjectType() + " " + astList.get(index-1).getObjectValue());
+				System.out.println(astList.get(index).getObjectType() + " " + astList.get(index).getObjectValue());
+				error = true;
+				break;
 			}
 		}
-		genOps.updateJumps();
-		doBreak();
+		if (genOps.hasUndefinedJump()) {
+			genOps.updateJump();
+		}
+		
+		/* Backtrace start */
+		genOps.backpatch();
+//		doBreak();
 	}
 	
 	
@@ -95,6 +118,10 @@ public class GenerationMain {
 		genOps.storeAccumulator(var, scope);
 	}
 	
+	public void stringDeclaration(String var, String scope) {
+		genOps.stringDecl(var, scope);
+	}
+	
 	public void assignConst(String var, String val, String scope) {
 		genOps.loadConst(val);
 		genOps.storeAccumulator(var, scope);
@@ -105,9 +132,22 @@ public class GenerationMain {
 		genOps.storeAccumulator(varToAssign, scope);
 	}
 	
+	public void assignString(String var, String string, String scope) {
+ 		String tempString = string.split("\"")[1];
+		int starting = genOps.getHeapSize() + tempString.length() + 1;
+		String hex = Integer.toHexString(96 - starting);
+		genOps.addToHeap(tempString);
+		genOps.loadConst(hex);
+		genOps.storeAccumulator(var, scope);
+	}
+	
 	public void printVar(String var) {
 		genOps.loadYMemory(var);
-		genOps.loadXConst("01");
+		if (genOps.isString(var)) {
+			genOps.loadXConst("02");
+		} else {
+			genOps.loadXConst("01");
+		}
 		genOps.systemCall();
 	}
 	

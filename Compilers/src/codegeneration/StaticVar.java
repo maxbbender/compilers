@@ -6,6 +6,7 @@ public class StaticVar {
 	private String scope;
 	private String var;
 	private String address;
+	private String type;
 	
 	public StaticVar() {
 		scope = null;
@@ -13,16 +14,26 @@ public class StaticVar {
 		tempX = null;
 		var = null;
 		address = null;
+		type = null;
 	}
 	
-	public StaticVar(String newTempNum, String newTempX, String newVar, String newAddress, String newScope) {
+	public StaticVar(String newTempNum, String newTempX, String newVar, String newAddress, String newScope, String newType) {
 		scope = newScope;
 		tempNum = newTempNum;
 		tempX = newTempX;
 		var = newVar;
 		address = newAddress;
+		type = newType;
 	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getScope() {
 		return scope;
 	}

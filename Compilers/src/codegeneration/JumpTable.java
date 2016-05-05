@@ -33,6 +33,14 @@ public class JumpTable {
 		}
 	}
 	
+	public boolean hasUndefined() {
+		for (JumpEntry tempEntry : jumpTable ) {
+			if (tempEntry.getDistance() == "XX") {
+				return true;
+			}
+		}
+		return false;
+	}
 	public void print() {
 		for (JumpEntry tempEntry : jumpTable) {
 			System.out.println(tempEntry.getJumpId() + "|" + tempEntry.getDistance());

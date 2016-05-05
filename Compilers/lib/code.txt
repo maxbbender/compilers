@@ -1,12 +1,14 @@
 {
 int a 
-a = 3
-int b
-b = 4
-a = b
+a = 9
 print(a)
-if (a == b) {
-	print (b)
+int b
+string f
+f = "hello"
+b = 9
+if (b == a) {
+	int c
+	c = 3
+	print(f)
 }
-int c
 } $
