@@ -74,10 +74,11 @@ public class GenerationOperations {
 	
 	
 	public void addToHeap(String string) {
-		for (int i = 0; i < string.length(); i++) {
-			heap.add(Integer.toHexString((int)string.charAt(i)));
+		heap.add(0, "00");
+		for (int i = string.length()-1; i >= 0; i--) {
+			heap.add(0, Integer.toHexString((int)string.charAt(i)));
 		}
-		heap.add("00");
+		
 	}
 	
 	public int findOpenEndIndex() {
@@ -100,8 +101,8 @@ public class GenerationOperations {
 			if (exec.get(i).equals("D0")) {
 				String jumpId = exec.get(i + 1);
 				if (jumpTable.getEntry(jumpId).getDistance().equals("XX")) {
-					int diff = exec.size() - exec.indexOf(jumpId);
-					jumpTable.updateEntry(jumpId, String.valueOf(diff));
+					int diff = exec.size() - exec.indexOf(jumpId) - 1;
+					jumpTable.updateEntry(jumpId, Integer.toHexString(diff));
 				}
 			}
 		}

@@ -5,10 +5,12 @@ print(a)
 int b
 string f
 f = "hello"
-b = 9
+b = 8
 if (b == a) {
 	int c
 	c = 3
 	print(f)
 }
+f = "alan"
+print (f)
 } $
