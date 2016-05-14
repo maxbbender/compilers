@@ -1,16 +1,13 @@
 {
-int a 
-a = 9
-print(a)
-int b
-string f
-f = "hello"
-b = 8
-if (b == a) {
-	int c
-	c = 3
-	print(f)
+   print (false)
+   print (true)
+   print ("two")
+   print (3)
+   print ("four")
+   print (5)
+   print (6)
+   print (7)
+   print (8)
+   print ("nine")
 }
-f = "alan"
-print (f)
-} $
+$

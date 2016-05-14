@@ -15,6 +15,7 @@ public class GenerationMain {
 	}
 	
 	public void run() {
+		int whileStart = 0;
 		boolean error = false;
 		int scope = 0;
 		int currScopeLevel = 0;
@@ -25,6 +26,10 @@ public class GenerationMain {
 		while (index < astList.size() && !error) {
 			if (astList.get(index).getObjectLevel() <= currScopeLevel) {
 				if (jumped) {
+					if (whileStart > 0) {
+						loopWhile(whileStart);
+					}
+					
 					genOps.updateJump();
 					jumped = false;
 				}
@@ -59,13 +64,24 @@ public class GenerationMain {
 				index = index + 3;
 				break;
 			case "PrintStmt":
-				String objectType = astList.get(index + 1).getObjectType();
+				index++; // @ id|digit|BoolExpr|StringExpr
+				String objectType = astList.get(index).getObjectType();
 				if (objectType == "id") {
-					printVar(astList.get(index + 1).getObjectValue());
+					printVar(astList.get(index).getObjectValue());
+					index++;
 				} else if (objectType == "digit") {
-					
+					printDigitLiteral(astList.get(index).getObjectValue());
+					index++;
+				} else if (objectType == "BoolExpr") {
+					index++;
+					if (astList.get(index).getObjectType().equals("BoolVal")) {
+						printBoolLiteral(astList.get(index).getObjectValue());
+					}
+					index++;
+				} else if (objectType == "stringExpr") {
+					printStringLiteral(astList.get(index).getObjectValue());
+					index++;
 				}
-				index = index + 2;
 				break;
 			case "IfStmt": 
 				index++;
@@ -81,6 +97,29 @@ public class GenerationMain {
 					}
 				}
 				break;
+			case "WhileStmt":
+				whileStart = astList.size();
+				index++;
+				if (astList.get(index).getObjectType().equals("BoolExpr")) {
+					index++;
+					if (astList.get(index).getObjectType().equals("id")) {
+						String idVal = astList.get(index).getObjectValue();
+						index++;
+						index++; // @ second arg
+						if (astList.get(index).getObjectType().equals("digit")) {
+							String digitVal = astList.get(index).getObjectValue();
+							whileStmt("iddigit", idVal, digitVal);
+							jumped = true;
+						}
+					}
+					index++;
+					jumpLevel = astList.get(index).getObjectLevel();
+					jumped = true;
+//					if (astList.get(index).getObjectType().equals("BoolVal")) {
+//						 
+//					} else if ()
+					break;
+				}
 			case "Block":
 				scope++;
 				currScopeLevel = astList.get(index).getObjectLevel();
@@ -135,7 +174,7 @@ public class GenerationMain {
 	public void assignString(String var, String string, String scope) {
  		String tempString = string.split("\"")[1];
 		int starting = genOps.getHeapSize() + tempString.length() + 1;
-		String hex = Integer.toHexString(96 - starting);
+		String hex = Integer.toHexString(256 - starting);
 		genOps.addToHeap(tempString);
 		genOps.loadConst(hex);
 		genOps.storeAccumulator(var, scope);
@@ -151,10 +190,61 @@ public class GenerationMain {
 		genOps.systemCall();
 	}
 	
+	public void printBoolLiteral(String bool) {
+		if (bool.equals("true")) {
+			genOps.loadYConst("01");
+		} else if (bool.equals("false")){
+			genOps.loadYConst("00");
+		}
+		genOps.loadXConst("01");
+		genOps.systemCall();
+	}
+	
+	public void printDigitLiteral(String digit) {
+		if (digit.length() == 1) {
+			digit = "0" + digit;
+		}
+		genOps.loadYConst(digit);
+		genOps.loadXConst("01");
+		genOps.systemCall();
+	}
+	
+	public void printStringLiteral(String stringToPrint) {
+		String tempString = stringToPrint.split("\"")[1];
+		genOps.addToHeap(tempString);
+		String hexStart = genOps.getStartHexHeap();
+		genOps.loadYConst(hexStart);
+		genOps.loadXConst("02");
+		genOps.systemCall();
+	}
+	
 	public void ifStmtVar(String varToX, String varToCheck) {
 		genOps.loadXMemory(varToX);
 		genOps.compare(varToCheck);
 		genOps.jump();
+	}
+	
+	public void whileStmt(String type, String val1, String val2) {
+		switch (type) {
+		case "iddigit": 
+			//val 1 = id | val2 = digit
+			if (val2.length() == 1) {
+				genOps.loadXConst("0" + val2);
+			} else {
+				genOps.loadXConst(val2);
+			}
+			
+			genOps.compare(val1);
+			genOps.jump();
+		}
+	}
+	
+	public void loopWhile(int whileStart) {
+		genOps.loadXConst("02");
+		genOps.loadConst("01");
+		genOps.storeAccumulator("rr", "0");
+		genOps.compare("rr");
+		genOps.jumpKnown(whileStart);
 	}
 	
 	public void doBreak() {

@@ -36,7 +36,7 @@ public class GenerationOperations {
 		updateJumps();
 		
 		/* Fill w/ 00 */
-		int numberOf00 = 96 - exec.size() - heap.size();
+		int numberOf00 = 256 - exec.size() - heap.size();
 		for (int i = 0; i < numberOf00; i++) {
 			doBreak();
 		}
@@ -81,8 +81,12 @@ public class GenerationOperations {
 		
 	}
 	
+	public String getStartHexHeap() {
+		return Integer.toHexString(256 - heap.size());
+	}
+	
 	public int findOpenEndIndex() {
-		for (int i = 96; i > 0; i--) {
+		for (int i = 256; i > 0; i--) {
 			if (exec.get(i) == null) {
 				return i;
 			}
@@ -207,6 +211,14 @@ public class GenerationOperations {
 		exec.add("D0");
 		JumpEntry tempEntry = jumpTable.addEntry();
 		exec.add(tempEntry.getJumpId());
+	}
+	
+	public void jumpKnown(int whileStart) {
+		exec.add("D0");
+		JumpEntry tempEntry = jumpTable.addEntry();
+		exec.add(tempEntry.getJumpId());
+		int jumpNum = 256 + whileStart -1 - exec.size();
+		tempEntry.setDistance(Integer.toHexString(jumpNum));
 	}
 	
 }

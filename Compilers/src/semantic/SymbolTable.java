@@ -231,6 +231,8 @@ public class SymbolTable {
 						}
 					} else if (type == "stringExpr") {
 						index++;
+					} else if (type == "digit") {
+						index++;
 					} else {
 						toContinue = false;
 						errors = true;
@@ -311,7 +313,11 @@ public class SymbolTable {
 	private boolean typeBoolExpr(String stmtType) {
 		index++; // @ first expr
 		TerminalNode node1 = astList.get(index);
-		TerminalNode node2 = astList.get(index + 2);
+		TerminalNode node2 = null;
+		if (index + 2 < astList.size()) {
+			node2 = astList.get(index + 2);
+		}
+	
 		if (node1.getObjectType().equals("id")) { // id
 			if (checkDeclaration(node1.getObjectValue())) {
 				index = index + 2; // @ second expr
