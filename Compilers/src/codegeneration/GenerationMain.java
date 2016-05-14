@@ -27,7 +27,7 @@ public class GenerationMain {
 			if (astList.get(index).getObjectLevel() <= currScopeLevel) {
 				if (jumped) {
 					if (whileStart > 0) {
-						loopWhile(whileStart);
+						loopWhile(whileStart, String.valueOf(scope));
 					}
 					
 					genOps.updateJump();
@@ -49,25 +49,42 @@ public class GenerationMain {
 				} else if (type.equals("string")){
 					index++;
 					stringDeclaration(astList.get(index).getObjectValue(), String.valueOf(scope));
+				} else if (type.equals("boolean")) {
+					index++;
+					booleanDeclaration(astList.get(index).getObjectValue(), String.valueOf(scope));
 				}
-				
 				index++;
 				break;
-			case "AssignmentStmt": 
-				if (astList.get(index + 2).getObjectType() == "digit") {
-					assignConst(astList.get(index + 1).getObjectValue(), astList.get(index + 2).getObjectValue() , String.valueOf(scope));
-				} else if (astList.get(index + 2).getObjectType() == "id") {
-					assignMemory(astList.get(index + 1).getObjectValue(), astList.get(index + 2).getObjectValue(), String.valueOf(scope));
-				} else if (astList.get(index + 2).getObjectType().equals("stringExpr")) {
-					assignString(astList.get(index + 1).getObjectValue(), astList.get(index + 2).getObjectValue() , String.valueOf(scope));
+			case "AssignmentStmt":
+				index++;
+				String var = astList.get(index).getObjectValue();
+				index++;
+				String typeA = astList.get(index).getObjectType();
+				String valueA = astList.get(index).getObjectValue();
+				if (typeA.equals("digit")) {
+					assignConst(var, valueA, String.valueOf(scope));
+					index++;
+				} else if (typeA.equals("id")) {
+					assignMemory(var, valueA, String.valueOf(scope));
+					index++;
+				} else if (typeA.equals("stringExpr")) {
+					assignString(var, valueA , String.valueOf(scope));
+					index++;
+				} else if (typeA.equals("BoolExpr")) {
+					index++;
+					typeA = astList.get(index).getObjectType();
+					valueA = astList.get(index).getObjectValue();
+					if (typeA.equals("BoolVal")) {
+						assignBoolean(var, valueA, String.valueOf(scope));
+					}
+					index++;
 				}
-				index = index + 3;
 				break;
 			case "PrintStmt":
 				index++; // @ id|digit|BoolExpr|StringExpr
 				String objectType = astList.get(index).getObjectType();
 				if (objectType == "id") {
-					printVar(astList.get(index).getObjectValue());
+					printVar(astList.get(index).getObjectValue(), String.valueOf(scope));
 					index++;
 				} else if (objectType == "digit") {
 					printDigitLiteral(astList.get(index).getObjectValue());
@@ -87,13 +104,16 @@ public class GenerationMain {
 				index++;
 				if (astList.get(index).getObjectType().equals("BoolExpr")) {
 					index++;
+					String typeB = astList.get(index).getObjectType();
 					if (astList.get(index).getObjectType().equals("id")) {
 						if (astList.get(index+2).getObjectType().equals("id")) {
-							ifStmtVar(astList.get(index).getObjectValue(), astList.get(index + 2).getObjectValue());
+							ifStmtVar(astList.get(index).getObjectValue(), astList.get(index + 2).getObjectValue(), String.valueOf(scope));
 							index = index + 3;
 							jumpLevel = astList.get(index).getObjectLevel();
 							jumped = true;
 						}
+					} else if (typeB.equals("BoolVal")) {
+						
 					}
 				}
 				break;
@@ -108,7 +128,7 @@ public class GenerationMain {
 						index++; // @ second arg
 						if (astList.get(index).getObjectType().equals("digit")) {
 							String digitVal = astList.get(index).getObjectValue();
-							whileStmt("iddigit", idVal, digitVal);
+							whileStmt("iddigit", idVal, digitVal, String.valueOf(scope));
 							jumped = true;
 						}
 					}
@@ -154,21 +174,27 @@ public class GenerationMain {
 	
 	public void declaration(String var, String scope) {
 		genOps.loadConst("00");
-		genOps.storeAccumulator(var, scope);
+		genOps.storeAccumulator(var, scope, false, "int");
 	}
 	
 	public void stringDeclaration(String var, String scope) {
 		genOps.stringDecl(var, scope);
 	}
 	
+	public void booleanDeclaration(String var, String scope) {
+		genOps.booleanDecl(var, scope);
+		genOps.loadConst("00");
+		genOps.storeAccumulator(var, scope, false, "boolean");
+	}
+	
 	public void assignConst(String var, String val, String scope) {
 		genOps.loadConst(val);
-		genOps.storeAccumulator(var, scope);
+		genOps.storeAccumulator(var, scope, true, "int");
 	}
 	
 	public void assignMemory(String varToAssign, String varToLookup, String scope) {
-		genOps.loadMemory(varToLookup);
-		genOps.storeAccumulator(varToAssign, scope);
+		genOps.loadMemory(varToLookup, scope);
+		genOps.storeAccumulator(varToAssign, scope, true, "int");
 	}
 	
 	public void assignString(String var, String string, String scope) {
@@ -177,12 +203,21 @@ public class GenerationMain {
 		String hex = Integer.toHexString(256 - starting);
 		genOps.addToHeap(tempString);
 		genOps.loadConst(hex);
-		genOps.storeAccumulator(var, scope);
+		genOps.storeAccumulator(var, scope, true, "string");
 	}
 	
-	public void printVar(String var) {
-		genOps.loadYMemory(var);
-		if (genOps.isString(var)) {
+	public void assignBoolean(String var, String boolVal, String scope) {
+		if (boolVal.equals("true")) {
+			genOps.loadConst("01");
+		} else {
+			genOps.loadConst("00");
+		}
+		genOps.storeAccumulator(var, scope, true, "boolean");
+	}
+	
+	public void printVar(String var, String scope) {
+		genOps.loadYMemory(var, scope);
+		if (genOps.isString(var, scope)) {
 			genOps.loadXConst("02");
 		} else {
 			genOps.loadXConst("01");
@@ -218,13 +253,19 @@ public class GenerationMain {
 		genOps.systemCall();
 	}
 	
-	public void ifStmtVar(String varToX, String varToCheck) {
-		genOps.loadXMemory(varToX);
-		genOps.compare(varToCheck);
+	public void ifStmtVar(String varToX, String varToCheck, String scope) {
+		genOps.loadXMemory(varToX, scope);
+		genOps.compare(varToCheck, scope);
 		genOps.jump();
 	}
 	
-	public void whileStmt(String type, String val1, String val2) {
+	public void ifStmtLiteral(String booleanCheck) {
+		if (booleanCheck.equals("true")) {
+			genOps.setZ1();
+		}
+	}
+	
+	public void whileStmt(String type, String val1, String val2, String scope) {
 		switch (type) {
 		case "iddigit": 
 			//val 1 = id | val2 = digit
@@ -234,16 +275,16 @@ public class GenerationMain {
 				genOps.loadXConst(val2);
 			}
 			
-			genOps.compare(val1);
+			genOps.compare(val1, scope);
 			genOps.jump();
 		}
 	}
 	
-	public void loopWhile(int whileStart) {
+	public void loopWhile(int whileStart, String scope) {
 		genOps.loadXConst("02");
 		genOps.loadConst("01");
-		genOps.storeAccumulator("rr", "0");
-		genOps.compare("rr");
+		genOps.storeAccumulator("rr", "0", true, "int");
+		genOps.compare("rr", scope);
 		genOps.jumpKnown(whileStart);
 	}
 	

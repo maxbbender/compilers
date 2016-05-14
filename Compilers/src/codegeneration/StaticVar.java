@@ -7,6 +7,7 @@ public class StaticVar {
 	private String var;
 	private String address;
 	private String type;
+	private boolean init;
 	
 	public StaticVar() {
 		scope = null;
@@ -15,15 +16,17 @@ public class StaticVar {
 		var = null;
 		address = null;
 		type = null;
+		init = false;
 	}
 	
-	public StaticVar(String newTempNum, String newTempX, String newVar, String newAddress, String newScope, String newType) {
+	public StaticVar(String newTempNum, String newTempX, String newVar, String newAddress, String newScope, String newType, boolean newInit) {
 		scope = newScope;
 		tempNum = newTempNum;
 		tempX = newTempX;
 		var = newVar;
 		address = newAddress;
 		type = newType;
+		init = newInit;
 	}
 	
 	public String getType() {
@@ -76,5 +79,13 @@ public class StaticVar {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public boolean isInit() {
+		return init;
+	}
+
+	public void setInit(boolean init) {
+		this.init = init;
 	}
 }

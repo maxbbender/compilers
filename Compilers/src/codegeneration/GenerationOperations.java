@@ -23,6 +23,9 @@ public class GenerationOperations {
 			String hexString = Integer.toHexString(execSize);
 			for (int i = 0; i < exec.size(); i++ ) {
 				if (exec.get(i).equals(tempVar.getTempNum())) {
+					if (hexString.length() == 1) {
+						hexString = "0" + hexString;
+					}
 					exec.set(i, hexString);
 					exec.set(i+1, "00");
 				}
@@ -138,8 +141,8 @@ public class GenerationOperations {
 		}
 	}
 	
-	public boolean isString(String var){ 
-		StaticVar tempSVar = staticTable.getEntryForVar(var);
+	public boolean isString(String var, String scope){ 
+		StaticVar tempSVar = staticTable.getEntryForVar(var, scope);
 		if (tempSVar.getType() == "string") {
 			return true;
 		} else {
@@ -147,9 +150,9 @@ public class GenerationOperations {
 		}
 	}
 	
-	public void loadMemory(String var) {
+	public void loadMemory(String var, String scope) {
 		exec.add("AD");
-		StaticVar tempSVar = staticTable.getEntryForVar(var);
+		StaticVar tempSVar = staticTable.getEntryForVar(var, scope);
 		exec.add(tempSVar.getTempNum());
 		exec.add(tempSVar.getTempX());
 	}
@@ -159,9 +162,9 @@ public class GenerationOperations {
 		exec.add(newConst);
 	}
 	
-	public void loadXMemory(String var) {
+	public void loadXMemory(String var, String scope) {
 		exec.add("AE");
-		StaticVar tempSVar = staticTable.getEntryForVar(var);
+		StaticVar tempSVar = staticTable.getEntryForVar(var, scope);
 		exec.add(tempSVar.getTempNum());
 		exec.add(tempSVar.getTempX());
 	}
@@ -171,25 +174,67 @@ public class GenerationOperations {
 		exec.add(newConst);
 	}
 	
-	public void loadYMemory(String var) {
+	public void loadYMemory(String var, String scope) {
 		exec.add("AC");
-		StaticVar tempSVar = staticTable.getEntryForVar(var);
+		StaticVar tempSVar = staticTable.getEntryForInitVar(var, scope);
 		exec.add(tempSVar.getTempNum());
 		exec.add(tempSVar.getTempX());
 	}
 	
-	public void storeAccumulator(String var, String scope) {
+	public void storeAccumulator(String var, String scope, boolean init, String type) {
 		exec.add("8D");
 		if (!staticTable.varExists(var)) {
-			staticTable.addEntry(var, scope, "int");
+			staticTable.addEntry(var, scope, type, init);
+		} else if (!staticTable.varExistsForScope(var, scope)) {
+			staticTable.addEntry(var, scope, type, init);
 		}
-		StaticVar tempSVar = staticTable.getEntryForVar(var);
+		
+		StaticVar tempSVar = staticTable.getEntryForVar(var, scope);
+		if (init) {
+			if (!tempSVar.isInit()) {
+				tempSVar.setInit(true);
+			}
+		}
 		exec.add(tempSVar.getTempNum());
 		exec.add(tempSVar.getTempX());
+	}
+	
+	public void setZ1() {
+		if (staticTable.hasEntrys()) {
+			StaticVar tempSVar = staticTable.getFirst();
+			if (tempSVar != null) {
+				this.loadXMemory(tempSVar.getVar(), tempSVar.getScope());
+				this.compare(tempSVar.getVar(), tempSVar.getScope());
+			}
+		} else {
+			this.loadConst("01");
+			this.storeAccumulator("r1", "0", true, "none");
+			this.loadXConst("01");
+			this.compare("r1", "0");
+		}
+	}
+	
+	public void setZ0() {
+		if (staticTable.hasEntrys()) {
+			StaticVar tempSVar = staticTable.getFirst();
+			if (tempSVar != null) {
+				this.loadXConst("99");
+				this.compare(tempSVar.getVar(), tempSVar.getScope());
+			}
+		} else {
+			this.loadConst("01");
+			this.storeAccumulator("r1", "0", true, "none");
+			this.loadXConst("00");
+			this.compare("r1", "0");
+		}
 	}
 	
 	public void stringDecl(String var, String scope) {
-		staticTable.addEntry(var, scope, "string");
+		staticTable.addEntry(var, scope, "string", false);
+	}
+	
+	public void booleanDecl(String var, String scope) {
+		staticTable.addEntry(var, scope, "boolean", true);
 	}
 	
 	public void systemCall() {
@@ -200,9 +245,9 @@ public class GenerationOperations {
 		exec.add("00");
 	}
 	
-	public void compare(String var) {
+	public void compare(String var, String scope) {
 		exec.add("EC");
-		StaticVar tempSVar = staticTable.getEntryForVar(var);
+		StaticVar tempSVar = staticTable.getEntryForVar(var, scope);
 		exec.add(tempSVar.getTempNum());
 		exec.add(tempSVar.getTempX());
 	}
